@@ -1,0 +1,12 @@
+# 依存関係
+node_modules/
+
+# ビルド成果物
+dist/
+
+# 環境変数
+.env
+.env.production
+
+# Astroキャッシュ
+.astro/
