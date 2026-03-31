@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const categories = [
+  {
+    name: 'Tech',
+    description: 'Astro / GitOps / frontend engineering notes',
+    href: '/blog/tech',
+    color: '#1976d2',
+  },
+  {
+    name: '登山',
+    description: '山行記録、ギアレビュー、トレイルメモ',
+    href: '/blog/nature',
+    color: '#2f6c41',
+  },
+  {
+    name: '旅記録',
+    description: '移動ログ、現地メモ、旅行ルートの実録',
+    href: '/blog/travel',
+    color: '#b35b1f',
+  },
+];
+---
+
+<BaseLayout title="Blog Categories">
+  <main class="blog-categories">
+    <section class="wrap">
+      <h1>Blog Categories</h1>
+      <p>現在のブログ種別は 3 つです。カテゴリを選択して一覧ページへ移動してください。</p>
+      <div class="grid">
+        {categories.map((cat) => (
+          <a href={cat.href} class="card" style={`--accent:${cat.color}`}>
+            <h2>{cat.name}</h2>
+            <p>{cat.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-categories {
+    min-height: 100vh;
+    background: #f4f6f8;
+    padding: 3rem 1rem;
+  }
+
+  .wrap {
+    width: min(980px, 100%);
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  p {
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .grid {
+    margin-top: 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    background: #fff;
+    padding: 1.1rem;
+    text-decoration: none;
+    color: inherit;
+    border-top: 4px solid var(--accent);
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .card p {
+    margin: 0.55rem 0 0;
+    font-size: 0.94rem;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

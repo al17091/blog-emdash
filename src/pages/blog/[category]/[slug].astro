@@ -1,0 +1,564 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getAllArticleParams, getArticleOrDefault } from '../../../data/blogArticles';
+
+export function getStaticPaths() {
+  return getAllArticleParams().map((article) => ({
+    params: {
+      category: article.category,
+      slug: article.slug,
+    },
+  }));
+}
+
+const category = Astro.params.category ?? '';
+const slug = Astro.params.slug ?? '';
+const article = getArticleOrDefault(category, slug);
+
+if (!article) {
+  throw new Error(`Article not found: ${category}/${slug}`);
+}
+
+const themeByCategory = {
+  tech: {
+    accent: '#1976d2',
+    accentSoft: '#edf4ff',
+    line: '#d6e3f4',
+    navBg: '#f6f9fd',
+    codeBg: '#0b1631',
+  },
+  nature: {
+    accent: '#2f6c41',
+    accentSoft: '#eff6f1',
+    line: '#d9e7dc',
+    navBg: '#f7faf8',
+    codeBg: '#102317',
+  },
+  travel: {
+    accent: '#b35b1f',
+    accentSoft: '#fdf3ea',
+    line: '#ebdccf',
+    navBg: '#fffaf4',
+    codeBg: '#2f1b12',
+  },
+}[article.category];
+---
+
+<BaseLayout title={`${article.title} | ${article.brand}`}>
+  <main class="article-page">
+    <header class="topbar" style={`--accent:${themeByCategory.accent};--line:${themeByCategory.line};--nav-bg:${themeByCategory.navBg}`}>
+      <div class="topbar-inner">
+        <a class="brand" href={`/blog/${article.category}`}>{article.brand}</a>
+        <nav aria-label="section links">
+          {article.navItems.map((item) => (
+            <a href={`/blog/${article.category}`}>{item}</a>
+          ))}
+        </nav>
+        <div class="actions">
+          <input type="search" placeholder="Search" aria-label="Search" />
+          <button type="button" aria-label="Alerts">◌</button>
+          <button type="button" aria-label="Profile">◎</button>
+        </div>
+      </div>
+    </header>
+
+    <article class="wrap article-body" style={`--accent:${themeByCategory.accent};--accent-soft:${themeByCategory.accentSoft};--line:${themeByCategory.line};--code-bg:${themeByCategory.codeBg}`}>
+      <p class="crumb">{article.breadcrumb.join(' / ')}</p>
+      <h1>{article.title}</h1>
+      <p class="dek">{article.description}</p>
+
+      <p class="byline">
+        <strong>{article.author}</strong>
+        <span>{article.publishedDate}</span>
+      </p>
+
+      <figure class="hero-image">
+        <img src={article.heroImage} alt={article.title} />
+        <figcaption>{article.heroCaption}</figcaption>
+      </figure>
+
+      {article.intro.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+
+      <h2>{article.sectionHeading}</h2>
+      {article.sectionBody.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+
+      <blockquote>
+        <p>{article.quote.text}</p>
+        <cite>{article.quote.source}</cite>
+      </blockquote>
+
+      <h3>{article.bulletHeading}</h3>
+      <ul>
+        {article.bullets.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+
+      <h3>{article.codeHeading}</h3>
+      <p>{article.codeLead}</p>
+
+      <pre><code>{article.codeBlock}</code></pre>
+
+      <h3>{article.diagramHeading}</h3>
+      <div class="diagram">{article.diagramCaption}</div>
+
+      <h3>{article.bestPracticesHeading}</h3>
+      <ol>
+        {article.bestPractices.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ol>
+
+      <div class="share">
+        <span>SHARE THIS ARTICLE:</span>
+        <button type="button" aria-label="Share to feed">◌</button>
+        <button type="button" aria-label="Share to x">X</button>
+        <button type="button" aria-label="Share to link">in</button>
+      </div>
+
+      <section class="related" aria-label="Related articles">
+        <h3>Related Articles</h3>
+        <div class="related-grid">
+          {article.related.map((item) => (
+            <a class="related-card" href={item.href}>
+              <img src={item.image} alt={item.title} loading="lazy" />
+              <small>{item.categoryLabel}</small>
+              <h4>{item.title}</h4>
+              <p>
+                {item.date} - {item.readTime}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
+    </article>
+
+    <footer class="site-footer" style={`--line:${themeByCategory.line};--accent:${themeByCategory.accent}`}>
+      <div class="wrap footer-grid">
+        <section>
+          <h4>{article.brand}</h4>
+          <p>Empowering creators with focused writing, curated stories, and long-term archives.</p>
+        </section>
+        <section>
+          <h4>Resources</h4>
+          <a href="/blog">Documentation</a>
+          <a href="/blog">Case Studies</a>
+          <a href="/blog">Whitepapers</a>
+        </section>
+        <section>
+          <h4>Company</h4>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/about">Careers</a>
+        </section>
+        <section>
+          <h4>Newsletter</h4>
+          <div class="newsletter">
+            <input type="email" placeholder="email@example.com" aria-label="Email" />
+            <button type="button">Subscribe</button>
+          </div>
+        </section>
+      </div>
+      <p class="copyright">© 2023 {article.brand}. All rights reserved.</p>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .article-page {
+    min-height: 100vh;
+    padding: 0;
+    background: #f6f7f8;
+    color: #0f172a;
+  }
+
+  .wrap {
+    width: min(980px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    border-bottom: 1px solid var(--line);
+    background: var(--nav-bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-inner {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 800;
+  }
+
+  nav {
+    display: flex;
+    gap: 1rem;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #475569;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .actions input {
+    min-width: 210px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f2f5f9;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .actions button {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #f8fafc;
+    color: #64748b;
+  }
+
+  .article-body {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+  }
+
+  .crumb {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    margin: 0.7rem 0 0;
+    font-size: clamp(2rem, 4vw, 3.7rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+
+  .dek {
+    margin-top: 0.8rem;
+    color: #475569;
+    font-size: 1.45rem;
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+
+  .byline {
+    margin: 1.6rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.95rem;
+  }
+
+  .byline span {
+    color: #64748b;
+  }
+
+  .hero-image {
+    margin: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+  }
+
+  .hero-image figcaption {
+    font-size: 0.78rem;
+    color: #64748b;
+    text-align: center;
+    padding: 0.45rem 0.8rem;
+  }
+
+  p {
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  h2,
+  h3 {
+    margin: 1.9rem 0 0.65rem;
+    font-size: 2.1rem;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 1.65rem;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    margin: 1.25rem 0;
+    padding: 0.95rem 1rem;
+    border-radius: 0 8px 8px 0;
+  }
+
+  blockquote p {
+    margin: 0;
+    font-style: italic;
+  }
+
+  cite {
+    display: block;
+    margin-top: 0.45rem;
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.3rem;
+    color: #1e293b;
+  }
+
+  li {
+    margin: 0.42rem 0;
+    line-height: 1.6;
+    font-size: 1.06rem;
+  }
+
+  pre {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--code-bg);
+    color: #bfdbfe;
+    overflow-x: auto;
+    border: 1px solid color-mix(in srgb, var(--line) 60%, #0f172a 40%);
+  }
+
+  pre code {
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+
+  .diagram {
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #64748b;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .share {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .share span {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  .share button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 7px;
+    color: #334155;
+    font-weight: 700;
+  }
+
+  .related {
+    margin-top: 3rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .related-card {
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    color: inherit;
+  }
+
+  .related-card img {
+    width: 100%;
+    aspect-ratio: 16 / 8;
+    object-fit: cover;
+    display: block;
+  }
+
+  .related-card small,
+  .related-card h4,
+  .related-card p {
+    margin: 0;
+    padding: 0 0.65rem;
+  }
+
+  .related-card small {
+    padding-top: 0.5rem;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+  }
+
+  .related-card h4 {
+    padding-top: 0.32rem;
+    font-size: 0.98rem;
+    line-height: 1.35;
+    color: #0f172a;
+  }
+
+  .related-card p {
+    padding-top: 0.34rem;
+    padding-bottom: 0.65rem;
+    color: #64748b;
+    font-size: 0.78rem;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: #f5f7fa;
+    padding: 2rem 0 1.4rem;
+  }
+
+  .footer-grid {
+    width: min(1280px, calc(100% - 48px));
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 1rem;
+  }
+
+  .footer-grid h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #0f172a;
+  }
+
+  .footer-grid p {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.55;
+  }
+
+  .footer-grid a {
+    display: block;
+    margin-top: 0.45rem;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.84rem;
+  }
+
+  .newsletter {
+    margin-top: 0.6rem;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .newsletter input {
+    min-width: 110px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #fff;
+    padding: 0.45rem 0.55rem;
+  }
+
+  .newsletter button {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 7px;
+    padding: 0.45rem 0.7rem;
+    font-weight: 700;
+  }
+
+  .copyright {
+    width: min(1280px, calc(100% - 48px));
+    margin: 1rem auto 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.78rem;
+  }
+
+  @media (max-width: 1100px) {
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+    }
+
+    .dek,
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 780px) {
+    nav {
+      display: none;
+    }
+
+    .actions input {
+      display: none;
+    }
+
+    .wrap,
+    .topbar-inner,
+    .footer-grid,
+    .copyright {
+      width: min(1280px, calc(100% - 24px));
+    }
+
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

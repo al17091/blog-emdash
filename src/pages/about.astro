@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | Multi-Theme Blog">
+  <main class="info">
+    <section class="wrap">
+      <h1>About</h1>
+      <p>
+        Multi-Theme Blog is a unified publication for three streams: technology, hiking, and travel logs. We focus on
+        practical writing that is searchable, reusable, and easy to maintain.
+      </p>
+      <a href="/">Back to Home</a>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .info { min-height: 100vh; background: #f6f7f8; padding: 3rem 1rem; }
+  .wrap { width: min(860px, 100%); margin: 0 auto; }
+  h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
+  p { color: #475569; line-height: 1.7; }
+  a { color: #1976d2; text-decoration: none; font-weight: 700; }
+</style>

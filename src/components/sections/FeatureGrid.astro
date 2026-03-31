@@ -1,0 +1,21 @@
+---
+interface FeatureItem {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  items: FeatureItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="section-wrap feature-grid" aria-label="features">
+  {items.map((item) => (
+    <article class="feature-card">
+      <h2>{item.title}</h2>
+      <p>{item.description}</p>
+    </article>
+  ))}
+</section>

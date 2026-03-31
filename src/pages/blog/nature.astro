@@ -1,0 +1,465 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categoryPosts } from '../../data/blogArticles';
+
+const posts = categoryPosts.nature;
+---
+
+<BaseLayout title="素人登山道 | Nature">
+  <main class="nature-page">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="/">素人登山道</a>
+        <nav class="nav" aria-label="blog categories">
+          <a href="/blog/tech">Tech</a>
+          <a class="active" href="/blog/nature">登山</a>
+          <a href="/blog/travel">旅記録</a>
+        </nav>
+        <div class="actions">
+          <input type="search" placeholder="Search trails..." aria-label="search trails" />
+          <button type="button" aria-label="notifications">◌</button>
+          <button type="button" aria-label="profile">◎</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="container hero" aria-label="category hero">
+      <img
+        src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=80"
+        alt="Mountain range"
+      />
+      <div class="hero-overlay">
+        <h1>素人登山道</h1>
+        <p>Nature-inspired records of mountain climbs, gear reviews, and quiet trail lessons.</p>
+      </div>
+    </section>
+
+    <section class="container list-head">
+      <p class="crumb">Portal / <strong>Nature</strong></p>
+      <div class="list-controls" aria-label="list controls">
+        <button type="button">▦</button>
+        <button type="button">☷</button>
+        <button type="button" class="select">Newest ▾</button>
+      </div>
+    </section>
+
+    <section class="container grid" aria-label="nature posts">
+      {posts.map((post) => (
+        <article class="card">
+          <div class="media">
+            <img src={post.image} alt={post.title} loading="lazy" />
+            <span>{post.tags[0]}</span>
+          </div>
+          <div class="content">
+            <p class="meta">{post.date}</p>
+            <h2>{post.title}</h2>
+            <p class="desc">{post.description}</p>
+            <p class="time">{post.readTime}</p>
+            <p class="read-link">
+              <a href={`/blog/nature/${post.slug}`} aria-label={`${post.title} read more`}>Read article →</a>
+            </p>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <nav class="container pager" aria-label="pagination">
+      <a href="/blog/nature">&lt;</a>
+      <a class="active" href="/blog/nature">1</a>
+      <a href="/blog/nature">2</a>
+      <a href="/blog/nature">3</a>
+      <span>...</span>
+      <a href="/blog/nature">12</a>
+      <a href="/blog/nature">&gt;</a>
+    </nav>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <section>
+          <h3>素人登山道</h3>
+          <p>
+            A personal archive of mountain climbs, gear reflections, and lessons learned on the trail. Documenting the
+            quiet journey from the forest floor to the summit.
+          </p>
+        </section>
+        <section>
+          <h3>Categories</h3>
+          <a href="/blog/nature">Climb Records</a>
+          <a href="/blog/nature">Gear Reviews</a>
+          <a href="/blog/nature">Trail Lessons</a>
+          <a href="/blog/nature">Safety Guides</a>
+        </section>
+        <section>
+          <h3>About</h3>
+          <a href="/about">Our Story</a>
+          <a href="/about">Meet the Hikers</a>
+          <a href="/contact">Contact Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </section>
+      </div>
+      <p class="copy">© 2023 素人登山道 (Amateur Mountain Path). All rights reserved.</p>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .nature-page {
+    min-height: 100vh;
+    padding: 0;
+    background: #f8faf9;
+    color: #1f2937;
+  }
+
+  .container {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    border-bottom: 1px solid #d9e2de;
+    background: #f8faf9d9;
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-inner {
+    width: min(1560px, calc(100% - 48px));
+    margin: 0 auto;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    text-decoration: none;
+    color: #1d4f2f;
+    font-weight: 800;
+    font-size: 1.38rem;
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.3rem;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .nav a.active {
+    color: #1d4f2f;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
+  .actions input {
+    min-width: 238px;
+    border: 1px solid #d6e0dc;
+    border-radius: 10px;
+    background: #f2f7f4;
+    padding: 0.56rem 0.82rem;
+  }
+
+  .actions button {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid #d6e0dc;
+    background: #fff;
+    color: #64748b;
+  }
+
+  .hero {
+    margin-top: 1.6rem;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    min-height: 340px;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.7) contrast(0.9);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 21, 17, 0.14) 20%, rgba(7, 20, 16, 0.66) 100%);
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  h1 {
+    margin: 0;
+    color: #f8faf8;
+    font-size: clamp(2.2rem, 4.2vw, 4rem);
+    line-height: 1.05;
+  }
+
+  .hero-overlay p {
+    margin: 0.65rem 0 0;
+    color: #d7e7df;
+    font-size: 1.2rem;
+    max-width: 48ch;
+    line-height: 1.45;
+  }
+
+  .list-head {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .crumb {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.86rem;
+  }
+
+  .crumb strong {
+    color: #2f6c41;
+  }
+
+  .list-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .list-controls button {
+    border: 1px solid #d6e0dc;
+    border-radius: 9px;
+    background: #fff;
+    color: #4b5563;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 0.7rem;
+    font-weight: 700;
+  }
+
+  .list-controls .select {
+    min-width: 102px;
+  }
+
+  .grid {
+    margin-top: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    border: 1px solid #e0e7e3;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .media {
+    position: relative;
+  }
+
+  .media img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+  }
+
+  .media span {
+    position: absolute;
+    left: 0.56rem;
+    top: 0.56rem;
+    padding: 0.22rem 0.5rem;
+    border-radius: 6px;
+    background: #f1f7f3;
+    border: 1px solid #c8d9cf;
+    color: #264735;
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+  }
+
+  .content {
+    padding: 0.8rem 0.75rem 0.9rem;
+  }
+
+  .meta {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.77rem;
+    font-weight: 600;
+  }
+
+  h2 {
+    margin: 0.56rem 0 0.5rem;
+    font-size: 1.12rem;
+    line-height: 1.35;
+    color: #0f172a;
+  }
+
+  .desc {
+    margin: 0;
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    min-height: 4.5em;
+  }
+
+  .time {
+    margin: 0.85rem 0 0;
+    color: #94a3b8;
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+
+  .read-link {
+    margin: 0.55rem 0 0;
+    font-size: 0.85rem;
+  }
+
+  .read-link a {
+    color: #2f6c41;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .pager {
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pager a,
+  .pager span {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid #d8e3de;
+    background: #fff;
+    color: #334155;
+    font-weight: 700;
+    display: inline-flex;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pager a.active {
+    background: #2f6c41;
+    border-color: #2f6c41;
+    color: #fff;
+  }
+
+  .site-footer {
+    border-top: 1px solid #dde5e1;
+    background: #f8faf9;
+    padding: 2.1rem 0 1.3rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .footer-grid h3 {
+    margin: 0 0 0.9rem;
+    color: #1f2937;
+    font-size: 1.1rem;
+  }
+
+  .footer-grid p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.6;
+    max-width: 42ch;
+  }
+
+  .footer-grid a {
+    display: block;
+    text-decoration: none;
+    color: #64748b;
+    margin-bottom: 0.62rem;
+  }
+
+  .copy {
+    margin: 1.5rem auto 0;
+    width: min(1280px, calc(100% - 48px));
+    border-top: 1px solid #e4ebe7;
+    padding-top: 1rem;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  @media (max-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 960px) {
+    .nav {
+      display: none;
+    }
+
+    .container,
+    .topbar-inner,
+    .copy {
+      width: min(1280px, calc(100% - 24px));
+    }
+
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .actions input {
+      min-width: 120px;
+    }
+
+    .hero img {
+      height: 280px;
+    }
+
+    .hero-overlay p {
+      font-size: 1rem;
+    }
+
+    .list-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

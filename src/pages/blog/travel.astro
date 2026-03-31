@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categoryPosts } from '../../data/blogArticles';
+
+const posts = categoryPosts.travel;
+---
+
+<BaseLayout title="フリーダム旅行記 | Travel Log">
+  <main class="travel-page">
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="brand" href="/">フリーダム旅行記</a>
+        <nav class="site-nav" aria-label="blog categories">
+          <a href="/blog/tech">Tech</a>
+          <a href="/blog/nature">登山</a>
+          <a class="active" href="/blog/travel">旅記録</a>
+        </nav>
+        <div class="header-actions">
+          <input type="search" placeholder="旅先を検索..." aria-label="旅先を検索" />
+          <button type="button" aria-label="profile">◎</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="container hero">
+      <p class="crumb">Portal / <strong>Travel Log</strong></p>
+      <h1>旅の記録を、あとで読み返せる形に</h1>
+      <p>
+        移動ルート、滞在のコツ、食事メモまで。写真だけで終わらせないための実用的な旅ログをまとめています。
+      </p>
+    </section>
+
+    <section class="container post-grid" aria-label="travel posts">
+      {posts.map((post) => (
+        <article class="post-card">
+          <img src={post.image} alt={post.title} loading="lazy" />
+          <div class="tags">
+            {post.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </div>
+          <div class="post-body">
+            <p class="meta">{post.date} · {post.readTime}</p>
+            <h2>{post.title}</h2>
+            <p class="desc">{post.description}</p>
+          </div>
+          <footer class="card-footer">
+            <span>{post.author}</span>
+            <a href={`/blog/travel/${post.slug}`} aria-label={`${post.title} read more`}>→</a>
+          </footer>
+        </article>
+      ))}
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .travel-page {
+    min-height: 100vh;
+    padding: 0 0 3rem;
+    background: #faf7f2;
+    color: #1f2937;
+  }
+
+  .container {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .site-header {
+    border-bottom: 1px solid #e8dfd2;
+    background: #fffcf7d9;
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .site-header-inner {
+    width: min(1520px, calc(100% - 48px));
+    margin: 0 auto;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .site-nav {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+  }
+
+  .site-nav a {
+    color: #7c5e3c;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .site-nav a.active {
+    color: #b35b1f;
+    border-bottom: 2px solid #b35b1f;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .header-actions input {
+    border: 1px solid #e8dfd2;
+    border-radius: 10px;
+    background: #fff;
+    padding: 0.55rem 0.8rem;
+    min-width: 220px;
+  }
+
+  .header-actions button {
+    border: 1px solid #e8dfd2;
+    background: #fff;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    color: #8b6b4b;
+  }
+
+  .hero {
+    padding-top: 2rem;
+  }
+
+  .crumb {
+    margin: 0;
+    color: #8b6b4b;
+    font-size: 0.86rem;
+  }
+
+  .crumb strong {
+    color: #b35b1f;
+  }
+
+  h1 {
+    margin: 0.7rem 0 0.5rem;
+    font-size: clamp(1.9rem, 2.6vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .hero p {
+    margin: 0;
+    color: #5b6472;
+    max-width: 68ch;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .post-grid {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.15rem;
+  }
+
+  .post-card {
+    border: 1px solid #e8dfd2;
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .post-card img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+  }
+
+  .tags {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tags span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+    background: #b35b1f;
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .post-body {
+    padding: 0.9rem 0.9rem 0.35rem;
+  }
+
+  .meta {
+    margin: 0;
+    color: #8b6b4b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+
+  h2 {
+    margin: 0.6rem 0 0.45rem;
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  .desc {
+    margin: 0;
+    color: #5b6472;
+    line-height: 1.55;
+    font-size: 0.93rem;
+    min-height: 4.3em;
+  }
+
+  .card-footer {
+    border-top: 1px solid #efe7dc;
+    padding: 0.85rem 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #6d4f2f;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
+  .card-footer a {
+    color: #8b6b4b;
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  @media (max-width: 1200px) {
+    .post-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .site-nav {
+      display: none;
+    }
+
+    .site-header-inner,
+    .container {
+      width: min(1280px, calc(100% - 24px));
+    }
+
+    .post-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .header-actions input {
+      min-width: 130px;
+    }
+
+    .post-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

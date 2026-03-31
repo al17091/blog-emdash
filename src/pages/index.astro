@@ -1,15 +1,446 @@
 ---
-// トップページ: 「Hello, Astro!」を表示するシンプルなページ
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const themeCards = [
+  {
+    label: 'ENGINEERING',
+    title: '技術ブログ - I am Engineer',
+    description: 'Modern, dark/blue tech aesthetic for the engineering mind. Deep dives into React, Architecture, and Cloud Infrastructure.',
+    count: '124 Articles',
+    cta: 'Enter Lab',
+    href: '/blog/tech',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+    tone: 'tech',
+  },
+  {
+    label: 'LIFESTYLE',
+    title: '食・旅記録 - フリーダム旅行記',
+    description: 'Vibrant, scenic photography style documenting food and travel adventures around the globe. Finding freedom in every bite.',
+    count: '89 Adventures',
+    cta: 'View Gallery',
+    href: '/blog/travel',
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80',
+    tone: 'travel',
+  },
+  {
+    label: 'NATURE',
+    title: '素人登山道',
+    description: 'Nature-inspired, green/earthy tones. Records of mountain climbs, gear reviews, and the quiet lessons learned on the trail.',
+    count: '56 Summits',
+    cta: 'Start Hike',
+    href: '/blog/nature',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+    tone: 'nature',
+  },
+];
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>web-s</title>
-  </head>
-  <body class="flex items-center justify-center min-h-screen bg-gray-100">
-    <h1 class="text-4xl font-bold text-blue-600">Hello, Astro!</h1>
-  </body>
-</html>
+<BaseLayout title="Multi-Theme Blog">
+  <main class="home">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="/">Multi-Theme Blog</a>
+        <nav class="nav" aria-label="primary">
+          <a class="active" href="/">Home</a>
+          <a href="/blog">Categories</a>
+          <a href="/blog/tech">Popular</a>
+          <a href="/about">About</a>
+        </nav>
+        <div class="actions">
+          <input type="search" placeholder="Search stories..." aria-label="Search stories" />
+          <button type="button" aria-label="Notifications">◌</button>
+          <button type="button" aria-label="Profile">◎</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="wrap hero">
+      <h1>Featured Themes</h1>
+      <div class="theme-grid">
+        {themeCards.map((card) => (
+          <article class={`theme-card ${card.tone}`}>
+            <div class="media" style={`background-image:url(${card.image})`}>
+              <span>{card.label}</span>
+            </div>
+            <div class="body">
+              <h2>{card.title}</h2>
+              <p>{card.description}</p>
+              <footer>
+                <small>{card.count}</small>
+                <a href={card.href}>{card.cta} →</a>
+              </footer>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="wrap footer-grid">
+        <section>
+          <h3>Multi-Theme Blog</h3>
+          <p>
+            A unified platform for diverse voices and specialized interests. From code to peaks, we cover the spectrum
+            of human curiosity.
+          </p>
+        </section>
+        <section>
+          <h3>THEMES</h3>
+          <a href="/blog/tech">Engineering</a>
+          <a href="/blog/travel">Travel &amp; Food</a>
+          <a href="/blog/nature">Hiking &amp; Nature</a>
+          <a href="/blog">Photography</a>
+        </section>
+        <section>
+          <h3>SUPPORT</h3>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/contact">Contact</a>
+        </section>
+      </div>
+      <div class="wrap icon-row" aria-hidden="true">
+        <span>◍</span>
+        <span>◇</span>
+        <span>▣</span>
+        <span>◎</span>
+        <span>□</span>
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .home {
+    min-height: 100vh;
+    padding: 0;
+    background: #f6f7f8;
+    color: #111827;
+  }
+
+  .wrap {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    border-bottom: 1px solid #d8dee6;
+    background: #f6f7f8d9;
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-inner {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    text-decoration: none;
+    color: #0f172a;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 600;
+  }
+
+  .nav a.active {
+    color: #0f172a;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .actions input {
+    min-width: 320px;
+    border: 1px solid #d8dee6;
+    border-radius: 12px;
+    background: #eef2f7;
+    padding: 0.62rem 0.85rem;
+  }
+
+  .actions button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #d8dee6;
+    border-radius: 12px;
+    background: #eef2f7;
+    color: #6b7280;
+    font-weight: 700;
+  }
+
+  .hero {
+    padding-top: 3rem;
+    padding-bottom: 8rem;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 2.4vw, 2.8rem);
+    letter-spacing: -0.01em;
+  }
+
+  .theme-grid {
+    margin-top: 1.8rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .theme-card {
+    border: 1px solid #d5dce6;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 14px 28px -26px rgba(15, 23, 42, 0.7);
+  }
+
+  .theme-card .media {
+    height: 292px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  .theme-card .media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.35));
+  }
+
+  .theme-card .media span {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    padding: 0.35rem 0.72rem;
+  }
+
+  .theme-card .body {
+    padding: 1.2rem;
+  }
+
+  .theme-card h2 {
+    margin: 0;
+    font-size: 2.85rem;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+  }
+
+  .theme-card p {
+    margin: 0.9rem 0 0;
+    font-size: 1.45rem;
+    line-height: 1.6;
+  }
+
+  .theme-card footer {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .theme-card small {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+
+  .theme-card footer a {
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .theme-card.tech {
+    background: #081638;
+    color: #f7f9ff;
+  }
+
+  .theme-card.tech .media span {
+    background: #1976d2;
+  }
+
+  .theme-card.tech p {
+    color: #9cb2d8;
+  }
+
+  .theme-card.tech small {
+    color: #7894c2;
+  }
+
+  .theme-card.tech footer a {
+    color: #4fa3ff;
+  }
+
+  .theme-card.travel {
+    background: #f6f7f7;
+    color: #111827;
+  }
+
+  .theme-card.travel .media span {
+    background: #f97316;
+  }
+
+  .theme-card.travel p {
+    color: #475569;
+  }
+
+  .theme-card.travel footer a {
+    color: #2563eb;
+  }
+
+  .theme-card.nature {
+    background: #eef2ef;
+    color: #1f2937;
+  }
+
+  .theme-card.nature .media span {
+    background: #3b7f41;
+  }
+
+  .theme-card.nature p {
+    color: #4b5563;
+  }
+
+  .theme-card.nature footer a {
+    color: #2f6c41;
+  }
+
+  .site-footer {
+    border-top: 1px solid #d8dee6;
+    background: #f6f7f8;
+    padding: 3rem 0 2.4rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .footer-grid h3 {
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  .footer-grid p {
+    margin: 1rem 0 0;
+    color: #64748b;
+    line-height: 1.55;
+    font-size: 1.35rem;
+    max-width: 48ch;
+  }
+
+  .footer-grid a {
+    display: block;
+    text-decoration: none;
+    color: #64748b;
+    margin-top: 0.7rem;
+    font-size: 1.28rem;
+  }
+
+  .icon-row {
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid #e0e7ef;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .icon-row span {
+    width: 52px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8edf5;
+    color: #6b7280;
+    border-radius: 999px;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1320px) {
+    .brand {
+      font-size: 1.5rem;
+    }
+
+    .theme-card h2 {
+      font-size: 2.15rem;
+    }
+
+    .theme-card p,
+    .footer-grid p,
+    .footer-grid a,
+    .theme-card small {
+      font-size: 1.05rem;
+    }
+  }
+
+  @media (max-width: 1020px) {
+    .theme-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav {
+      display: none;
+    }
+
+    .actions input {
+      min-width: 170px;
+    }
+
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .icon-row {
+      justify-content: flex-start;
+      gap: 0.8rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .wrap,
+    .topbar-inner {
+      width: min(1280px, calc(100% - 24px));
+    }
+
+    .actions input {
+      display: none;
+    }
+
+    .hero {
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+    }
+  }
+</style>

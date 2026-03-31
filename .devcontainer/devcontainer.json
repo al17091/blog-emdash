@@ -1,0 +1,35 @@
+{
+  "name": "Astro Project",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  // "runArgs": [
+  //   "--security-opt=seccomp=unconfined",
+  //   "--security-opt=apparmor=unconfined",
+  //   "--cap-add=SYS_ADMIN"
+  // ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "openai.chatgpt"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  // コンテナ起動後に実行するコマンド
+  "postCreateCommand": "pnpm install", 
+  
+  // Astroのデフォルトポート(4321)をフォワード
+  "forwardPorts": [4321],
+  
+  "remoteUser": "node"
+}
+
+// DQqjMVOKTd0WGidZOskGcS
+// BHnnXo7JLmdv4iQZCgj6LIhhJPOneF
