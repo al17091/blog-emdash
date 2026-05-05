@@ -1,13 +1,19 @@
 ---
-import { getEmDashCollection, getTermsForEntries } from "emdash";
+import { getEmDashCollection, getTaxonomyTerms, getTermsForEntries } from "emdash";
 import Base from "../../layouts/Base.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
+const selectedTheme = Astro.url.searchParams.get("theme") ?? "";
+
 // Sort in the database rather than in JS — lets the DB use its index on
 // published_at and avoids a full-table scan on the client.
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-});
+const [themeTerms, { entries: posts, cacheHint }] = await Promise.all([
+	getTaxonomyTerms("theme"),
+	getEmDashCollection("posts", {
+		where: selectedTheme ? { theme: selectedTheme } : undefined,
+		orderBy: { published_at: "desc" },
+	}),
+]);
 
 Astro.cache.set(cacheHint);
 
@@ -42,6 +48,24 @@ const formatDate = (date: Date) =>
 				{posts.length}
 				{posts.length === 1 ? "article" : "articles"}
 			</p>
+			{themeTerms.length > 0 && (
+				<nav class="theme-filter" aria-label="Theme filter">
+					<a
+						class={`theme-filter-link ${!selectedTheme ? "active" : ""}`}
+						href="/posts"
+					>
+						All themes
+					</a>
+					{themeTerms.map((t) => (
+						<a
+							class={`theme-filter-link ${selectedTheme === t.slug ? "active" : ""}`}
+							href={`/posts?theme=${encodeURIComponent(t.slug)}`}
+						>
+							{t.label}
+						</a>
+					))}
+				</nav>
+			)}
 		</header>
 
 		{
@@ -129,6 +153,40 @@ const formatDate = (date: Date) =>
 	.page-description {
 		font-size: var(--font-size-lg);
 		color: var(--color-muted);
+	}
+
+	.theme-filter {
+		margin-top: var(--spacing-4);
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-2);
+	}
+
+	.theme-filter-link {
+		display: inline-flex;
+		align-items: center;
+		padding: var(--tag-padding-y) var(--spacing-3);
+		border-radius: 999px;
+		border: 1px solid var(--color-border-subtle);
+		background: color-mix(in srgb, var(--color-surface) 75%, transparent);
+		color: var(--color-text-secondary);
+		text-decoration: none;
+		font-size: var(--font-size-sm);
+		transition:
+			color var(--transition-fast),
+			background var(--transition-fast),
+			border-color var(--transition-fast);
+	}
+
+	.theme-filter-link:hover {
+		color: var(--color-text);
+		border-color: var(--color-border);
+	}
+
+	.theme-filter-link.active {
+		background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+		border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+		color: var(--color-text);
 	}
 
 	.empty {
