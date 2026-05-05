@@ -3,7 +3,11 @@ import { getEmDashCollection, getTaxonomyTerms, getTermsForEntries } from "emdas
 import Base from "../../layouts/Base.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
-const selectedTheme = Astro.url.searchParams.get("theme") ?? "";
+const THEME_ORDER = ["engineering", "travel", "nature"] as const;
+const THEME_SET = new Set<string>(THEME_ORDER);
+
+const rawTheme = Astro.url.searchParams.get("theme") ?? "";
+const selectedTheme = THEME_SET.has(rawTheme) ? rawTheme : "";
 
 // Sort in the database rather than in JS — lets the DB use its index on
 // published_at and avoids a full-table scan on the client.
@@ -14,6 +18,9 @@ const [themeTerms, { entries: posts, cacheHint }] = await Promise.all([
 		orderBy: { published_at: "desc" },
 	}),
 ]);
+const visibleThemes = themeTerms
+	.filter((t) => THEME_SET.has(t.slug))
+	.sort((a, b) => THEME_ORDER.indexOf(a.slug as any) - THEME_ORDER.indexOf(b.slug as any));
 
 Astro.cache.set(cacheHint);
 
@@ -48,7 +55,7 @@ const formatDate = (date: Date) =>
 				{posts.length}
 				{posts.length === 1 ? "article" : "articles"}
 			</p>
-			{themeTerms.length > 0 && (
+			{visibleThemes.length > 0 && (
 				<nav class="theme-filter" aria-label="Theme filter">
 					<a
 						class={`theme-filter-link ${!selectedTheme ? "active" : ""}`}
@@ -56,7 +63,7 @@ const formatDate = (date: Date) =>
 					>
 						All themes
 					</a>
-					{themeTerms.map((t) => (
+					{visibleThemes.map((t) => (
 						<a
 							class={`theme-filter-link ${selectedTheme === t.slug ? "active" : ""}`}
 							href={`/posts?theme=${encodeURIComponent(t.slug)}`}
