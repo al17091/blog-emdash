@@ -649,7 +649,7 @@
 				},
 				"taxonomies": {
 					"category": ["notes"],
-					"theme": ["engineering"],
+					"theme": ["travel"],
 					"tag": ["opinion"]
 				}
 			},
@@ -981,7 +981,7 @@
 				},
 				"taxonomies": {
 					"category": ["notes"],
-					"theme": ["engineering"],
+					"theme": ["nature"],
 					"tag": ["opinion"]
 				}
 			},
