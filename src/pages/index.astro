@@ -1,13 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/ui/Icon.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const countByCategory = posts.reduce(
+  (acc, post) => {
+    acc[post.data.category] += 1;
+    return acc;
+  },
+  { tech: 0, nature: 0, travel: 0 },
+);
 
 const themeCards = [
   {
     label: 'ENGINEERING',
     title: '技術ブログ - I am Engineer',
     description: 'Modern, dark/blue tech aesthetic for the engineering mind. Deep dives into React, Architecture, and Cloud Infrastructure.',
-    count: '124 Articles',
+    count: `${countByCategory.tech} Articles`,
     href: '/blog/tech',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
     tone: 'tech',
@@ -16,7 +26,7 @@ const themeCards = [
     label: 'LIFESTYLE',
     title: '食・旅記録 - フリーダム旅行記',
     description: 'Vibrant, scenic photography style documenting food and travel adventures around the globe. Finding freedom in every bite.',
-    count: '89 Adventures',
+    count: `${countByCategory.travel} Adventures`,
     href: '/blog/travel',
     image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80',
     tone: 'travel',
@@ -25,7 +35,7 @@ const themeCards = [
     label: 'NATURE',
     title: '素人登山道',
     description: 'Nature-inspired, green/earthy tones. Records of mountain climbs, gear reviews, and the quiet lessons learned on the trail.',
-    count: '56 Summits',
+    count: `${countByCategory.nature} Summits`,
     href: '/blog/nature',
     image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
     tone: 'nature',

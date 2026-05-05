@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import Icon from '../../components/ui/Icon.astro';
+import { formatPublishedDate } from '../../lib/formatDate';
 
 const posts = (await getCollection('blog', ({ data }) => data.category === 'travel')).sort(
   (a, b) => a.data.sortOrder - b.data.sortOrder,
@@ -46,7 +47,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
       </div>
     </section>
 
-    <section class="container post-grid" aria-label="travel posts" data-post-grid>
+    <section class="container post-grid" aria-label="travel posts" data-post-grid data-posts-per-page="8">
       {posts.map((post) => (
         <article class="post-card" data-post-card data-tags={post.data.tags.join('|')}>
           <img src={post.data.cardImage} alt={post.data.title} loading="lazy" />
@@ -56,7 +57,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
             ))}
           </div>
           <a class="post-body post-link" href={`/blog/travel/${post.data.routeSlug}`} aria-label={post.data.title}>
-            <p class="meta">{post.data.publishedDate} · {post.data.readTime}</p>
+            <p class="meta">{formatPublishedDate(post.data.publishedDate)} · {post.data.readTime}</p>
             <h2>{post.data.title}</h2>
             <p class="desc">{post.data.description}</p>
             <span class="hint" aria-hidden="true"></span>
@@ -64,6 +65,12 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
         </article>
       ))}
     </section>
+
+    <nav class="container pager" aria-label="pagination" data-pager>
+      <button type="button" data-pager-prev aria-label="Previous page">&lt;</button>
+      <div class="pager-pages" data-pager-pages></div>
+      <button type="button" data-pager-next aria-label="Next page">&gt;</button>
+    </nav>
   </main>
 </BaseLayout>
 
@@ -75,23 +82,63 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
     const buttons = Array.from(document.querySelectorAll('[data-tag-filter]'));
     const count = document.querySelector('[data-post-count]');
     let active = 'all';
+    let page = 1;
+    const perPage = Number(grid.getAttribute('data-posts-per-page') || '8');
+    const prev = document.querySelector('[data-pager-prev]');
+    const next = document.querySelector('[data-pager-next]');
+    const pagesWrap = document.querySelector('[data-pager-pages]');
     const render = () => {
-      let visible = 0;
-      cards.forEach((card) => {
+      const filtered = cards.filter((card) => {
         const tags = (card.getAttribute('data-tags') || '').split('|').filter(Boolean);
-        const show = active === 'all' || tags.includes(active);
-        card.style.display = show ? '' : 'none';
-        if (show) visible += 1;
+        return active === 'all' || tags.includes(active);
       });
-      if (count) count.textContent = String(visible);
+
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / perPage));
+      page = Math.min(page, totalPages);
+      const start = (page - 1) * perPage;
+      const end = start + perPage;
+
+      cards.forEach((card) => (card.style.display = 'none'));
+      filtered.slice(start, end).forEach((card) => (card.style.display = ''));
+      if (count) count.textContent = String(total);
+
+      if (pagesWrap) {
+        pagesWrap.innerHTML = '';
+        for (let i = 1; i <= totalPages; i += 1) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = String(i);
+          btn.className = i === page ? 'active' : '';
+          btn.addEventListener('click', () => {
+            page = i;
+            render();
+          });
+          pagesWrap.appendChild(btn);
+        }
+      }
+
+      if (prev) prev.disabled = page <= 1;
+      if (next) next.disabled = page >= totalPages;
     };
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         active = button.getAttribute('data-tag-filter') || 'all';
+        page = 1;
         buttons.forEach((b) => b.classList.toggle('active', b === button));
         render();
       });
     });
+
+    prev?.addEventListener('click', () => {
+      page = Math.max(1, page - 1);
+      render();
+    });
+    next?.addEventListener('click', () => {
+      page += 1;
+      render();
+    });
+
     render();
   })();
 </script>
@@ -349,6 +396,41 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
 
   .post-link:hover .hint {
     transform: scale(1.1);
+  }
+
+  .pager {
+    margin-top: 1.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.45rem;
+    padding-bottom: 1.7rem;
+  }
+
+  .pager button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e8dfd2;
+    border-radius: 9px;
+    background: #fff;
+    color: #7c5e3c;
+    font-weight: 700;
+  }
+
+  .pager button.active {
+    background: #b35b1f;
+    border-color: #b35b1f;
+    color: #fff;
+  }
+
+  .pager button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pager-pages {
+    display: flex;
+    gap: 0.45rem;
   }
 
 

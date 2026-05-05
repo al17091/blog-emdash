@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import Icon from '../../../components/ui/Icon.astro';
+import { formatPublishedDate } from '../../../lib/formatDate';
 
 const category = Astro.params.category ?? '';
 const slug = Astro.params.slug ?? '';
@@ -91,7 +92,7 @@ const themeByCategory = {
 
       <p class="byline">
         <strong>{article.data.author}</strong>
-        <span>{article.data.publishedDate}</span>
+        <span>{formatPublishedDate(article.data.publishedDate)}</span>
       </p>
 
       <figure class="hero-image">
@@ -118,7 +119,7 @@ const themeByCategory = {
               <small>{item.data.tags[0] ?? item.data.category}</small>
               <h4>{item.data.title}</h4>
               <p>
-                {item.data.publishedDate} - {item.data.readTime}
+                {formatPublishedDate(item.data.publishedDate)} - {item.data.readTime}
               </p>
             </a>
           ))}

@@ -1,5 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
+const jstDateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+
 const blog = defineCollection({
   type: 'content',
   schema: z.object({
@@ -8,7 +10,10 @@ const blog = defineCollection({
     category: z.enum(['tech', 'nature', 'travel']),
     routeSlug: z.string(),
     author: z.string(),
-    publishedDate: z.string(),
+    publishedDate: z
+      .string()
+      .regex(jstDateTimePattern, 'Use YYYY-MM-DDTHH:mm:ss (JST local time)')
+      .transform((value) => new Date(`${value}+09:00`)),
     readTime: z.string(),
     cardImage: z.string().url(),
     heroImage: z.string().url(),
