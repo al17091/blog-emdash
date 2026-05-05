@@ -7,7 +7,7 @@
 		"seed": "seed/seed.json"
 	},
 	"scripts": {
-		"dev": "astro dev",
+		"dev": "astro dev --host",
 		"build": "astro build",
 		"preview": "astro preview",
 		"start": "node ./dist/server/entry.mjs",
