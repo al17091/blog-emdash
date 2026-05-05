@@ -230,8 +230,7 @@ function formatDate(date: Date | null | undefined) {
 
 	.featured-image img {
 		width: 100%;
-		height: auto;
-		aspect-ratio: 4 / 3;
+		height: clamp(260px, 32vw, 440px);
 		object-fit: cover;
 		transition: transform 0.4s ease;
 	}
@@ -446,7 +445,7 @@ function formatDate(date: Date | null | undefined) {
 		}
 
 		.featured-image img {
-			aspect-ratio: 16 / 9;
+			height: clamp(220px, 55vw, 340px);
 		}
 
 		.posts-grid {
