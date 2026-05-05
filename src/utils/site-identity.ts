@@ -12,7 +12,7 @@ export interface BlogSiteIdentitySettings {
 	favicon?: MediaReference;
 }
 
-const DEFAULT_SITE_TITLE = "LAB-laboratory";
+const DEFAULT_SITE_TITLE = "LAB laboratory";
 const DEFAULT_SITE_TAGLINE = "Exploring by experimenting.";
 
 export function resolveBlogSiteIdentity(settings?: BlogSiteIdentitySettings) {
