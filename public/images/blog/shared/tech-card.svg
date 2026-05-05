@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Tech cover">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1631"/>
+      <stop offset="100%" stop-color="#1976d2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#g)"/>
+  <circle cx="300" cy="220" r="140" fill="#ffffff22"/>
+  <circle cx="900" cy="430" r="180" fill="#ffffff1a"/>
+  <text x="80" y="600" fill="#ffffff" font-family="Arial, sans-serif" font-size="72" font-weight="700">Tech Journal</text>
+</svg>

@@ -1,6 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
 const jstDateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+const localImagePathPattern = /^\/images\/blog\/.+/;
 
 const blog = defineCollection({
   type: 'content',
@@ -15,8 +16,8 @@ const blog = defineCollection({
       .regex(jstDateTimePattern, 'Use YYYY-MM-DDTHH:mm:ss (JST local time)')
       .transform((value) => new Date(`${value}+09:00`)),
     readTime: z.string(),
-    cardImage: z.string().url(),
-    heroImage: z.string().url(),
+    cardImage: z.string().regex(localImagePathPattern, 'Use local path like /images/blog/...'),
+    heroImage: z.string().regex(localImagePathPattern, 'Use local path like /images/blog/...').optional(),
     tags: z.array(z.string()),
     navLabel: z.string(),
     sortOrder: z.number(),

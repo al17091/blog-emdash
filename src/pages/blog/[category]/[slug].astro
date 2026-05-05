@@ -64,6 +64,8 @@ const themeByCategory = {
     categoryLabel: 'Travel Log',
   },
 }[article.data.category];
+
+const heroImage = article.data.heroImage ?? article.data.cardImage;
 ---
 
 <BaseLayout title={`${article.data.title} | ${themeByCategory.brand}`} description={article.data.description}>
@@ -96,7 +98,7 @@ const themeByCategory = {
       </p>
 
       <figure class="hero-image">
-        <img src={article.data.heroImage} alt={article.data.title} />
+        <img src={heroImage} alt={article.data.title} />
       </figure>
 
       <section class="markdown-body">
