@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/ui/Icon.astro';
 import { getCollection } from 'astro:content';
+import { COPYRIGHT_TEXT, SITE_NAME } from '../lib/siteMeta';
 
 const posts = await getCollection('blog');
 const countByCategory = posts.reduce(
@@ -43,11 +44,11 @@ const themeCards = [
 ];
 ---
 
-<BaseLayout title="Multi-Theme Blog">
+<BaseLayout title={SITE_NAME}>
   <main class="home">
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="brand" href="/">Multi-Theme Blog</a>
+        <a class="brand" href="/">{SITE_NAME}</a>
         <nav class="nav" aria-label="primary">
           <a class="active" href="/">Home</a>
           <a href="/blog/tech">Popular</a>
@@ -56,8 +57,7 @@ const themeCards = [
         <div class="actions">
           <input type="search" placeholder="Search stories..." aria-label="Search stories" />
           <button type="button" aria-label="Search"><Icon name="search" size={18} /></button>
-          <button type="button" aria-label="Notifications"><Icon name="bell" size={18} /></button>
-          <button type="button" aria-label="Profile"><Icon name="user" size={18} /></button>
+          <a class="icon-button" href="/rss.xml" aria-label="RSS feed" title="rss"><Icon name="rss" size={18} /></a>
         </div>
       </div>
     </header>
@@ -85,7 +85,7 @@ const themeCards = [
     <footer class="site-footer">
       <div class="wrap footer-grid">
         <section>
-          <h3>Multi-Theme Blog</h3>
+          <h3>{SITE_NAME}</h3>
           <p>
             A unified platform for diverse voices and specialized interests. From code to peaks, we cover the spectrum
             of human curiosity.
@@ -106,13 +106,7 @@ const themeCards = [
           <a href="/contact">Contact</a>
         </section>
       </div>
-      <div class="wrap icon-row" aria-hidden="true">
-        <span><Icon name="rss" size={20} /></span>
-        <span><Icon name="code" size={20} /></span>
-        <span><Icon name="travel" size={20} /></span>
-        <span><Icon name="mountain" size={20} /></span>
-        <span><Icon name="camera" size={20} /></span>
-      </div>
+      <p class="footer-copy">{COPYRIGHT_TEXT}</p>
     </footer>
   </main>
 </BaseLayout>
@@ -152,7 +146,7 @@ const themeCards = [
   .brand {
     text-decoration: none;
     color: #0f172a;
-    font-size: 2rem;
+    font-size: 1.7rem;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
@@ -187,7 +181,8 @@ const themeCards = [
     padding: 0.62rem 0.85rem;
   }
 
-  .actions button {
+  .actions button,
+  .actions .icon-button {
     width: 42px;
     height: 42px;
     border: 1px solid #d8dee6;
@@ -198,6 +193,7 @@ const themeCards = [
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
   }
 
   .hero {
@@ -207,7 +203,7 @@ const themeCards = [
 
   .hero h1 {
     margin: 0;
-    font-size: clamp(2rem, 2.4vw, 2.8rem);
+    font-size: clamp(1.75rem, 2.1vw, 2.3rem);
     letter-spacing: -0.01em;
   }
 
@@ -261,14 +257,14 @@ const themeCards = [
 
   .theme-card h2 {
     margin: 0;
-    font-size: 2.85rem;
+    font-size: 2.2rem;
     line-height: 1.14;
     letter-spacing: -0.02em;
   }
 
   .theme-card p {
     margin: 0.9rem 0 0;
-    font-size: 1.45rem;
+    font-size: 1.15rem;
     line-height: 1.6;
   }
 
@@ -279,7 +275,7 @@ const themeCards = [
   .theme-card small {
     color: #94a3b8;
     font-weight: 600;
-    font-size: 1.15rem;
+    font-size: 0.98rem;
   }
 
 
@@ -343,14 +339,14 @@ const themeCards = [
 
   .footer-grid h3 {
     margin: 0;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
 
   .footer-grid p {
     margin: 1rem 0 0;
     color: #64748b;
     line-height: 1.55;
-    font-size: 1.35rem;
+    font-size: 1.05rem;
     max-width: 48ch;
   }
 
@@ -359,44 +355,32 @@ const themeCards = [
     text-decoration: none;
     color: #64748b;
     margin-top: 0.7rem;
-    font-size: 1.28rem;
+    font-size: 1rem;
   }
 
-  .icon-row {
-    margin-top: 2rem;
-    padding-top: 1.6rem;
-    border-top: 1px solid #e0e7ef;
-    display: flex;
-    justify-content: space-between;
+  .footer-copy {
+    width: min(1280px, calc(100% - 48px));
+    margin: 1.7rem auto 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-align: left;
   }
 
-  .icon-row span {
-    width: 52px;
-    height: 52px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #e8edf5;
-    color: #6b7280;
-    border-radius: 999px;
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
 
   @media (max-width: 1320px) {
     .brand {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
     .theme-card h2 {
-      font-size: 2.15rem;
+      font-size: 1.9rem;
     }
 
     .theme-card p,
     .footer-grid p,
     .footer-grid a,
     .theme-card small {
-      font-size: 1.05rem;
+      font-size: 0.96rem;
     }
   }
 
@@ -418,15 +402,12 @@ const themeCards = [
       gap: 1rem;
     }
 
-    .icon-row {
-      justify-content: flex-start;
-      gap: 0.8rem;
-    }
   }
 
   @media (max-width: 620px) {
     .wrap,
-    .topbar-inner {
+    .topbar-inner,
+    .footer-copy {
       width: min(1280px, calc(100% - 24px));
     }
 

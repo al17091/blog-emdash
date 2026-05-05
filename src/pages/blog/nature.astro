@@ -23,8 +23,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
         <div class="actions">
           <input type="search" placeholder="Search trails..." aria-label="search trails" />
           <button type="button" aria-label="search"><Icon name="search" size={16} /></button>
-          <button type="button" aria-label="notifications"><Icon name="bell" size={16} /></button>
-          <button type="button" aria-label="profile"><Icon name="user" size={16} /></button>
+          <a class="icon-button" href="/rss.xml" aria-label="RSS feed" title="rss"><Icon name="rss" size={16} /></a>
         </div>
       </div>
     </header>
@@ -249,7 +248,8 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
     padding: 0.56rem 0.82rem;
   }
 
-  .actions button {
+  .actions button,
+  .actions .icon-button {
     width: 36px;
     height: 36px;
     border-radius: 10px;
@@ -259,6 +259,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
   }
 
   .hero {

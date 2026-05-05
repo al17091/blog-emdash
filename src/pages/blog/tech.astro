@@ -23,7 +23,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
         <div class="header-actions">
           <input type="search" placeholder="記事を検索..." aria-label="記事を検索" />
           <button type="button" aria-label="search"><Icon name="search" size={16} /></button>
-          <button type="button" aria-label="profile"><Icon name="user" size={16} /></button>
+          <a class="icon-button" href="/rss.xml" aria-label="RSS feed" title="rss"><Icon name="rss" size={16} /></a>
         </div>
       </div>
     </header>
@@ -234,7 +234,8 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
     min-width: 220px;
   }
 
-  .header-actions button {
+  .header-actions button,
+  .header-actions .icon-button {
     border: 1px solid #d5deea;
     background: #fff;
     border-radius: 10px;
@@ -244,6 +245,7 @@ const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
   }
 
   .category-head {

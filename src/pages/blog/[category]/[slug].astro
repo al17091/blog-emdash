@@ -81,8 +81,7 @@ const heroImage = article.data.heroImage ?? article.data.cardImage;
         <div class="actions">
           <input type="search" placeholder="Search" aria-label="Search" />
           <button type="button" aria-label="Search"><Icon name="search" size={16} /></button>
-          <button type="button" aria-label="Alerts"><Icon name="bell" size={16} /></button>
-          <button type="button" aria-label="Profile"><Icon name="user" size={16} /></button>
+          <a class="icon-button" href="/rss.xml" aria-label="RSS feed" title="rss"><Icon name="rss" size={16} /></a>
         </div>
       </div>
     </header>
@@ -223,7 +222,8 @@ const heroImage = article.data.heroImage ?? article.data.cardImage;
     padding: 0.5rem 0.75rem;
   }
 
-  .actions button {
+  .actions button,
+  .actions .icon-button {
     width: 34px;
     height: 34px;
     border-radius: 8px;
@@ -233,6 +233,7 @@ const heroImage = article.data.heroImage ?? article.data.cardImage;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
   }
 
   .article-body {
