@@ -1,4 +1,4 @@
-# AstroはNode.js 18.14.1以上が必要。20系が安定しています。
+# EmDash/Astro 6 を使うため Node 24 ベースにしています。
 FROM mcr.microsoft.com/devcontainers/javascript-node:24
 
 # 必要に応じて追加のパッケージをインストール
