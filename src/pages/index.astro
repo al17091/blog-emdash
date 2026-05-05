@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
 
 const themeCards = [
   {
@@ -7,7 +8,6 @@ const themeCards = [
     title: '技術ブログ - I am Engineer',
     description: 'Modern, dark/blue tech aesthetic for the engineering mind. Deep dives into React, Architecture, and Cloud Infrastructure.',
     count: '124 Articles',
-    cta: 'Enter Lab',
     href: '/blog/tech',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
     tone: 'tech',
@@ -17,7 +17,6 @@ const themeCards = [
     title: '食・旅記録 - フリーダム旅行記',
     description: 'Vibrant, scenic photography style documenting food and travel adventures around the globe. Finding freedom in every bite.',
     count: '89 Adventures',
-    cta: 'View Gallery',
     href: '/blog/travel',
     image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80',
     tone: 'travel',
@@ -27,7 +26,6 @@ const themeCards = [
     title: '素人登山道',
     description: 'Nature-inspired, green/earthy tones. Records of mountain climbs, gear reviews, and the quiet lessons learned on the trail.',
     count: '56 Summits',
-    cta: 'Start Hike',
     href: '/blog/nature',
     image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
     tone: 'nature',
@@ -48,8 +46,9 @@ const themeCards = [
         </nav>
         <div class="actions">
           <input type="search" placeholder="Search stories..." aria-label="Search stories" />
-          <button type="button" aria-label="Notifications">◌</button>
-          <button type="button" aria-label="Profile">◎</button>
+          <button type="button" aria-label="Search"><Icon name="search" size={18} /></button>
+          <button type="button" aria-label="Notifications"><Icon name="bell" size={18} /></button>
+          <button type="button" aria-label="Profile"><Icon name="user" size={18} /></button>
         </div>
       </div>
     </header>
@@ -58,7 +57,7 @@ const themeCards = [
       <h1>Featured Themes</h1>
       <div class="theme-grid">
         {themeCards.map((card) => (
-          <article class={`theme-card ${card.tone}`}>
+          <a class={`theme-card ${card.tone}`} href={card.href} aria-label={card.title}>
             <div class="media" style={`background-image:url(${card.image})`}>
               <span>{card.label}</span>
             </div>
@@ -67,10 +66,9 @@ const themeCards = [
               <p>{card.description}</p>
               <footer>
                 <small>{card.count}</small>
-                <a href={card.href}>{card.cta} →</a>
               </footer>
             </div>
-          </article>
+          </a>
         ))}
       </div>
     </section>
@@ -100,11 +98,11 @@ const themeCards = [
         </section>
       </div>
       <div class="wrap icon-row" aria-hidden="true">
-        <span>◍</span>
-        <span>◇</span>
-        <span>▣</span>
-        <span>◎</span>
-        <span>□</span>
+        <span><Icon name="rss" size={20} /></span>
+        <span><Icon name="code" size={20} /></span>
+        <span><Icon name="travel" size={20} /></span>
+        <span><Icon name="mountain" size={20} /></span>
+        <span><Icon name="camera" size={20} /></span>
       </div>
     </footer>
   </main>
@@ -188,6 +186,9 @@ const themeCards = [
     background: #eef2f7;
     color: #6b7280;
     font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero {
@@ -214,6 +215,8 @@ const themeCards = [
     overflow: hidden;
     background: #fff;
     box-shadow: 0 14px 28px -26px rgba(15, 23, 42, 0.7);
+    text-decoration: none;
+    color: inherit;
   }
 
   .theme-card .media {
@@ -262,9 +265,6 @@ const themeCards = [
 
   .theme-card footer {
     margin-top: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
 
   .theme-card small {
@@ -273,10 +273,6 @@ const themeCards = [
     font-size: 1.15rem;
   }
 
-  .theme-card footer a {
-    text-decoration: none;
-    font-weight: 700;
-  }
 
   .theme-card.tech {
     background: #081638;
@@ -295,9 +291,6 @@ const themeCards = [
     color: #7894c2;
   }
 
-  .theme-card.tech footer a {
-    color: #4fa3ff;
-  }
 
   .theme-card.travel {
     background: #f6f7f7;
@@ -312,9 +305,6 @@ const themeCards = [
     color: #475569;
   }
 
-  .theme-card.travel footer a {
-    color: #2563eb;
-  }
 
   .theme-card.nature {
     background: #eef2ef;
@@ -329,9 +319,6 @@ const themeCards = [
     color: #4b5563;
   }
 
-  .theme-card.nature footer a {
-    color: #2f6c41;
-  }
 
   .site-footer {
     border-top: 1px solid #d8dee6;

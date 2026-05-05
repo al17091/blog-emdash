@@ -1,8 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { categoryPosts } from '../../data/blogArticles';
+import { getCollection } from 'astro:content';
+import Icon from '../../components/ui/Icon.astro';
 
-const posts = categoryPosts.tech;
+const posts = (await getCollection('blog', ({ data }) => data.category === 'tech')).sort(
+  (a, b) => a.data.sortOrder - b.data.sortOrder,
+);
+const tagFilters = ['all', ...new Set(posts.flatMap((post) => post.data.tags))];
 ---
 
 <BaseLayout title="フリーダム旅行記 | Tech & Dev">
@@ -17,7 +21,8 @@ const posts = categoryPosts.tech;
         </nav>
         <div class="header-actions">
           <input type="search" placeholder="記事を検索..." aria-label="記事を検索" />
-          <button type="button" aria-label="profile">◎</button>
+          <button type="button" aria-label="search"><Icon name="search" size={16} /></button>
+          <button type="button" aria-label="profile"><Icon name="user" size={16} /></button>
         </div>
       </div>
     </header>
@@ -29,31 +34,38 @@ const posts = categoryPosts.tech;
     </section>
 
     <section class="container toolbar" aria-label="post tools">
-      <p>Showing {posts.length} posts</p>
+      <p>Showing <span data-post-count>{posts.length}</span> posts</p>
       <div class="toolbar-actions">
+        <div class="tag-filters" aria-label="tag filters">
+          {tagFilters.map((tag) => (
+            <button
+              type="button"
+              data-tag-filter={tag}
+              class:list={['tag-filter', tag === 'all' && 'active']}
+            >
+              {tag === 'all' ? 'All' : tag}
+            </button>
+          ))}
+        </div>
         <button type="button">Newest First</button>
-        <button type="button" class="primary">Filters</button>
       </div>
     </section>
 
-    <section class="container post-grid" aria-label="tech posts">
+    <section class="container post-grid" aria-label="tech posts" data-post-grid>
       {posts.map((post) => (
-        <article class="post-card">
-          <img src={post.image} alt={post.title} loading="lazy" />
+        <article class="post-card" data-post-card data-tags={post.data.tags.join('|')}>
+          <img src={post.data.cardImage} alt={post.data.title} loading="lazy" />
           <div class="tags">
-            {post.tags.map((tag) => (
-              <span>{tag}</span>
+            {post.data.tags.map((tag) => (
+              <button type="button" data-tag-filter={tag} class="tag-chip">{tag}</button>
             ))}
           </div>
-          <div class="post-body">
-            <p class="meta">{post.date} · {post.readTime}</p>
-            <h2>{post.title}</h2>
-            <p class="desc">{post.description}</p>
-          </div>
-          <footer class="card-footer">
-            <span>{post.author}</span>
-            <a href={`/blog/tech/${post.slug}`} aria-label={`${post.title} read more`}>→</a>
-          </footer>
+          <a class="post-body post-link" href={`/blog/tech/${post.data.routeSlug}`} aria-label={post.data.title}>
+            <p class="meta">{post.data.publishedDate} · {post.data.readTime}</p>
+            <h2>{post.data.title}</h2>
+            <p class="desc">{post.data.description}</p>
+            <span class="hint" aria-hidden="true"></span>
+          </a>
         </article>
       ))}
     </section>
@@ -81,6 +93,39 @@ const posts = categoryPosts.tech;
     </footer>
   </main>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const grid = document.querySelector('[data-post-grid]');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('[data-post-card]'));
+    const buttons = Array.from(document.querySelectorAll('[data-tag-filter]'));
+    const count = document.querySelector('[data-post-count]');
+    let active = 'all';
+
+    const render = () => {
+      let visible = 0;
+      cards.forEach((card) => {
+        const tags = (card.getAttribute('data-tags') || '').split('|').filter(Boolean);
+        const show = active === 'all' || tags.includes(active);
+        card.style.display = show ? '' : 'none';
+        if (show) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        active = button.getAttribute('data-tag-filter') || 'all';
+        buttons.forEach((b) => b.classList.toggle('active', b === button));
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
 
 <style>
   .blog-page {
@@ -160,6 +205,9 @@ const posts = categoryPosts.tech;
     width: 36px;
     height: 36px;
     color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .category-head {
@@ -209,6 +257,30 @@ const posts = categoryPosts.tech;
   .toolbar-actions {
     display: flex;
     gap: 0.7rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .tag-filters {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .tag-filter {
+    border: 1px solid #d2dcea;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.3rem 0.6rem;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.78rem;
+  }
+
+  .tag-filter.active {
+    background: #1976d2;
+    border-color: #1976d2;
+    color: #fff;
   }
 
   .toolbar-actions button {
@@ -240,7 +312,6 @@ const posts = categoryPosts.tech;
     overflow: hidden;
     position: relative;
     display: grid;
-    grid-template-rows: auto 1fr auto;
   }
 
   .post-card img {
@@ -259,17 +330,22 @@ const posts = categoryPosts.tech;
     gap: 0.4rem;
   }
 
-  .tags span {
+  .tag-chip {
     font-size: 0.72rem;
     font-weight: 700;
     color: #fff;
     background: #1976d2;
+    border: 0;
     border-radius: 999px;
     padding: 0.2rem 0.55rem;
   }
 
   .post-body {
     padding: 0.9rem 0.9rem 0.35rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
   }
 
   .meta {
@@ -295,23 +371,40 @@ const posts = categoryPosts.tech;
     min-height: 4.3em;
   }
 
-  .card-footer {
-    border-top: 1px solid #e6edf6;
-    padding: 0.85rem 0.9rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #334155;
-    font-weight: 600;
-    font-size: 0.88rem;
+  .hint {
+    position: absolute;
+    right: 0.35rem;
+    bottom: 0.35rem;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    transition: transform 180ms ease;
   }
 
-  .card-footer a {
-    color: #6b7f97;
-    text-decoration: none;
-    font-size: 1.2rem;
-    line-height: 1;
+  .hint::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 50%, #9eb0c7 50%);
+    border-bottom-right-radius: 3px;
   }
+
+  .hint::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 9px;
+    height: 9px;
+    border-right: 1px solid #7f95af;
+    border-bottom: 1px solid #7f95af;
+    border-bottom-right-radius: 2px;
+  }
+
+  .post-link:hover .hint {
+    transform: scale(1.1);
+  }
+
 
   .pager {
     margin-top: 2rem;
