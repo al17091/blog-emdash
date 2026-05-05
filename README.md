@@ -1,62 +1,62 @@
 # web-s (EmDash)
 
-このリポジトリは EmDash ベースのブログ構成です（Node.js + SQLite + ローカルストレージ）。
+This repository is an EmDash-based blog (Node.js + SQLite + local media storage).
 
-## ローカル起動手順
+## Local Development
 
-1. 依存関係をインストール
+1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-2. DB初期化とシード投入（初回のみ）
+2. Initialize DB and seed (first time only)
 
 ```bash
 pnpm bootstrap
 ```
 
-3. 開発サーバー起動
+3. Start the dev server
 
 ```bash
 pnpm dev
 ```
 
-4. ブラウザで確認
+4. Open in your browser
 
-- サイト: `http://localhost:4321`
-- 管理画面: `http://localhost:4321/_emdash/admin`
+- Site: `http://localhost:4321`
+- Admin UI: `http://localhost:4321/_emdash/admin`
 
-※ `pnpm dev` 実行時に別ポートが表示される場合は、ターミナルに出ているURLを優先してください。
+Note: if `pnpm dev` prints a different port, use the URL shown in the terminal.
 
-## 運用コマンド
+## Commands
 
 ```bash
-# ビルド
+# Build
 pnpm build
 
-# 本番起動（build後）
+# Start production server (after build)
 pnpm start
 ```
 
-## 本番デプロイ時のシード（重要）
+## Production Seeding (Important)
 
-`seed/seed.json` を更新しても、本番のDBは自動では更新されません。**本番でEmDashの管理/DBを使う場合は、デプロイ後にシード適用が必要**です。
+Updating `seed/seed.json` does not automatically update your production database. If you use EmDash + DB in production, you must apply the seed after deploying.
 
-- 初回デプロイ（DBが空）: `pnpm bootstrap`（マイグレーション + seed投入）
-- 以降、`seed/seed.json` を変更したとき: `pnpm seed:update`（seedの再適用 + 既存スキーマ/フィールドの更新）
+- First deploy (empty DB): `pnpm bootstrap` (migrations + seed)
+- After changing `seed/seed.json`: `pnpm seed:update` (re-apply seed and update existing schema/fields)
 
-本番で記事/ユーザー/設定/アップロードを保持したい場合は、`data.db` と `uploads/` がデプロイのたびに消えないように**永続化**してください（環境によってはコンテナ再作成で初期化されます）。
+If you want posts/users/settings/uploads to persist in production, make sure `data.db` and `uploads/` are stored on persistent storage (some platforms recreate containers and wipe the filesystem).
 
-## 補足
+## Notes
 
-- SQLite DB は `data.db`
-- 画像アップロード先は `uploads/`
-- どちらも `.gitignore` 対象
+- SQLite DB: `data.db`
+- Media uploads: `uploads/`
+- Both are ignored by `.gitignore`
 
-## Admin導線の表示
+## Showing Admin Links
 
-ヘッダー等に `/_emdash/admin` へのリンクを表示したい場合だけ、環境変数を有効化します。
+Admin links are hidden by default. To show them in the UI, set:
 
 ```bash
 PUBLIC_SHOW_ADMIN_LINK=1 pnpm dev
