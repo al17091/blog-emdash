@@ -1,13 +1,8 @@
 {
-  "name": "Astro Project",
+  "name": "EmDash Project",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  // "runArgs": [
-  //   "--security-opt=seccomp=unconfined",
-  //   "--security-opt=apparmor=unconfined",
-  //   "--cap-add=SYS_ADMIN"
-  // ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -22,14 +17,7 @@
       }
     }
   },
-  // コンテナ起動後に実行するコマンド
-  "postCreateCommand": "pnpm install", 
-  
-  // Astroのデフォルトポート(4321)をフォワード
+  "postCreateCommand": "pnpm install && pnpm bootstrap",
   "forwardPorts": [4321],
-  
   "remoteUser": "node"
 }
-
-// DQqjMVOKTd0WGidZOskGcS
-// BHnnXo7JLmdv4iQZCgj6LIhhJPOneF
