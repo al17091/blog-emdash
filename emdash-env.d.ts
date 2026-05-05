@@ -11,6 +11,7 @@ export interface Page {
   status: string;
   title: string;
   content?: PortableTextBlock[];
+  social_links?: unknown;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

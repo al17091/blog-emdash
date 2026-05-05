@@ -2,6 +2,7 @@
 import { getEmDashEntry, decodeSlug } from "emdash";
 import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
+import SocialBadges from "../../components/SocialBadges.astro";
 
 const slug = decodeSlug(Astro.params.slug);
 
@@ -28,6 +29,7 @@ Astro.cache.set(cacheHint);
 		</header>
 
 		<div class="page-content">
+			<SocialBadges links={(page.data as any).social_links} />
 			<PortableText value={page.data.content} />
 		</div>
 	</article>

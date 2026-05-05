@@ -25,6 +25,9 @@ const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
 Astro.cache.set(cacheHint);
 
+const isLoggedIn = !!Astro.locals.user;
+const showAdminLink = import.meta.env.PUBLIC_SHOW_ADMIN_LINK === "1";
+
 // Trim the lookahead post used to detect overflow
 const visiblePosts = posts.slice(0, POSTS_PER_PAGE);
 const hasMorePosts = posts.length > POSTS_PER_PAGE;
@@ -79,9 +82,11 @@ function formatDate(date: Date | null | undefined) {
 			<section class="empty-state">
 				<h2>No posts yet</h2>
 				<p>Create your first post in the admin panel.</p>
-				<a href="/_emdash/admin/content/posts/new" class="btn">
-					Create a post
-				</a>
+				{showAdminLink && isLoggedIn && (
+					<a href="/_emdash/admin/content/posts/new" class="btn">
+						Create a post
+					</a>
+				)}
 			</section>
 		) : (
 			<div class="home-content">

@@ -7,18 +7,18 @@
 		"seed": "seed/seed.json"
 	},
 	"scripts": {
-		"dev": "astro dev --host",
+		"dev": "astro dev --host --port 4321",
 		"build": "astro build",
 		"preview": "astro preview",
 		"start": "node ./dist/server/entry.mjs",
 		"bootstrap": "emdash init && emdash seed",
 		"seed": "emdash seed",
+		"seed:update": "emdash seed --on-conflict update",
 		"typecheck": "astro check"
 	},
 	"dependencies": {
 		"@astrojs/node": "^10.0.0",
 		"@astrojs/react": "^5.0.0",
-		"@emdash-cms/plugin-audit-log": "^0.1.2",
 		"astro": "^6.0.1",
 		"better-sqlite3": "^12.8.0",
 		"emdash": "^0.9.0",

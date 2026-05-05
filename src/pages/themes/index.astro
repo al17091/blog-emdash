@@ -1,0 +1,281 @@
+---
+import { getEmDashCollection, getTaxonomyTerms } from "emdash";
+import Base from "../../layouts/Base.astro";
+
+// Pull a small collection result solely to get a cache hint tied to CMS data.
+const { cacheHint } = await getEmDashCollection("posts", { limit: 1 });
+Astro.cache.set(cacheHint);
+
+const themes = await getTaxonomyTerms("theme");
+
+const themeCards = [
+  {
+    slug: "engineering",
+    label: "ENGINEERING",
+    title: "I am Engineer",
+    description:
+      "Modern, dark/blue tech aesthetic for the engineering mind. Deep dives into React, Architecture, and Cloud Infrastructure.",
+    cta: "Enter Lab",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+    tone: "tech",
+  },
+  {
+    slug: "travel",
+    label: "TRAVEL",
+    title: "The Freedom Travelogue",
+    description:
+      "Vibrant, scenic photography style documenting food and travel adventures around the globe. Finding freedom in every bite.",
+    cta: "View Gallery",
+    image:
+      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80",
+    tone: "travel",
+  },
+  {
+    slug: "nature",
+    label: "NATURE",
+    title: "Trail Notes",
+    description:
+      "Nature-inspired, green/earthy tones. Records of mountain climbs, gear reviews, and the quiet lessons learned on the trail.",
+    cta: "Start Hike",
+    image:
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+    tone: "nature",
+  },
+] as const;
+
+const countBySlug = new Map(themes.map((t) => [t.slug, t.count ?? 0]));
+---
+
+<Base title="Themes" description="Browse posts by theme">
+  <section class="themes-page">
+    <header class="page-header">
+      <h1 class="page-title">Themes</h1>
+      <p class="page-description">Browse posts by theme.</p>
+    </header>
+
+    {
+      themes.length === 0 ? (
+        <p class="empty">No themes yet.</p>
+      ) : (
+        <div class="themes-grid">
+          {themeCards.map((card) => {
+            const count = countBySlug.get(card.slug) ?? 0;
+            return (
+              <article class={`theme-panel ${card.tone}`}>
+                <a class="theme-link" href={`/theme/${card.slug}`}>
+                  <div
+                    class="theme-media"
+                    style={`background-image:url(${card.image})`}
+                  >
+                    <span class="theme-pill">{card.label}</span>
+                  </div>
+                  <div class="theme-body">
+                    <h2 class="theme-title">{card.title}</h2>
+                    <p class="theme-desc">{card.description}</p>
+                    <footer class="theme-footer">
+                      <small class="theme-count">
+                        {count} {count === 1 ? "post" : "posts"}
+                      </small>
+                      <span class="theme-cta">{card.cta} →</span>
+                    </footer>
+                  </div>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .themes-page {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: var(--spacing-8) var(--spacing-16) var(--spacing-16);
+  }
+
+  .page-header {
+    margin-bottom: var(--spacing-12);
+  }
+
+  .page-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .page-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-muted);
+  }
+
+  .empty {
+    color: var(--color-muted);
+    font-size: var(--font-size-lg);
+  }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-8);
+  }
+
+  .theme-panel {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: calc(var(--radius-lg) + 4px);
+    overflow: hidden;
+    background: var(--color-bg);
+    box-shadow: 0 18px 40px -34px rgba(0, 0, 0, 0.55);
+  }
+
+  .theme-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .theme-link:hover .theme-media {
+    transform: scale(1.015);
+  }
+
+  .theme-media {
+    height: 270px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    transition: transform var(--transition-base);
+  }
+
+  .theme-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, #0b1220 10%, transparent),
+      color-mix(in srgb, #0b1220 42%, transparent)
+    );
+  }
+
+  .theme-pill {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    background: var(--tone-pill, var(--color-accent));
+    color: var(--color-on-accent);
+  }
+
+  .theme-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-7, 1.75rem);
+    background: var(--tone-bg, var(--color-bg));
+    color: var(--tone-text, var(--color-text));
+  }
+
+  .theme-title {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    letter-spacing: var(--tracking-snug);
+    line-height: var(--leading-tight);
+  }
+
+  .theme-desc {
+    margin: var(--spacing-4) 0 0;
+    color: var(--tone-muted, var(--color-text-secondary));
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+  }
+
+  .theme-footer {
+    margin-top: auto;
+    padding-top: var(--spacing-5);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+  }
+
+  .theme-count {
+    color: var(--tone-subtle, var(--color-muted));
+    font-weight: 600;
+    font-size: var(--font-size-xs);
+  }
+
+  .theme-cta {
+    font-weight: 700;
+    color: var(--tone-cta, var(--color-accent));
+  }
+
+  .theme-panel.tech {
+    --tone-bg: color-mix(in srgb, #081638 92%, var(--color-bg));
+    --tone-text: #f7f9ff;
+    --tone-muted: color-mix(in srgb, #9cb2d8 92%, var(--color-text-secondary));
+    --tone-subtle: color-mix(in srgb, #7894c2 92%, var(--color-muted));
+    --tone-pill: #1976d2;
+    --tone-cta: #4fa3ff;
+  }
+
+  .theme-panel.travel {
+    --tone-bg: color-mix(in srgb, #f6f7f7 92%, var(--color-bg));
+    --tone-pill: #f97316;
+    --tone-cta: #2563eb;
+  }
+
+  .theme-panel.nature {
+    --tone-bg: color-mix(in srgb, #eef2ef 92%, var(--color-bg));
+    --tone-pill: #3b7f41;
+    --tone-cta: #2f6c41;
+  }
+
+  /* In dark mode, avoid light panels with light text */
+  :global(html.dark) .theme-panel.travel,
+  :global(html.dark) .theme-panel.nature {
+    --tone-bg: color-mix(in srgb, #0b1220 92%, var(--color-bg));
+    --tone-text: var(--color-text);
+    --tone-muted: var(--color-text-secondary);
+    --tone-subtle: var(--color-muted);
+  }
+
+  :global(html.dark) .theme-panel.travel {
+    --tone-cta: #60a5fa;
+  }
+
+  :global(html.dark) .theme-panel.nature {
+    --tone-cta: #34d399;
+  }
+
+  @media (max-width: 900px) {
+    .themes-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .theme-media {
+      height: 240px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .themes-grid {
+      grid-template-columns: 1fr;
+    }
+    .theme-media {
+      height: 220px;
+    }
+  }
+</style>
