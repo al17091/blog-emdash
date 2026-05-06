@@ -346,6 +346,20 @@
 							"service": "github",
 							"handle": "al17091",
 							"url": "https://github.com/al17091/"
+						},
+						{
+							"service": "qiita",
+							"handle": "dapt",
+							"url": "https://qiita.com/dapt"
+						},
+						{
+							"service": "zenn",
+							"handle": "dapt",
+							"url": "https://zenn.dev/dapt"
+						},
+						{
+							"service": "website",
+							"url": "https://engineerlab.jp/"
 						}
 					],
 					"content": [
