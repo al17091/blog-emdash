@@ -5,6 +5,12 @@ uploads
 data.db
 data.db-shm
 data.db-wal
+data.db.*
+data.db-*
+data.db.bak-*
+
+# Local seed exports / backups
+seed/exported-from-db-*.json
 
 # Environment
 .env
