@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/al17091/web-s
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations: {}
+  hosts:
+    - host: engineerlab.jp
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  # - secretName: engineerlab-tls
+  #   hosts:
+  #     - engineerlab.jp
+
+resources: {}
+
+env:
+  PUBLIC_SHOW_ADMIN_LINK: "0"
+
+persistence:
+  enabled: true
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 2Gi
+
+seedJob:
+  enabled: true
+  onConflict: update
+  includeContent: true
+

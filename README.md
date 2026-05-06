@@ -48,6 +48,57 @@ Updating `seed/seed.json` does not automatically update your production database
 
 If you want posts/users/settings/uploads to persist in production, make sure `data.db` and `uploads/` are stored on persistent storage (some platforms recreate containers and wipe the filesystem).
 
+## Deploy (k3s + Helm)
+
+This repo includes:
+
+- Production `Dockerfile` (Astro server)
+- Helm chart at `charts/lab-laboratory/`
+
+### 1) Build & push the image
+
+Build the container and push it to your registry (example uses GHCR):
+
+```bash
+docker build -t ghcr.io/al17091/web-s:$(git rev-parse --short HEAD) .
+docker push ghcr.io/al17091/web-s:$(git rev-parse --short HEAD)
+```
+
+### 2) Install/upgrade with Helm
+
+Create a small values file (example):
+
+```yaml
+# values.prod.yaml
+image:
+  repository: ghcr.io/al17091/web-s
+  tag: "<git-sha>"
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: engineerlab.jp
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: true
+  size: 2Gi
+```
+
+Then deploy:
+
+```bash
+helm upgrade --install lab charts/lab-laboratory -n lab --create-namespace -f values.prod.yaml
+```
+
+Notes:
+
+- The chart mounts a volume at `/data` and the container persists `data.db` + `uploads/` there.
+- A Helm hook Job runs `emdash init` + `emdash seed` (post-install/upgrade) by default. You can disable it via `seedJob.enabled=false`.
+
 ## Notes
 
 - SQLite DB: `data.db`
