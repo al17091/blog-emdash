@@ -28,6 +28,13 @@ resources: {}
 env:
   PUBLIC_SHOW_ADMIN_LINK: "0"
 
+database:
+  engine: postgres
+  url: ""
+  urlFromSecret:
+    name: ""
+    key: "uri"
+
 persistence:
   enabled: true
   storageClassName: ""
@@ -39,4 +46,4 @@ seedJob:
   enabled: true
   onConflict: update
   includeContent: true
-
+  skipMediaDownload: true

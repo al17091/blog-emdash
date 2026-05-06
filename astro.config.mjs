@@ -2,7 +2,15 @@ import node from "@astrojs/node";
 import react from "@astrojs/react";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash, { local } from "emdash/astro";
-import { sqlite } from "emdash/db";
+import { postgres, sqlite } from "emdash/db";
+
+const dbEngine = (process.env.EMDASH_DB ?? "sqlite").toLowerCase();
+const emdashDatabase =
+	dbEngine === "postgres" || dbEngine === "pg"
+		? // Avoid baking secrets into the build: when connectionString is undefined,
+			// node-postgres falls back to env (e.g. DATABASE_URL / PG*).
+			postgres({ connectionString: process.env.DATABASE_URL })
+		: sqlite({ url: process.env.EMDASH_DATABASE_URL ?? "file:./data.db" });
 
 export default defineConfig({
 	output: "server",
@@ -16,7 +24,7 @@ export default defineConfig({
 	integrations: [
 		react(),
 		emdash({
-			database: sqlite({ url: "file:./data.db" }),
+			database: emdashDatabase,
 			storage: local({
 				directory: "./uploads",
 				baseUrl: "/_emdash/api/media/file",

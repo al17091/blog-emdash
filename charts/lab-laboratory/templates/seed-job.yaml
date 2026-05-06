@@ -23,17 +23,28 @@ spec:
           env:
             - name: EMDASH_DATA_DIR
               value: /data
+            - name: EMDASH_DB
+              value: {{ .Values.database.engine | quote }}
             - name: PUBLIC_SHOW_ADMIN_LINK
               value: {{ .Values.env.PUBLIC_SHOW_ADMIN_LINK | quote }}
+            {{- if .Values.database.url }}
+            - name: DATABASE_URL
+              value: {{ .Values.database.url | quote }}
+            {{- else if .Values.database.urlFromSecret.name }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.urlFromSecret.name | quote }}
+                  key: {{ .Values.database.urlFromSecret.key | quote }}
+            {{- end }}
           args:
             - /bin/sh
             - -lc
             - |
-              ./node_modules/.bin/emdash init
               if [ "{{ .Values.seedJob.includeContent }}" = "true" ]; then
-                ./node_modules/.bin/emdash seed --on-conflict {{ .Values.seedJob.onConflict }}
+                node ./scripts/emdash-seed.mjs --on-conflict {{ .Values.seedJob.onConflict }}{{ if .Values.seedJob.skipMediaDownload }} --skip-media-download{{ end }}
               else
-                ./node_modules/.bin/emdash seed --on-conflict {{ .Values.seedJob.onConflict }} --no-content
+                node ./scripts/emdash-seed.mjs --on-conflict {{ .Values.seedJob.onConflict }} --no-content{{ if .Values.seedJob.skipMediaDownload }} --skip-media-download{{ end }}
               fi
           volumeMounts:
             - name: data

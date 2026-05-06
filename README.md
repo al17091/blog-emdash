@@ -1,6 +1,9 @@
 # web-s (EmDash)
 
-This repository is an EmDash-based blog (Node.js + SQLite + local media storage).
+This repository is an EmDash-based blog (Astro SSR + EmDash).
+
+- Local dev: SQLite + local media storage
+- k3s (production): Postgres (e.g. CNPG) + persistent uploads
 
 ## Local Development
 
@@ -43,8 +46,9 @@ pnpm start
 
 Updating `seed/seed.json` does not automatically update your production database. If you use EmDash + DB in production, you must apply the seed after deploying.
 
-- First deploy (empty DB): `pnpm bootstrap` (migrations + seed)
-- After changing `seed/seed.json`: `pnpm seed:update` (re-apply seed and update existing schema/fields)
+- Local (SQLite): `pnpm bootstrap` (migrations + seed)
+- Local (SQLite, after changing `seed/seed.json`): `pnpm seed:update` (re-apply seed and update existing schema/fields)
+- Production (Postgres): run `node ./scripts/emdash-seed.mjs --on-conflict update` with `DATABASE_URL` set (the Helm chart can do this automatically)
 
 If you want posts/users/settings/uploads to persist in production, make sure `data.db` and `uploads/` are stored on persistent storage (some platforms recreate containers and wipe the filesystem).
 
@@ -96,8 +100,9 @@ helm upgrade --install lab charts/lab-laboratory -n lab --create-namespace -f va
 
 Notes:
 
-- The chart mounts a volume at `/data` and the container persists `data.db` + `uploads/` there.
-- A Helm hook Job runs `emdash init` + `emdash seed` (post-install/upgrade) by default. You can disable it via `seedJob.enabled=false`.
+- The chart expects Postgres in production (e.g. CNPG). Set `database.urlFromSecret` (or `database.url`) to provide `DATABASE_URL`.
+- The chart mounts a volume at `/data` and the container persists uploads there (`uploads/` is symlinked to `/data/uploads`).
+- A Helm hook Job runs `node ./scripts/emdash-seed.mjs` (post-install/upgrade) by default. You can disable it via `seedJob.enabled=false`.
 
 ## Notes
 
