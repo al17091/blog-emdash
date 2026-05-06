@@ -266,7 +266,7 @@
 								"children": [
 									{
 										"_type": "span",
-										"text": "A personal laboratory for small experiments — in code, travel, and the outdoors.",
+										"text": "LAB-laboratory is a personal blog and lab notebook—exploring by experimenting across Engineering, Travel, and Nature.",
 										"_key": "k1"
 									}
 								],
@@ -324,7 +324,7 @@
 					"children": [
 						{
 							"_type": "span",
-							"text": "A curious builder documenting experiments — software, trips, and trails — one note at a time.",
+							"text": "A curious builder exploring by experimenting across Engineering, Travel, and Nature.",
 							"_key": "k1"
 						}
 					],
@@ -369,7 +369,7 @@
 								"children": [
 									{
 										"_type": "span",
-										"text": "Welcome to LAB-laboratory — my personal blog and lab notebook. I write to explore by experimenting: building software, taking trips, and learning from the mountains.",
+										"text": "LAB-laboratory is my personal blog and lab notebook. Exploring by experimenting.",
 										"_key": "k1"
 									}
 								],
@@ -381,11 +381,59 @@
 								"children": [
 									{
 										"_type": "span",
-										"text": "Exploring by experimenting. Built with Astro and EmDash — the source is public if you want to see how it works.",
+										"text": "I write in three tracks:",
 										"_key": "k3"
 									}
 								],
 								"_key": "k2"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "ENGINEERING: software experiments, architecture notes, tools.",
+										"_key": "k5"
+									}
+								],
+								"_key": "k4"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "TRAVEL: food, places, and lightweight travel logs.",
+										"_key": "k7"
+									}
+								],
+								"_key": "k6"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "NATURE: hikes, gear, and lessons from the trail.",
+										"_key": "k9"
+									}
+								],
+								"_key": "k8"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "No schedule, no newsletter—just notes I want to keep and share. I write in English to practice, sometimes with short Japanese.",
+										"_key": "k11"
+									}
+								],
+								"_key": "k10"
 							}
 						]
 					}
