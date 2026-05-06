@@ -260,21 +260,21 @@
 					"type": "content",
 					"title": "About",
 					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "A blog about software, design, and the occasional stray thought.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						}
-					]
-				}
-			]
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "A personal laboratory for small experiments — in code, travel, and the outdoors.",
+										"_key": "k1"
+									}
+								],
+								"_key": "k0"
+							}
+						]
+					}
+				]
 		}
 	],
 	"sections": [
@@ -324,15 +324,15 @@
 					"children": [
 						{
 							"_type": "span",
-							"text": "A software developer who writes about building things on the web. Based somewhere with good coffee and reliable internet.",
+							"text": "A curious builder documenting experiments — software, trips, and trails — one note at a time.",
 							"_key": "k1"
 						}
 					],
 					"_key": "k0"
-				}
-			]
-		}
-	],
+					}
+				]
+			}
+		],
 	"content": {
 		"pages": [
 			{
@@ -363,34 +363,34 @@
 						}
 					],
 					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "A place for writing about software, design, and the occasional stray thought. No posting schedule, no newsletter funnel. Just things I wanted to write down.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Built with Astro and EmDash. The source is open if you want to see how it works.",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
-						}
-					]
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "Welcome to LAB-laboratory — my personal blog and lab notebook. I write to explore by experimenting: building software, taking trips, and learning from the mountains.",
+										"_key": "k1"
+									}
+								],
+								"_key": "k0"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "Exploring by experimenting. Built with Astro and EmDash — the source is public if you want to see how it works.",
+										"_key": "k3"
+									}
+								],
+								"_key": "k2"
+							}
+						]
+					}
 				}
-			}
-		],
+			],
 		"posts": [
 			{
 				"id": "post-1",
