@@ -27,6 +27,14 @@ spec:
               value: {{ .Values.env.PUBLIC_SHOW_ADMIN_LINK | quote }}
             - name: EMDASH_DATA_DIR
               value: /data
+            {{- if .Values.env.EMDASH_SITE_URL }}
+            - name: EMDASH_SITE_URL
+              value: {{ .Values.env.EMDASH_SITE_URL | quote }}
+            {{- end }}
+            {{- if .Values.env.EMDASH_ALLOWED_ORIGINS }}
+            - name: EMDASH_ALLOWED_ORIGINS
+              value: {{ .Values.env.EMDASH_ALLOWED_ORIGINS | quote }}
+            {{- end }}
             - name: EMDASH_DB
               value: {{ .Values.database.engine | quote }}
             {{- if .Values.database.url }}

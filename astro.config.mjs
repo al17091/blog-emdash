@@ -7,9 +7,10 @@ import { postgres, sqlite } from "emdash/db";
 const dbEngine = (process.env.EMDASH_DB ?? "sqlite").toLowerCase();
 const emdashDatabase =
 	dbEngine === "postgres" || dbEngine === "pg"
-		? // Avoid baking secrets into the build: when connectionString is undefined,
-			// node-postgres falls back to env (e.g. DATABASE_URL / PG*).
-			postgres({ connectionString: process.env.DATABASE_URL })
+		? // Avoid baking secrets into the build: prefer runtime env vars.
+			// If DATABASE_URL is not present at build time, keep the config empty so
+			// node-postgres can fall back to env (DATABASE_URL / PG*).
+			postgres(process.env.DATABASE_URL ? { connectionString: process.env.DATABASE_URL } : {})
 		: sqlite({ url: process.env.EMDASH_DATABASE_URL ?? "file:./data.db" });
 
 export default defineConfig({

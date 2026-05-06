@@ -78,6 +78,16 @@ image:
   repository: ghcr.io/al17091/web-s
   tag: "<git-sha>"
 
+database:
+  engine: postgres
+  urlFromSecret:
+    name: "<cnpg-app-secret>"
+    key: uri
+
+env:
+  # Recommended for passkeys / public URL generation behind TLS proxy
+  EMDASH_SITE_URL: "https://engineerlab.jp"
+
 ingress:
   enabled: true
   className: traefik

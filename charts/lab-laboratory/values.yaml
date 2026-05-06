@@ -27,6 +27,8 @@ resources: {}
 
 env:
   PUBLIC_SHOW_ADMIN_LINK: "0"
+  EMDASH_SITE_URL: ""
+  EMDASH_ALLOWED_ORIGINS: ""
 
 database:
   engine: postgres

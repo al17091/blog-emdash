@@ -27,6 +27,14 @@ spec:
               value: {{ .Values.database.engine | quote }}
             - name: PUBLIC_SHOW_ADMIN_LINK
               value: {{ .Values.env.PUBLIC_SHOW_ADMIN_LINK | quote }}
+            {{- if .Values.env.EMDASH_SITE_URL }}
+            - name: EMDASH_SITE_URL
+              value: {{ .Values.env.EMDASH_SITE_URL | quote }}
+            {{- end }}
+            {{- if .Values.env.EMDASH_ALLOWED_ORIGINS }}
+            - name: EMDASH_ALLOWED_ORIGINS
+              value: {{ .Values.env.EMDASH_ALLOWED_ORIGINS | quote }}
+            {{- end }}
             {{- if .Values.database.url }}
             - name: DATABASE_URL
               value: {{ .Values.database.url | quote }}
