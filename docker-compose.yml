@@ -12,3 +12,21 @@ services:
     environment:
       - HOST=0.0.0.0
       - CHOKIDAR_USEPOLLING=true # ホスト側からのファイル変更検知用
+      - EMDASH_DB=postgres
+      - DATABASE_URL=postgres://emdash:emdash_pass@db:5432/emdash_db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=emdash
+      - POSTGRES_PASSWORD=emdash_pass
+      - POSTGRES_DB=emdash_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

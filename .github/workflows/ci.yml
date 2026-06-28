@@ -3,8 +3,12 @@ name: CI (Test & Scan)
 on:
   push:
     branches: [ "main", "develop" ]
+    paths-ignore:
+      - 'helm/**'
   pull_request:
     branches: [ "main", "develop" ]
+    paths-ignore:
+      - 'helm/**'
 
 jobs:
   test-and-lint:
