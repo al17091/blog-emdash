@@ -37,6 +37,8 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /data
+      securityContext:
+        fsGroup: 1000
       volumes:
         - name: data-volume
           persistentVolumeClaim:
