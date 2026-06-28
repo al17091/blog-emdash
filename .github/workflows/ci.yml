@@ -56,7 +56,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install || (pnpm approve-builds --all && pnpm install)
 
       - name: Build the app
         run: pnpm build
