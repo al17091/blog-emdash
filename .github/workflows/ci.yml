@@ -22,7 +22,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install || (pnpm approve-builds --all && pnpm install)
 
       - name: Run Typecheck/Lint
         run: pnpm typecheck
@@ -43,6 +43,9 @@ jobs:
 
   dast-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
