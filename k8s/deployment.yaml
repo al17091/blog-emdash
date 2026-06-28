@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-emdash
+  labels:
+    app: blog-emdash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-emdash
+  template:
+    metadata:
+      labels:
+        app: blog-emdash
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: web
+          image: my-registry/blog-emdash:latest # TODO: 実際のイメージ名に変更してください
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            # コンテナをポート80でListenさせる
+            - name: PORT
+              value: "80"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          # 必要に応じて、SQLiteのDBファイルや画像アップロード用のPVCをマウントしてください
+          # volumeMounts:
+          #   - name: data-volume
+          #     mountPath: /data
+          #   - name: uploads-volume
+          #     mountPath: /app/uploads
+      # volumes:
+      #   - name: data-volume
+      #     persistentVolumeClaim:
+      #       claimName: blog-emdash-data-pvc
+      #   - name: uploads-volume
+      #     persistentVolumeClaim:
+      #       claimName: blog-emdash-uploads-pvc

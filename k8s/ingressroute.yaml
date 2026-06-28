@@ -1,0 +1,18 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: blog-emdash
+  labels:
+    app: blog-emdash
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`blog.example.com`) # TODO: 実際のドメイン名に変更してください
+      kind: Rule
+      services:
+        - name: blog-emdash
+          port: 80
+      middlewares:
+        - name: force-https-header
+  tls: {} # デフォルトの証明書リゾルバを使用。特定のSecretを使用する場合は secretName を指定してください
