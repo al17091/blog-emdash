@@ -260,21 +260,21 @@
 					"type": "content",
 					"title": "About",
 					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "A blog about software, design, and the occasional stray thought.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						}
-					]
-				}
-			]
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "LAB-laboratory is a personal blog and lab notebook—exploring by experimenting across Engineering, Travel, and Nature.",
+										"_key": "k1"
+									}
+								],
+								"_key": "k0"
+							}
+						]
+					}
+				]
 		}
 	],
 	"sections": [
@@ -324,15 +324,15 @@
 					"children": [
 						{
 							"_type": "span",
-							"text": "A software developer who writes about building things on the web. Based somewhere with good coffee and reliable internet.",
+							"text": "A curious builder exploring by experimenting across Engineering, Travel, and Nature.",
 							"_key": "k1"
 						}
 					],
 					"_key": "k0"
-				}
-			]
-		}
-	],
+					}
+				]
+			}
+		],
 	"content": {
 		"pages": [
 			{
@@ -346,37 +346,99 @@
 							"service": "github",
 							"handle": "al17091",
 							"url": "https://github.com/al17091/"
+						},
+						{
+							"service": "qiita",
+							"handle": "dapt",
+							"url": "https://qiita.com/dapt"
+						},
+						{
+							"service": "zenn",
+							"handle": "dapt",
+							"url": "https://zenn.dev/dapt"
+						},
+						{
+							"service": "website",
+							"url": "https://engineerlab.jp/"
 						}
 					],
 					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "A place for writing about software, design, and the occasional stray thought. No posting schedule, no newsletter funnel. Just things I wanted to write down.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Built with Astro and EmDash. The source is open if you want to see how it works.",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
-						}
-					]
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "LAB-laboratory is my personal blog and lab notebook. Exploring by experimenting.",
+										"_key": "k1"
+									}
+								],
+								"_key": "k0"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "I write in three tracks:",
+										"_key": "k3"
+									}
+								],
+								"_key": "k2"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "ENGINEERING: software experiments, architecture notes, tools.",
+										"_key": "k5"
+									}
+								],
+								"_key": "k4"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "TRAVEL: food, places, and lightweight travel logs.",
+										"_key": "k7"
+									}
+								],
+								"_key": "k6"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "NATURE: hikes, gear, and lessons from the trail.",
+										"_key": "k9"
+									}
+								],
+								"_key": "k8"
+							},
+							{
+								"_type": "block",
+								"style": "normal",
+								"children": [
+									{
+										"_type": "span",
+										"text": "No schedule, no newsletter—just notes I want to keep and share. I write in English to practice, sometimes with short Japanese.",
+										"_key": "k11"
+									}
+								],
+								"_key": "k10"
+							}
+						]
+					}
 				}
-			}
-		],
+			],
 		"posts": [
 			{
 				"id": "post-1",
