@@ -8,11 +8,11 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`blog.example.com`) # TODO: 実際のドメイン名に変更してください
+    - match: Host(`{{ .Values.ingress.host }}`)
       kind: Rule
       services:
         - name: blog-emdash
           port: 80
       middlewares:
         - name: force-https-header
-  tls: {} # デフォルトの証明書リゾルバを使用。特定のSecretを使用する場合は secretName を指定してください
+  tls: {}

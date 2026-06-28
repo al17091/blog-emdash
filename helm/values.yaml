@@ -1,0 +1,9 @@
+image:
+  repository: ghcr.io/al17091/blog-emdash
+  tag: latest
+
+ingress:
+  host: blog-stg.lab.internal
+
+securityContext:
+  fsGroup: 1000

@@ -16,15 +16,16 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-secret
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       containers:
         - name: web
-          image: ghcr.io/al17091/blog-emdash:latest
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
               name: http
           env:
-            # コンテナをポート80でListenさせる
             - name: PORT
               value: "80"
           resources:
@@ -37,8 +38,6 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /data
-      securityContext:
-        fsGroup: 1000
       volumes:
         - name: data-volume
           persistentVolumeClaim:
