@@ -18,3 +18,5 @@ seed/exported-from-db-*.json
 !.env.example
 
 .pnpm-store
+
+initial-postgres-dump.sql
