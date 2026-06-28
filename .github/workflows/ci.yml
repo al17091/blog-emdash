@@ -77,6 +77,8 @@ jobs:
           # 初回は誤検知でCIが落ちるのを防ぐため、エラーにしない設定を推奨します
           # ルール調整後に true に変更してください
           fail_action: false
+          # Issueの自動作成を無効化する
+          issue_title: ''
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
