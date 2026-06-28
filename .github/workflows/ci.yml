@@ -1,4 +1,4 @@
-name: CI
+name: CI (Test & Scan)
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install || (pnpm approve-builds --all && pnpm install)
+        run: pnpm install
 
       - name: Run Typecheck/Lint
         run: pnpm typecheck
@@ -59,7 +59,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install || (pnpm approve-builds --all && pnpm install)
+        run: pnpm install
 
       - name: Build the app
         run: pnpm build
