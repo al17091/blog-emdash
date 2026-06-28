@@ -37,3 +37,4 @@ Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
 - `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
 - Always call `Astro.cache.set(cacheHint)` on pages that query content.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+- Always verify changes locally (e.g., by running `pnpm install`, `pnpm build`, or `docker build` locally) before pushing or assuming they work in CI, to prevent repeated pipeline failures.
