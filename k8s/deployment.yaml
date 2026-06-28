@@ -18,7 +18,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: web
-          image: my-registry/blog-emdash:latest # TODO: 実際のイメージ名に変更してください
+          image: ghcr.io/al17091/blog-emdash:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -34,16 +34,10 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
-          # 必要に応じて、SQLiteのDBファイルや画像アップロード用のPVCをマウントしてください
-          # volumeMounts:
-          #   - name: data-volume
-          #     mountPath: /data
-          #   - name: uploads-volume
-          #     mountPath: /app/uploads
-      # volumes:
-      #   - name: data-volume
-      #     persistentVolumeClaim:
-      #       claimName: blog-emdash-data-pvc
-      #   - name: uploads-volume
-      #     persistentVolumeClaim:
-      #       claimName: blog-emdash-uploads-pvc
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: blog-emdash-data-pvc

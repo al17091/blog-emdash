@@ -78,7 +78,7 @@ jobs:
           # ルール調整後に true に変更してください
           fail_action: false
           # Issueの自動作成を無効化する
-          issue_title: ''
+          allow_issue_writing: false
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
