@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4321:4321"
+    volumes:
+      - .:/app
+      # ホスト側のnode_modulesでコンテナ内を上書きしないように匿名ボリューム化
+      - /app/node_modules
+    environment:
+      - HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true # ホスト側からのファイル変更検知用
