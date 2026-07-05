@@ -30,6 +30,10 @@ spec:
               value: "80"
             - name: EMDASH_DB
               value: "postgres"
+            {{- if .Values.ingress.internalHost }}
+            - name: EMDASH_SITE_URL
+              value: "https://{{ .Values.ingress.internalHost }}"
+            {{- end }}
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
