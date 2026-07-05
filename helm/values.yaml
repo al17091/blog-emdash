@@ -7,3 +7,7 @@ ingress:
 
 securityContext:
   fsGroup: 1000
+
+database:
+  secretName: blog-emdash-db-secret
+  secretKey: DATABASE_URL
