@@ -1,12 +1,22 @@
-# 依存関係
-node_modules/
+node_modules
+dist
+.astro
+uploads
+data.db
+data.db-shm
+data.db-wal
+data.db.*
+data.db-*
+data.db.bak-*
 
-# ビルド成果物
-dist/
+# Local seed exports / backups
+seed/exported-from-db-*.json
 
-# 環境変数
+# Environment
 .env
-.env.production
+.env.*
+!.env.example
 
-# Astroキャッシュ
-.astro/
+.pnpm-store
+
+initial-postgres-dump.sql

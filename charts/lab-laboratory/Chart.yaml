@@ -1,0 +1,7 @@
+apiVersion: v2
+name: lab-laboratory
+description: LAB-laboratory (Astro + EmDash) blog
+type: application
+version: 0.1.0
+appVersion: "0.0.3"
+

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-emdash
+  labels:
+    app: blog-emdash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-emdash
+  template:
+    metadata:
+      labels:
+        app: blog-emdash
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      containers:
+        - name: web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: PORT
+              value: "80"
+            - name: EMDASH_DB
+              value: "postgres"
+            {{- if .Values.ingress.internalHost }}
+            - name: EMDASH_SITE_URL
+              value: "https://{{ .Values.ingress.internalHost }}"
+            {{- end }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secretName | quote }}
+                  key: {{ .Values.database.secretKey | quote }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: blog-emdash-data-pvc

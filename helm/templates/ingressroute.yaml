@@ -1,0 +1,30 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: blog-emdash
+  labels:
+    app: blog-emdash
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # ① 外部公開用ルート
+    - match: Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`)
+      kind: Rule
+      middlewares:
+        - name: force-https-header
+      services:
+        - name: blog-emdash
+          port: 80
+
+    # ② 内部管理用ルート
+    {{- if .Values.ingress.internalHost }}
+    - match: Host(`{{ .Values.ingress.internalHost }}`)
+      kind: Rule
+      middlewares:
+        - name: force-https-header
+      services:
+        - name: blog-emdash
+          port: 80
+    {{- end }}
+  tls: {}

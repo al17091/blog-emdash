@@ -1,19 +1,33 @@
 {
-  "name": "web-s",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "astro": "^5.18.1"
-  },
-  "devDependencies": {
-    "@astrojs/tailwind": "^6.0.2",
-    "tailwindcss": "^3.4.19"
-  }
+	"name": "@emdash-cms/template-blog",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"emdash": {
+		"seed": "seed/seed.json"
+	},
+	"scripts": {
+		"dev": "astro dev --host --port 4321",
+		"build": "astro build",
+		"preview": "astro preview",
+		"start": "node ./dist/server/entry.mjs",
+		"bootstrap": "node scripts/emdash-seed.mjs",
+		"seed": "node scripts/emdash-seed.mjs",
+		"seed:update": "node scripts/emdash-seed.mjs --on-conflict update",
+		"typecheck": "astro check"
+	},
+	"dependencies": {
+		"@astrojs/node": "^10.0.0",
+		"@astrojs/react": "^5.0.0",
+		"astro": "^6.0.1",
+		"better-sqlite3": "^12.8.0",
+		"emdash": "^0.9.0",
+		"kysely": "^0.27.0",
+		"pg": "^8.22.0",
+		"react": "19.2.4",
+		"react-dom": "19.2.4"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.7"
+	}
 }

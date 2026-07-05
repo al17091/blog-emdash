@@ -1,0 +1,15 @@
+node_modules
+dist
+.astro
+.pnpm-store
+
+data.db
+data.db-*
+data.db.*
+uploads
+
+.git
+.devcontainer
+
+seed/exported-from-db-*.json
+

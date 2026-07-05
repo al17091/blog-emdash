@@ -1,0 +1,68 @@
+{{- if .Values.seedJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "lab-laboratory.fullname" . }}-seed
+  labels:
+    {{- include "lab-laboratory.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        {{- include "lab-laboratory.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: seed
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: EMDASH_DATA_DIR
+              value: /data
+            - name: EMDASH_DB
+              value: {{ .Values.database.engine | quote }}
+            - name: PUBLIC_SHOW_ADMIN_LINK
+              value: {{ .Values.env.PUBLIC_SHOW_ADMIN_LINK | quote }}
+            {{- if .Values.env.EMDASH_SITE_URL }}
+            - name: EMDASH_SITE_URL
+              value: {{ .Values.env.EMDASH_SITE_URL | quote }}
+            {{- end }}
+            {{- if .Values.env.EMDASH_ALLOWED_ORIGINS }}
+            - name: EMDASH_ALLOWED_ORIGINS
+              value: {{ .Values.env.EMDASH_ALLOWED_ORIGINS | quote }}
+            {{- end }}
+            {{- if .Values.database.url }}
+            - name: DATABASE_URL
+              value: {{ .Values.database.url | quote }}
+            {{- else if .Values.database.urlFromSecret.name }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.urlFromSecret.name | quote }}
+                  key: {{ .Values.database.urlFromSecret.key | quote }}
+            {{- end }}
+          args:
+            - /bin/sh
+            - -lc
+            - |
+              if [ "{{ .Values.seedJob.includeContent }}" = "true" ]; then
+                node ./scripts/emdash-seed.mjs --on-conflict {{ .Values.seedJob.onConflict }}{{ if .Values.seedJob.skipMediaDownload }} --skip-media-download{{ end }}
+              else
+                node ./scripts/emdash-seed.mjs --on-conflict {{ .Values.seedJob.onConflict }} --no-content{{ if .Values.seedJob.skipMediaDownload }} --skip-media-download{{ end }}
+              fi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "lab-laboratory.fullname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}

@@ -1,0 +1,198 @@
+---
+type SocialService = "github" | "x" | "zenn" | "qiita" | "note" | "website" | "email";
+
+type SocialLink = {
+	service?: SocialService | string | null;
+	handle?: string | null;
+	url?: string | null;
+};
+
+interface Props {
+	links?: SocialLink[] | null;
+}
+
+const { links } = Astro.props;
+
+const parsedLinks: unknown = (() => {
+	if (Array.isArray(links)) return links;
+	if (typeof links === "string") {
+		try {
+			return JSON.parse(links);
+		} catch {
+			return [];
+		}
+	}
+	return [];
+})();
+
+const items = (Array.isArray(parsedLinks) ? (parsedLinks as SocialLink[]) : [])
+	.map((l) => ({
+		service: (l?.service ?? "").toString().trim().toLowerCase(),
+		handle: (l?.handle ?? "").toString().trim(),
+		url: (l?.url ?? "").toString().trim(),
+	}))
+	.filter((l) => l.url.length > 0);
+
+function serviceLabel(service: string) {
+	switch (service) {
+		case "github":
+			return "GitHub";
+		case "x":
+			return "X";
+		case "zenn":
+			return "Zenn";
+		case "qiita":
+			return "Qiita";
+		case "note":
+			return "note";
+		case "email":
+			return "Email";
+		case "website":
+			return "Website";
+		default:
+			return "Link";
+	}
+}
+
+function displayText(service: string, handle: string, url: string) {
+	if (handle) {
+		if (service === "email") return handle;
+		if (handle.startsWith("@")) return handle;
+		return `@${handle}`;
+	}
+	try {
+		const u = new URL(url);
+		return u.hostname.replace(/^www\./, "");
+	} catch {
+		return serviceLabel(service);
+	}
+}
+---
+
+{
+	items.length > 0 && (
+		<div class="emdash-social-badges" aria-label="Social links">
+			{items.map((l) => (
+				<a
+					class={`emdash-social-badge emdash-social-${l.service || "link"}`}
+					href={l.url}
+					rel={l.url.startsWith("/") ? undefined : "me noopener noreferrer"}
+					target={l.url.startsWith("/") ? undefined : "_blank"}
+				>
+					<span class="emdash-social-icon" aria-hidden="true">
+						{l.service === "github" ? (
+							<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+								<path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.1-1.2-1.4-1.2-1.4-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 2.1 3.4 1.5.1-.7.4-1.2.7-1.5-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2.1v3.1c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z" />
+							</svg>
+						) : l.service === "x" ? (
+							<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+								<path d="M18.9 2H22l-6.8 7.8L23 22h-6.8l-5.3-6.9L4.9 22H2l7.4-8.5L1 2h7l4.8 6.2L18.9 2Zm-1.2 18h1.7L6.3 3.9H4.5L17.7 20Z" />
+							</svg>
+						) : l.service === "email" ? (
+							<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M4 4h16v16H4z" />
+								<path d="m22 6-10 7L2 6" />
+							</svg>
+						) : (
+							<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13" />
+								<path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 0 1-7-7L7 11" />
+							</svg>
+						)}
+					</span>
+					<span class="emdash-social-service">{serviceLabel(l.service)}</span>
+					<span class="emdash-social-handle">{displayText(l.service, l.handle, l.url)}</span>
+				</a>
+			))}
+		</div>
+	)
+}
+
+<style>
+	.emdash-social-badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-2);
+		margin: var(--spacing-6) 0 var(--spacing-8);
+		align-items: center;
+	}
+
+	.emdash-social-badge {
+		all: unset;
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.42rem 0.75rem;
+		border-radius: 999px;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		text-decoration: none !important;
+		border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+		background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+		color: var(--color-text) !important;
+		font-size: var(--font-size-sm);
+		line-height: 1;
+		transition: transform var(--transition-fast), border-color var(--transition-fast),
+			background var(--transition-fast);
+	}
+
+	.emdash-social-badge:hover {
+		transform: translateY(-1px);
+		border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-accent));
+		background: color-mix(in srgb, var(--color-surface) 64%, var(--color-accent-ring));
+	}
+
+	.emdash-social-badge:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px var(--color-accent-ring);
+		border-color: var(--color-accent);
+	}
+
+	.emdash-social-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		color: currentColor;
+		opacity: 0.95;
+	}
+
+	.emdash-social-service {
+		color: var(--color-text-secondary);
+		font-weight: 600;
+		letter-spacing: 0;
+		font-size: var(--font-size-xs);
+	}
+
+	.emdash-social-handle {
+		font-weight: 600;
+	}
+
+	.emdash-social-github {
+		--badge-accent: #111827;
+	}
+	.emdash-social-x {
+		--badge-accent: #111827;
+	}
+	.emdash-social-zenn {
+		--badge-accent: #3ea8ff;
+	}
+	.emdash-social-qiita {
+		--badge-accent: #55c500;
+	}
+	.emdash-social-note {
+		--badge-accent: #16a34a;
+	}
+	.emdash-social-website {
+		--badge-accent: var(--color-accent);
+	}
+	.emdash-social-email {
+		--badge-accent: var(--color-accent);
+	}
+
+	.emdash-social-badge[class*="emdash-social-"] {
+		box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--badge-accent) 22%, transparent);
+	}
+</style>
