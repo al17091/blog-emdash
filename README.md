@@ -1,94 +1,162 @@
 # Blog EmDash
 
-[![CI](https://github.com/al17091/blog-emdash/actions/workflows/ci.yml/badge.svg)](https://github.com/al17091/blog-emdash/actions/workflows/ci.yml)
-[![CD](https://github.com/al17091/blog-emdash/actions/workflows/cd.yml/badge.svg)](https://github.com/al17091/blog-emdash/actions/workflows/cd.yml)
+A modern, dynamic web application and blog built with **Astro SSR** and **EmDash CMS**. Optimized for containerized environments and designed for a Pull-based GitOps deployment via **ArgoCD** on a **Kubernetes (K3s)** cluster using **Helm**.
 
-A modern, dynamic web application and blog built with Astro SSR and the EmDash CMS. Designed for a Pull-based GitOps deployment via ArgoCD on a Kubernetes (K3s) cluster using Helm.
+---
 
-## Architecture
+## 🏗️ Architecture
 
-- **Frontend / Framework**: Astro (SSR)
-- **CMS**: EmDash
-- **Database**: PostgreSQL
-- **CI/CD**: GitHub Actions
-- **Infrastructure**: Helm, ArgoCD, K3s, Traefik (Ingress)
-- **Container Registry**: GitHub Container Registry (GHCR)
+```mermaid
+graph TD
+    Client[Browser / Client] -->|HTTPS| Traefik[Traefik IngressRoute]
+    Traefik -->|Route| Astro[Astro SSR App]
+    Astro -->|Read/Write| Postgres[(PostgreSQL DB)]
+    Astro -->|Media Storage| PVC[Persistent Volume Claim /uploads]
+    
+    subgraph GitOps Workflow
+        GitHub[GitHub Repo] -->|Push Tag| GHA[GitHub Actions]
+        GHA -->|Build & Push| GHCR[GitHub Container Registry]
+        ArgoCD[ArgoCD Cluster Operator] -->|Poll & Sync| GitHub
+        ArgoCD -->|Deploy Helm Chart| Astro
+    end
+```
 
-## 🚀 Local Development
+- **Frontend / Framework**: Astro (Server-Side Rendering / SSR)
+- **CMS**: EmDash CMS (Integrated Admin Panel)
+- **Database**: PostgreSQL (Migrated from SQLite for production grade reliability)
+- **CI/CD**: GitHub Actions (Linting, trivy scans, OWASP ZAP DAST security scans, docker build)
+- **Orchestration**: Helm Charts (Targeting K3s with Traefik IngressRoute)
+- **Deployment**: GitOps via ArgoCD
 
-### Prerequisites
-- Docker & Docker Compose
+---
 
-### Standard Setup
+## ✨ Features
 
-You can run the development environment purely in Docker without installing Node.js or PostgreSQL on your host:
+- **Blazing Fast Performance**: Zero-JS by default rendering powered by Astro.
+- **Embedded Editor**: Easy editing interface using the Portable Text editor inside EmDash admin interface (`/_emdash/admin`).
+- **Flexible Styling**: Vanilla CSS architecture with custom themes support.
+- **Content Organization**: Full support for Categories, Tags, and dynamic Theme customization.
+- **Production-ready Operations**:
+  - PostgreSQL adapter.
+  - Multi-stage Docker builds.
+  - Helm templates supporting HTTPS redirect via Traefik middlewares.
+  - Automated security scans (Trivy + OWASP ZAP DAST).
+
+---
+
+## ⚙️ Environment Configuration
+
+The application can be configured dynamically using the following environment variables:
+
+| Variable | Description | Default | Required |
+| :--- | :--- | :--- | :--- |
+| `EMDASH_DB` | Database adapter type (`sqlite` or `postgres`/`pg`). | `sqlite` | No |
+| `DATABASE_URL` | PostgreSQL connection string. | - | Yes (if `EMDASH_DB=postgres`) |
+| `EMDASH_DATABASE_URL` | SQLite database file path. | `file:./data.db` | No (if `EMDASH_DB=sqlite`) |
+| `PUBLIC_SHOW_ADMIN_LINK` | Toggle admin console link visibility on the public site layout. | `0` | No |
+| `EMDASH_SITE_URL` | The public base URL of the site, used to restrict toolbar/admin access on public domains. | - | No |
+
+---
+
+## 🚀 Getting Started
+
+### 1. Docker Compose (Quickstart)
+
+You can run the development environment purely in Docker without installing Node.js or PostgreSQL on your host.
 
 ```bash
 docker-compose up -d --build
 ```
-This will mount your local directory and start:
-1. `app` container: A hot-reloading dev server on port 4321.
-2. `db` container: A local PostgreSQL database (`emdash_db`).
 
-Access the application:
-- Site: `http://localhost:4321`
-- Admin UI: `http://localhost:4321/_emdash/admin`
+This starts:
+- **`app` container**: Hot-reloading dev server on port `4321` (mounts local workspace to `/app`).
+- **`db` container**: PostgreSQL database (`emdash_db`) on port `5432`.
 
-## 📦 CI/CD & Deployment
+Access interfaces:
+- **Public Site**: `http://localhost:4321`
+- **Admin Portal**: `http://localhost:4321/_emdash/admin`
 
-This repository uses a fully automated CI/CD pipeline via GitHub Actions.
+---
 
-### Continuous Integration (`ci.yml`)
-Runs on every push or pull request to the `main` and `develop` branches:
-- **Typecheck/Lint**: Ensures code quality (`pnpm typecheck`).
-- **Security Scan (Trivy)**: Scans the repository filesystem for vulnerabilities.
+### 2. Local Setup (Manual Host Execution)
 
-> **Note on `paths-ignore`**: 
-> The CI workflow is configured to skip execution if changes are made exclusively to the `helm/**` directory. This is because changes to Kubernetes manifests or Helm values do not affect the application's source code. Skipping these checks saves GitHub Actions minutes and accelerates the infrastructure deployment process.
+#### Prerequisites
+- Node.js 18+
+- pnpm (8+)
+- Active PostgreSQL instance (or use local SQLite by defaulting `EMDASH_DB`)
 
-### Continuous Deployment (`cd.yml`)
-Runs automatically when a new version tag (e.g., `v1.0.0`) is pushed:
-- Builds the production Docker image using `Dockerfile`.
-- Pushes the image to GHCR (`ghcr.io/al17091/blog-emdash`) tagged with both the version and `latest`.
-- Also ignores changes to `helm/**` to avoid redundant builds when updating infrastructure configs.
+#### Steps
+1. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
+2. **Configure environment**:
+   Create a local env or run the exports directly:
+   ```bash
+   export EMDASH_DB=postgres
+   export DATABASE_URL="postgres://emdash:emdash_pass@localhost:5432/emdash_db"
+   ```
+3. **Seed the database**:
+   Generates TypeScript types and runs initial database migrations / imports default seed content (`seed/seed.json`).
+   ```bash
+   pnpm bootstrap
+   ```
+4. **Run dev server**:
+   ```bash
+   pnpm dev
+   ```
+5. **Build for production**:
+   ```bash
+   pnpm build
+   ```
 
-### Kubernetes / ArgoCD (Helm)
+---
 
-The `helm/` directory contains a Helm chart for deploying the application to a K3s cluster via ArgoCD.
+## 🗄️ Database Operations
 
-- **Values Management**: By modifying `helm/values.yaml` (or having ArgoCD inject values), parameters like `ingress.host`, `image.repository`, and `image.tag` can be dynamically updated without hardcoding environment details into the manifests.
-- **Data Persistence**: A 1Gi PersistentVolumeClaim (`pvc.yaml`) is mounted to `/data` in the container for storing user-uploaded media (`uploads/`).
-- **Ingress**: `ingressroute.yaml` and `middleware.yaml` configure Traefik to expose the service and force HTTPS redirection.
+### Backing up & Restoring PostgreSQL
 
-To deploy a new release:
-1. Push a new Git tag (e.g., `v1.0.1`), triggering the GitHub Actions CD pipeline.
-2. Update ArgoCD parameters (or `values.yaml`) to point the `image.tag` to the new version.
-3. ArgoCD will sync the Helm chart and rollout the new version automatically.
+For managing data between different environments, utility scripts are provided in the `scripts/` directory:
 
-## 🗄️ Database Operations (PostgreSQL)
+- **Exporting Data (Dump)**:
+  Generates a clean SQL dump omitting ownership definitions:
+  ```bash
+  DATABASE_URL="postgres://user:pass@host/db" ./scripts/pg-dump.sh > dump.sql
+  ```
+- **Importing Data (Restore)**:
+  Restores an SQL dump to a target PostgreSQL database:
+  ```bash
+  DATABASE_URL="postgres://user:pass@host/new_db" ./scripts/pg-restore.sh < dump.sql
+  ```
+- **Seeding Database (`scripts/emdash-seed.mjs`)**:
+  Custom runner for seeding PostgreSQL data. Essential during `pnpm bootstrap` as standard EmDash CLI seeding does not natively support Postgres setups out of the box.
 
-This application has been migrated from SQLite to PostgreSQL. For ongoing data management between PostgreSQL instances (e.g., pulling production data to local, or migrating between environments), we provide helper scripts:
+---
 
-### Dump Data
-Creates a clean, generic SQL dump (skipping ownership and privileges) suitable for restoring:
-```bash
-DATABASE_URL="postgres://user:pass@host/db" ./scripts/pg-dump.sh > dump.sql
-```
+## 📦 CI/CD & Production Deployment
 
-### Restore Data
-Restores a previously generated SQL dump into a target database:
-```bash
-DATABASE_URL="postgres://user:pass@host/new_db" ./scripts/pg-restore.sh < dump.sql
-```
+### GitHub Actions Workflows
 
-## 🛠️ Utility Scripts (`scripts/`)
+- **CI Pipeline (`ci.yml`)**:
+  Runs on every PR/push to `develop`/`main`.
+  - Type-checking, syntax formatting validation, and linting.
+  - Filesystem security scans using **Trivy**.
+  - Automated security assessment via **OWASP ZAP DAST** on a built preview server.
+  - *Note: Ignores changes made solely to `helm/**` to optimize build minutes.*
+- **CD Pipeline (`cd.yml`)**:
+  Triggered by tags (e.g. `v1.0.0`).
+  - Builds the production-ready Docker image.
+  - Pushes to GitHub Container Registry (GHCR) under `ghcr.io/al17091/blog-emdash:vX.Y.Z` & `latest`.
 
-The `scripts/` directory contains various Node.js and Bash scripts used for project management and maintenance:
+### Kubernetes Setup via Helm & ArgoCD
 
-- **`emdash-seed.mjs`**: A custom seeding script that replaces the default `emdash seed` CLI command. It has been specifically designed to support PostgreSQL (which the official CLI currently lacks), allowing `pnpm bootstrap` and `pnpm seed` to apply schema migrations and seed data directly to Postgres.
-- **`pg-dump.sh`**: Helper bash script to export the Postgres database as a clean SQL file.
-- **`pg-restore.sh`**: Helper bash script to import an SQL file into a Postgres database.
+Deployment configurations are packaged inside [helm/](file:///home/dapt/projects/blog-emdash/helm/).
 
-## 📝 Notes
-
-- **Admin Links**: Admin UI links are hidden from the frontend by default. To show them locally, set `PUBLIC_SHOW_ADMIN_LINK=1` in your environment.
+- **ArgoCD Integration**:
+  ArgoCD monitors this repository. Updating the tag parameter in your ArgoCD application definition triggers an automated GitOps deployment update.
+- **Data Persistence**:
+  A `PersistentVolumeClaim` (PVC) allocates 1Gi to preserve uploaded images under `/app/uploads`.
+- **Traffic Routing**:
+  Configures a Traefik `IngressRoute` and applies a redirect middleware to enforce SSL/HTTPS routing.
+- **Seed Jobs**:
+  Utilizes Kubernetes hook jobs to run the migration and seeding scripts automatically upon deployment.
