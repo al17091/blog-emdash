@@ -6,7 +6,7 @@ metadata:
     app: blog-emdash
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
     # ① 外部公開用ルート
     - match: Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`)
@@ -27,4 +27,3 @@ spec:
         - name: blog-emdash
           port: 80
     {{- end }}
-  tls: {}
