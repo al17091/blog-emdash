@@ -14,8 +14,6 @@ spec:
       labels:
         app: blog-emdash
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       containers:
