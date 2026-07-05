@@ -78,6 +78,11 @@ const pageCtx = createPublicPageContext({
 const isLoggedIn = !!Astro.locals.user;
 const showAdminLink = import.meta.env.PUBLIC_SHOW_ADMIN_LINK === "1";
 const currentYear = new Date().getFullYear();
+
+// Detect if accessed via public host vs internal host for hiding the visual editor
+const forwardedHost = Astro.request.headers.get("x-forwarded-host") || Astro.url.hostname;
+const showEditButton = forwardedHost.includes("lab.internal") || forwardedHost === "localhost" || forwardedHost === "127.0.0.1";
+const isPublicHost = !showEditButton;
 ---
 
 <!doctype html>
@@ -89,6 +94,11 @@ const currentYear = new Date().getFullYear();
     <Font cssVariable="--font-mono" />
     <title>{fullTitle}</title>
     <EmDashHead page={pageCtx} />
+    {isPublicHost && (
+      <style is:inline>
+        #emdash-toolbar { display: none !important; }
+      </style>
+    )}
     <script is:inline>
       // Apply theme immediately to prevent flash
       (function () {

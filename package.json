@@ -1,6 +1,6 @@
 {
 	"name": "@emdash-cms/template-blog",
-	"version": "0.0.3",
+	"version": "1.0.0",
 	"private": true,
 	"type": "module",
 	"emdash": {
