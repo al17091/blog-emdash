@@ -15,6 +15,12 @@ const emdashDatabase =
 
 export default defineConfig({
 	output: "server",
+	security: {
+		// Disable origin check to allow the same Docker image (built once) 
+		// to be deployed across multiple environments (e.g., STG, PROD) with different hostnames.
+		// CSRF protection relies on infrastructure-level routing and EmDash session auth.
+		checkOrigin: false,
+	},
 	adapter: node({
 		mode: "standalone",
 	}),
