@@ -8,11 +8,23 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`{{ .Values.ingress.host }}`)
+    # ① 外部公開用ルート
+    - match: Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`)
       kind: Rule
+      middlewares:
+        - name: force-https-header
       services:
         - name: blog-emdash
           port: 80
+
+    # ② 内部管理用ルート
+    {{- if .Values.ingress.internalHost }}
+    - match: Host(`{{ .Values.ingress.internalHost }}`)
+      kind: Rule
       middlewares:
         - name: force-https-header
+      services:
+        - name: blog-emdash
+          port: 80
+    {{- end }}
   tls: {}
