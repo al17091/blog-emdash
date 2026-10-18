@@ -20,3 +20,5 @@ seed/exported-from-db-*.json
 .pnpm-store
 
 initial-postgres-dump.sql
+__pycache__
+*.pyc
