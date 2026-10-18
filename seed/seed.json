@@ -435,7 +435,7 @@
       {
         "id": "posts:notes-on-simplicity",
         "slug": "notes-on-simplicity",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "Notes on Simplicity",
           "featured_image": {
@@ -529,7 +529,7 @@
       {
         "id": "posts:a-weekend-with-a-side-project",
         "slug": "a-weekend-with-a-side-project",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "A Weekend with a Side Project",
           "featured_image": {
@@ -623,7 +623,7 @@
       {
         "id": "posts:designing-with-constraints",
         "slug": "designing-with-constraints",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "Designing with Constraints",
           "featured_image": {
@@ -717,7 +717,7 @@
       {
         "id": "posts:small-tools-big-impact",
         "slug": "small-tools-big-impact",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "Small Tools, Big Impact",
           "featured_image": {
@@ -811,7 +811,7 @@
       {
         "id": "posts:learning-in-public",
         "slug": "learning-in-public",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "Learning in Public",
           "featured_image": {
@@ -905,7 +905,7 @@
       {
         "id": "posts:the-case-for-static",
         "slug": "the-case-for-static",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "The Case for Static",
           "featured_image": {
@@ -1000,7 +1000,7 @@
       {
         "id": "posts:building-for-the-long-term",
         "slug": "building-for-the-long-term",
-        "status": "published",
+        "status": "draft",
         "data": {
           "title": "Building for the Long Term",
           "featured_image": {
@@ -2916,7 +2916,7 @@
       {
         "id": "posts:defense-in-depth-waf-ips-architecture",
         "slug": "defense-in-depth-waf-ips-architecture",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -3396,7 +3396,7 @@
       {
         "id": "posts:traefik-v3-coraza-wasm-segv-troubleshooting",
         "slug": "traefik-v3-coraza-wasm-segv-troubleshooting",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -3768,7 +3768,7 @@
       {
         "id": "posts:kk8s-audit-wazuh-json-decoder-order-size",
         "slug": "k8s-audit-wazuh-json-decoder-order-size",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -4164,7 +4164,7 @@
       {
         "id": "posts:multus-cni-cached-delegates-cosmetic-error",
         "slug": "multus-cni-cached-delegates-cosmetic-error",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -4595,7 +4595,7 @@
       {
         "id": "posts:antigravity-notion-mcp-integration-guide",
         "slug": "antigravity-notion-mcp-integration-guide",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -5122,7 +5122,7 @@
       {
         "id": "posts:cnpg-minio-s3-gdrive-backup-pipeline",
         "slug": "cnpg-minio-s3-gdrive-backup-pipeline",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -5458,7 +5458,7 @@
       {
         "id": "posts:wazuh-opensearch-attack-reporting-ip-defang",
         "slug": "wazuh-opensearch-attack-reporting-ip-defang",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -5757,7 +5757,7 @@
       {
         "id": "posts:cascading-failure-network-time-etcd-storage",
         "slug": "cascading-failure-network-time-etcd-storage",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -6260,7 +6260,7 @@
       {
         "id": "posts:cilium-tailscale-routing-loop-mtu-investigation",
         "slug": "cilium-tailscale-routing-loop-mtu-investigation",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -6787,7 +6787,7 @@
       {
         "id": "posts:traefik-v3-cross-namespace-404-resolution",
         "slug": "traefik-v3-cross-namespace-404-resolution",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -7194,7 +7194,7 @@
       {
         "id": "posts:internal-ca-injection-trust-manager-kyverno-pivot",
         "slug": "internal-ca-injection-trust-manager-kyverno-pivot",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -7661,7 +7661,7 @@
       {
         "id": "posts:kubevirt-multus-l2-policy-routing",
         "slug": "kubevirt-multus-l2-policy-routing",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -8044,7 +8044,7 @@
       {
         "id": "posts:searxng-tor-socks5-onion-search-integration",
         "slug": "searxng-tor-socks5-onion-search-integration",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -8319,7 +8319,7 @@
       {
         "id": "posts:reverse-proxy-nextjs-stream-truncation-content-length-bug",
         "slug": "reverse-proxy-nextjs-stream-truncation-content-length-bug",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -8798,7 +8798,7 @@
       {
         "id": "posts:traefik-ingressroute-tls-port-80-drop-behavior",
         "slug": "traefik-ingressroute-tls-port-80-drop-behavior",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -9205,7 +9205,7 @@
       {
         "id": "posts:kubevirt-storage-tuning-block-datavolume-longhorn",
         "slug": "kubevirt-storage-tuning-block-datavolume-longhorn",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -9756,7 +9756,7 @@
       {
         "id": "posts:grafana-tempo-ebpf-obi-distributed-tracing",
         "slug": "grafana-tempo-ebpf-obi-distributed-tracing",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -10175,7 +10175,7 @@
       {
         "id": "posts:k3s-cpu-slm-deepseek-vs-qwen25-gemini-flash-lite-cost-balance",
         "slug": "k3s-cpu-slm-deepseek-vs-qwen25-gemini-flash-lite-cost-balance",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
@@ -10715,7 +10715,7 @@
       {
         "id": "posts:stop-invalidating-cdn-caches-on-deploy",
         "slug": "stop-invalidating-cdn-caches-on-deploy",
-        "status": "draft",
+        "status": "published",
         "taxonomies": {
           "theme": [
             "engineering"
