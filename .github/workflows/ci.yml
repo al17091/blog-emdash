@@ -79,6 +79,7 @@ jobs:
         continue-on-error: true
         with:
           target: 'http://localhost:4321'
+          rules_file_name: '.zap/rules.tsv'
           # 初回は誤検知でCIが落ちるのを防ぐため、エラーにしない設定を推奨します
           # ルール調整後に true に変更してください
           fail_action: false

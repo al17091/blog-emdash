@@ -1,0 +1,7 @@
+10038	IGNORE	(Content Security Policy (CSP) Header Not Set - Managed by Edge/CloudFront)
+10049	IGNORE	(Storable and Cacheable Content - Informational notification)
+10109	IGNORE	(Modern Web Application - Informational framework detection)
+90004	IGNORE	(Cross-Origin-Embedder-Policy Header Missing or Invalid - Managed by Edge)
+10021	WARN	(X-Content-Type-Options Header Missing - Static assets in local sirv; edge handles in prod)
+10063	WARN	(Permissions Policy Header Not Set - Static assets in local sirv)
+
