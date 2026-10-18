@@ -2893,6 +2893,1604 @@
             }
           ]
         }
+      },
+      {
+        "id": "posts:cascading-failure-network-time-etcd-storage",
+        "slug": "cascading-failure-network-time-etcd-storage",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【障害復旧】Network → Time → Etcd → Storage 4段階連鎖障害（Cascading Failure）の全貌と復旧記録",
+          "excerpt": "CiliumとTailscaleのMTU不整合によるパケットロスを契機に、NTP時刻同期ズレ、Etcdリーダー選出フラッピング、Longhorn iSCSI切断による全クラスタファイルシステムRead-Only化に至った4段階連鎖障害の分析と対策。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "Kubernetesクラスタ運用において最も恐ろしいのは、単一レイヤーの小規模な異常が下位・上位のサブシステムを次々と巻き込んで大規模障害へと発展する「カスケード障害（連鎖障害）」です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "本稿では、当ラボクラスタで実際に発生した「ネットワーク不整合 → 時刻同期ズレ → Etcdリーダー選出不能 → LonghornストレージRead-Only化」という4段階連鎖障害の調査記録と恒久対策を共有します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "障害の発生状況と症状"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "ある日突然、クラスタ内の全データベース（AWX、Nextcloud、Keycloak）が一斉に「SQLSTATE 58030: Input/output error」を吐いて停止しました。Pod自体はRunning状態を維持しているものの、マウントされたボリュームがOSによってRead-onlyに強制再マウントされ、書き込みが一切行えない状態に陥っていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "根本原因分析：4段階のカスケード連鎖"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "第1段階（ネットワーク不安定）: 拠点間を跨ぐTailscaleオーバーレイ（MTU 1280）上で、Cilium（デフォルトMTU 1500）のパケット断片化およびリコンサイルエラーが発生し、微小なパケットロスと遅延が累積。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "第2段階（時刻同期ズレ）: ネットワーク断続により、systemd-timesyncd によるNTP同期が失敗。ノード間で最大約7.7秒のクロックドリフト（時刻のズレ）が発生。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "第3段階（Etcdの不安定化）: Etcdは時刻の一貫性と極小のネットワークレイテンシを前提としています。7秒超の時刻差とレイテンシ急増により、ハートビートが途絶してEtcdリーダー選出のフラッピングが頻発。クラスタ全体のAPI応答が麻痺。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "第4段階（Longhornストレージの崩壊）: Longhornはノード間のiSCSI over TCPでレプリカを同期しています。Etcdの麻痺とネットワークタイムアウトによりiSCSIセッションが切断され、データ保護のためLinuxカーネルが対象ファイルシステムをRead-onlyへ強制遷移させました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "復旧手順と恒久対策"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "復旧手順: 全物理ノード（truncus, digginos, portarius, ramulus）を順番に再起動してネットワークスタックとBPFマップを初期化。DB Podを再作成してボリュームをクリーン再マウントしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "恒久予防策1（Cilium MTUの厳格固定）: TailscaleのMTU 1280からVXLANヘッダオーバーヘッド（約100バイト）を差し引いた「MTU 1180」をCiliumに明示的に固定。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks12",
+                  "text": "恒久予防策2（Pod CIDRの分離）: Pod CIDRを物理ノード網と重複しない 10.42.0.0/16 へ再配置し、Tailscale側で IPAddressDeny を設定してPod IPへの誤ルーティングを完全遮断しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:cilium-tailscale-routing-loop-mtu-investigation",
+        "slug": "cilium-tailscale-routing-loop-mtu-investigation",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【ネットワーク】Tailscale と Cilium の間で発生したパケットルーティングループと遅延 1000ms 障害の調査",
+          "excerpt": "自宅ノードとクラウドVPS間をTailscaleでメッシュ接続した環境で、外部Pingが突然1000ms超に跳ね上がりパケットロスが発生したルーティングループ現象の解析と、IPAddressDenyによる解決法。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "自宅ラックの物理サーバーと外部VPS（Xserver）をTailscaleでセキュアに相互接続し、その上にCilium CNIによるKubernetesクラスタを構築していた環境で、突如としてノード間Pingが1000msを超過し、通信不能に陥るトラブルが発生しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "事象と調査の契機"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "自宅マスターノード（truncus）とVPSノード（portarius）間で、パケットロス率が間欠的に100%に達し、AnsibleやHelmの実行が「stream error: INTERNAL_ERROR」で失敗するようになりました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "調査のためノード上で `tailscale status` を確認したところ、インターネット越しのVPSノードに対して `direct 10.0.x.x` というCiliumの仮想Pod IPアドレスがエンドポイントとして誤認・通知されていることが判明しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "ルーティングループのメカニズム"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "1. Tailscaleデーモンは、ノード上のアクティブな全NICを探索し、通信可能な候補IPとしてCiliumのPodインターフェースアドレス（10.0.x.x）を対向ノードにアドバタイズしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "2. 対向ノードのTailscaleは、そのPod IPを「直接接続可能な宛先」と誤認してWireGuardパケットを送信。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "3. しかし受信側のホストOSルーティングテーブル（CiliumのeBPF制御下）は、10.0.x.x宛てのトラフィックをCilium仮想ネットワーク内へ送り返します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "4. 結果として、パケットがTailscaleとCiliumの間で無限ピンポン（ルーティングループ）を起こし、レイテンシが1000ms以上に跳ね上がっていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "解決策と効果"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "対策1: Tailscaleのsystemdオーバーライド設定に `IPAddressDeny=10.0.0.0/8, 10.42.0.0/16` を追加し、TailscaleデーモンがPod CIDRをバインドおよび探索候補に含めることをカーネルレベルで遮断。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "対策2: CiliumのPod CIDRをK3s標準の `10.42.0.0/16` へ移行し、全ノードのBPFマップをリセット。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks12",
+                  "text": "結果: ノード間レイテンシは1000ms超から約70ms（物理的な光回線RTT相当）へと劇的に回復し、パケットロス0%の極めて安定したメッシュ通信を取り戻しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:traefik-v3-cross-namespace-404-resolution",
+        "slug": "traefik-v3-cross-namespace-404-resolution",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【Ingressトラブル】Traefik v3 の仕様変更に伴うクロスネームスペース 404 エラーと K3s 競合解消",
+          "excerpt": "K3sアップデートに伴うTraefik標準チャートの再有効化と、Traefik v3におけるallowCrossNamespaceポリシー厳格化によって発生したIngress 404エラーの復旧記録。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "K3sクラスタのマイナーバージョン更新を行った直後、IngressRouteを経由していた Nextcloud などの内部サービスが突然すべて「404 Not Found」を返す事態が発生しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "単なる設定ミスではなく、K3s組み込みのHelmChartコントローラとの競合、およびTraefik v3のセキュリティ仕様厳格化が重なった複合的な問題でした。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "発生した2つのフェーズ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "フェーズ1（名前衝突と消失）: K3s更新時に標準のTraefikコントローラが再起動され、Ansibleで管理していた手動版Traefikと競合。クリーンアップのため `kubectl delete helmchart traefik` を実行したところ、名前が同一だったため手動版まで巻き添えで削除される事態が発生。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "フェーズ2（再インストール後の404）: Traefik v3.6系を再インストールしたところ、Podは起動したものの、全IngressRouteへのアクセスが404 Not Foundとなりました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "ログ調査と根本原因"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "Traefik Podのログを確認すると、以下の決定的なエラーが出力されていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "ERR error=\"service nextcloud/nextcloud-service not in the parent resource namespace kube-system\" ingress=www-ingressroute namespace=kube-system"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "ERR Failed to create middleware keys error=\"middleware kube-system/force-https-header is not in the IngressRoute namespace nextcloud\""
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "根本原因は、Traefik v3から導入されたクロスネームスペース参照のセキュリティ制限です。デフォルトで `allowCrossNamespace: false`（別Namespaceのリソース参照禁止）と規定されており、以前のバージョンではバグによって偶発的に通っていた構成が、v3.6系への刷新によって完全にブロックされたのが原因でした。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "解決策：kubernetesCRDプロバイダーの明示設定"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "TraefikのHelm設定（Ansibleテンプレート）において、kubernetesCRDプロバイダーに以下のオプションを明示的に指定しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks12",
+                  "text": "providers:\n  kubernetesCRD:\n    enabled: true\n    allowCrossNamespace: true"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks13",
+                  "text": "※ kubernetesIngress プロバイダーではなく、IngressRoute CRDを解釈する kubernetesCRD プロバイダー側に設定する必要がある点が重要なポイントです。設定適用後、全サービスのルーティングが即座に回復しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:internal-ca-injection-trust-manager-kyverno-pivot",
+        "slug": "internal-ca-injection-trust-manager-kyverno-pivot",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "security"
+          ]
+        },
+        "data": {
+          "title": "【証明書運用】Kubernetes における社内ルート CA 自動注入の限界と Kyverno 廃止・明示的マウントへの回帰",
+          "excerpt": "Admission Webhook (Kyverno) による透過的な社内CA証明書自動注入で直面した不透明なエラーと運用リスク。trust-managerによる配布とAnsible明示的マウントへ回帰した設計判断。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "社内プライベート認証局（Step-CA）を運用しているKubernetes環境では、クラスタ内で稼働する全PodにプライベートCA証明書を信頼させる必要があります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "当初、Kyverno（Mutating Admission Webhook）を用いて全PodへCA証明書と環境変数を「透過的に自動注入」するスマートな運用を試みましたが、本番運用の中で多くの課題に直面し、明示的設定へとピボットしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "Kyverno 自動注入で直面した3つの課題"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "1. 不透明なエラー（FailedCreate）: KyvernoのWebhook書き換え処理が微細なスキーマの差異で失敗した際、Podの作成が拒否されるものの、エラーログが `kubectl describe job` やイベントの深層を掘らないと判明せず、障害切り分けが難航。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "2. 部分的・不完全な注入: `volumeMounts` や環境変数は注入されたのに、`volumes` 定義の追加に失敗するなどの不整合が発生し、Podが `CrashLoopBackOff` に陥るケースが散見。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "3. 予測可能性の低下: マニフェストに書かれていない設定が「魔法のように」裏で注入されるため、インフラコードと実際の実行状態の乖離が生まれ、トラブルシューティングの直観性が失われました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "新運用方針：trust-manager による配布 ＋ 明示的マウント"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "方針を改め、以下のような「責任の分離」アーキテクチャに移行しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "・配布基盤: `cert-manager/trust-manager` を利用し、社内CAバンドルを全NamespaceのConfigMap（lab-ca-bundle）へ自動複製・同期。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "・設定の明示化: 内部通信を行うアプリケーションのDeploymentマニフェスト（Ansibleテンプレート）内で、`volumeMounts` と環境変数（`SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`）をコードとして明示的に記述。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "得られたメリット"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "Podの構成がGit上のAnsibleコードと100%一致するようになり、検証・デバッグの予測可能性が劇的に向上しました。魔法に頼らない「素直で堅牢なインフラ」の大切さを再認識した知見です。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:kubevirt-multus-l2-policy-routing",
+        "slug": "kubevirt-multus-l2-policy-routing",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【仮想化】KubeVirt × Multus L2 ブリッジにおける MAC アドレス固定とポリシールーティング設計",
+          "excerpt": "Kubernetes上でLinux VMを稼働させるKubeVirtにおいて、ホスト物理L2ブリッジ（br-research）を接続した際に発生するMACアドレス変動問題の防止と、Linuxポリシールーティング（ip rule pref 5200）の構築。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "Kubernetesクラスタ上でコンテナと並行して仮想マシンを稼働させる「KubeVirt」。セキュリティ調査用のルーターVM（deverticulum）をプロビジョニングした際、デュアルNICのネットワーク構成で得られた知見をまとめました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "課題1：VM再起動に伴うMACアドレス変動とIP枯渇"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "Multus CNI経由で物理L2ブリッジ（br-research, 192.168.200.0/24）をVMに接続したところ、KubeVirt VMを再起動するたびに仮想NICのMACアドレスがランダムに再生成されてしまう問題が発生しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "これにより、DHCPサーバーから毎回新しいIPアドレスが払い出され、静的DNS逆引きやファイアウォールルールが無効化されてしまうという課題がありました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "対策: KubeVirtのVirtualMachineマニフェストにおいて、インターフェース定義に固定のMACアドレス（例：`macAddress: \"52:54:00:c8:00:01\"`）を明示的に指定することで、再起動後も同一のハードウェアアドレスと静的DHCPリースを維持できるようにしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "課題2：Tailscale Exit Node とローカル通信のルーティング競合"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "ルーターVM内部ではTailscaleをExit Nodeとして稼働させ、外部宛てトラフィックをVPN経由でルーティングさせていました。しかし、デフォルトルートがTailscaleに奪われると、ローカルリサーチLAN（192.168.200.0/24）やクラスタ内通信までVPN側へ吸い込まれ、通信不能に陥ります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "対策: Linuxの高度なポリシールーティング（Policy Based Routing）を採用。優先度5200にカスタムルールを設定し、ローカルサブネット宛てのトラフィックをTailscaleルーティングテーブルよりも高優先度でローカルNICへ流す設定（`ip rule add to 192.168.200.0/24 table main pref 5200`）をsystemdサービスとして永続化しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:searxng-tor-socks5-onion-search-integration",
+        "slug": "searxng-tor-socks5-onion-search-integration",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "security"
+          ],
+          "tag": [
+            "security",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【プライバシー技術】SearXNG × Tor SOCKS5h プロキシ連携によるプライベートメタ検索と Onion サイト検索の共存",
+          "excerpt": "メタ検索エンジン「SearXNG」を隔離VM上で稼働させ、Tor SOCKS5hプロキシを経由してダークウェブ（.onion）検索と通常検索をプライベートに統合したアーキテクチャの解説。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "オープンソースのプライバシー重視メタ検索エンジン「SearXNG」。検索クエリのトラッキングを排除し、GoogleやBing、DuckDuckGoなどの検索結果を横断集約できる優れたツールです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "当ラボでは、セキュリティ脅威インテリジェンス（CTI）収集を目的として、KubeVirt上の隔離VM内でSearXNGとTor SOCKS5hプロキシを連携させたプライベート検索基盤を構築しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "アーキテクチャ設計：クリアウェブとオニオン検索の共存"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "通常のWeb検索とディープウェブ（.onionドメイン）の検索では、必要とされるネットワーク経路とDNS解決の挙動が全く異なります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "SearXNGの `settings.yml` において、通常の検索エンジンは高速な内部DNSとゲートウェイルートを使用させつつ、Onion専用エンジン（Ahmia, Torch, Haystak等）に対してのみ、内部TorデーモンのSOCKS5hプロキシ（`socks5h://127.0.0.1:9050`）を経由するようエンジンごとにルーティングを分離しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "※ `socks5` ではなく `socks5h` を使用することで、DNSの名前解決自体をリモートのTor出口ノード側で行わせ、DNSリーク（.onionドメインの問い合わせがローカルDNSサーバーに漏れる脆弱性）を完全に防止しています。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "Traefik IngressRoute と Step-CA TLS による保護"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "隔離VM内で稼働するSearXNG Web UIは、クラスタ内のTraefik IngressRouteを通じて `https://searxng.lab.internal/` として安全に公開。Step-CAによって自動更新される内部TLS証明書でエンドツーエンドの暗号化を維持しています。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:reverse-proxy-nextjs-stream-truncation-content-length-bug",
+        "slug": "reverse-proxy-nextjs-stream-truncation-content-length-bug",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "webdev",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【リバースプロキシ】リバースプロキシ配下の Next.js アプリケーションにおける HTML ストリーム切り捨てと Content-Length 再計算バグの究明",
+          "excerpt": "リバースプロキシ配下の Next.js カスタムサーバーで HTML 内のベースパスやスクリプトを文字列置換した際、UTF-8マルチバイトによるバイト長と文字長の差からレスポンス末尾が切り捨てられたバグの調査と修正。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "リバースプロキシ配下でサブパス（例：`/threat`）としてホストされるNext.jsアプリケーションにおいて、ブラウザでアクセスした際に「ページ末尾のスクリプトタグが途中で途切れ、画面がレンダリングされない」という謎の事象に遭遇しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "調査の結果、カスタムNode.jsサーバーで行っていたHTML文字列置換と、HTTPヘッダーの Content-Length 再計算における「マルチバイト文字とバイト長」の不整合が原因でした。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "発生した事象：HTML末尾の切断"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "ブラウザのDevToolsでレスポンスHTMLを確認すると、`</body></html>` の手前数十バイトで通信が突然終了し、末尾に埋め込まれていた `<script>` タグのコードが途中で寸断されてSyntaxErrorとなっていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "しかし、ローカルの開発サーバーで直接Podにアクセスした際には正常に全HTMLが取得できるという、リバースプロキシ経由時のみ発生する不可解な挙動でした。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "原因究明：文字列の length と Buffer の byteLength の混同"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "カスタムサーバーのNode.jsコード（server.js）では、サブパス対応のためにHTML内のアセットパスを書き換え、さらに `<script>` タグを注入していました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "HTMLを書き換えた後、レスポンスヘッダーの Content-Length を更新していましたが、そのコードが以下のようになっていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "res.setHeader('Content-Length', modifiedHtml.length); // 危険！"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "JavaScriptの `string.length` は「UTF-16コードユニット数（文字数）」を返します。しかし、日本語などのマルチバイト文字が含まれている場合、UTF-8エンコード後の「実際のバイト数」は文字数よりも大きくなります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "リバースプロキシ（TraefikやNginx）は、ヘッダーに指定された `Content-Length` のバイト数分だけクライアントへ転送した時点で「レスポンス完了」とみなしてソケットを閉じてしまいます。その結果、バイト数の差分（数十バイト）の分だけHTMLの末尾がバッサリと切り捨てられていたのです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "修正方法"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks12",
+                  "text": "Content-Length の計算を `Buffer.byteLength(modifiedHtml, 'utf-8')` に修正することで、正確なバイト数がヘッダーに設定され、ストリームの切り捨てが完全に解消されました。リバースプロキシ連携時のストリーム処理における重要な教訓です。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:traefik-ingressroute-tls-port-80-drop-behavior",
+        "slug": "traefik-ingressroute-tls-port-80-drop-behavior",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【IngressRoute】Traefik IngressRoute の TLS 設定による HTTP（ポート80）ルーティング消失の罠",
+          "excerpt": "Traefik CRDにおいて、単一の IngressRoute に entryPoints: [web, websecure] と spec.tls を同時に指定すると、HTTP通信（ポート80）がルーティングから完全に除外される仕様の解説と回避策。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "Traefik IngressRoute を設定する際、多くのエンジニアが一度は引っかかる仕様上の落とし穴があります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "「HTTP（ポート80）とHTTPS（ポート443）の両方で同一のルーティングを提供したい」と考え、1つの IngressRoute マニフェストに `entryPoints: [web, websecure]` と `spec.tls: ...` を両方記述した際に発生する問題です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "事象：外周プロキシからのHTTP転送が404になる"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "外周のリバースプロキシ（foramen）がインターネットからのHTTPS通信を終端し、k3sクラスタのTraefikに対してHTTP（ポート80）でプロキシ転送する構成を構築していました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "しかし、IngressRouteのルーティングルールは合致しているはずなのに、HTTP経由のリクエストがすべて 404 Not Found で拒絶される事象が発生しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "Traefik の仕様：spec.tls が存在すると非TLS通信を無視する"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "Traefik CRDの仕様では、IngressRoute定義内に `spec.tls` ブロックが存在する場合、Traefikはそのルートを「TLSハンドシェイクが確立した接続専用」として内部ルーターを構築します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "そのため、たとえ `entryPoints: [web, websecure]` とリストに平文ポート80（web）を含めていたとしても、TLSハンドシェイクを伴わないプレーンHTTP接続は最初から該当ルーターの評価対象から完全に除外されてしまうのです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "正しい設計：HTTP用とHTTPS用 IngressRoute の分離"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "解決策は極めてシンプルです。1つの定義にまとめようとせず、HTTP用とHTTPS用で IngressRoute リソースを分離します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "1. HTTP用（threat-harvester-public）: `entryPoints: [web]` のみ。`spec.tls` は絶対に記述しない。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "2. HTTPS用（threat-harvester-public-secure）: `entryPoints: [websecure]` のみ。`spec.tls` でStep-CAやCert-managerのSecretを指定。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks12",
+                  "text": "リソースを明確に分けることで、プロキシからの平文転送と内部からの直接TLS接続の双方が完璧に共存できるようになりました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:kubevirt-storage-tuning-block-datavolume-longhorn",
+        "slug": "kubevirt-storage-tuning-block-datavolume-longhorn",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【ストレージ】KubeVirt Storage：Block DataVolume vs Filesystem の I/O パフォーマンスと Longhorn 最適化",
+          "excerpt": "KubeVirt仮想マシンのディスクボリュームにおいて、Filesystemモードによる二重ファイルシステムのオーバーヘッドを解消し、RAW Block DataVolumeを採用してディスクI/O性能と安定性を飛躍的に高めたチューニング事例。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "Kubernetes上で仮想マシン（VM）を実行するKubeVirt。そのディスクストレージとして分散ストレージ「Longhorn」を組み合わせる際、ボリュームの提供方式によってI/O性能とリソース消費に決定的な差が生じます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "Filesystem モードの課題：二重ファイルシステムの悲劇"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "KubeVirtのデフォルトや一般的な例では、PVCを `volumeMode: Filesystem` で作成し、その中に `disk.img` という単一の巨大なQCOW2/RAWイメージファイルを保存する構成がよく見られます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "しかし、この構成は「ホスト側Longhornのext4ファイルシステム」の上に「VM内部OSのext4ファイルシステム」が乗るという【二重ファイルシステム（Double Filesystem Overhead）】状態を引き起こします。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "結果として、ディスク書き込みごとのジャーナリングの二重発生、OSページキャッシュの二重消費、そして高負荷時のI/Oハングアップが頻発していました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "解決策：RAW Block DataVolume の採用"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "このオーバーヘッドを完全に排除するため、KubeVirt CDI（Containerized Data Importer）の DataVolume 定義において `volumeMode: Block` を明示的に採用しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "Longhornが提供するブロックデバイス（RAW iSCSIボリューム）をファイルシステムを介さずそのまま仮想マシンの仮想ディスクコントローラ（virtio-scsi）に直結します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks8",
+                  "text": "チューニングの効果"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks9",
+                  "text": "1. I/O遅延の激減: 二重ジャーナリングが解消され、VM内部からのランダムライトIOPSが大幅に向上。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks10",
+                  "text": "2. メモリ効率の改善: ホスト側の余計なファイルキャッシュが不要となり、ノードの空きメモリが拡大。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks11",
+                  "text": "3. スナップショットの高速化: Longhornネイティブのブロックレベル差分スナップショットがそのまま活かせるようになり、バックアップ時のVMフリーズ時間がほぼゼロになりました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:grafana-tempo-ebpf-obi-distributed-tracing",
+        "slug": "grafana-tempo-ebpf-obi-distributed-tracing",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "【分散トレーシング】Grafana Tempo と eBPF（OBI）によるクラスタ内 HTTPS 通信のゼロコード分散トレーシング実践",
+          "excerpt": "アプリケーションコードを一切改変することなく、eBPF技術（OpenTelemetry eBPF Profiler / OBI）を用いて外周ゲートウェイから内部サービスまでのHTTPS通信をTempoで分散トレース可視化した基盤構築記。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks0",
+                  "text": "マイクロサービスアーキテクチャが拡大すると、「リクエストがどのゲートウェイを経由し、どのサービスで何ミリ秒遅延しているか」を追跡する分散トレーシングが不可欠になります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks1",
+                  "text": "しかし、既存の全コンテナアプリケーションにOpenTelemetry SDKを組み込んで計装コードを書くのは膨大な工数がかかります。そこで、カーネルレベルのeBPFを活用したゼロコード分散トレーシングを導入しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks2",
+                  "text": "Tempo と OpenTelemetry eBPF（OBI）の組み合わせ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks3",
+                  "text": "トレースバックエンドには、軽量かつオブジェクトストレージ（MinIO）直結で動く「Grafana Tempo」を採用。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks4",
+                  "text": "そして各ノードのデータプレーン監視には、eBPFベースのトレーシングエージェント（OpenTelemetry eBPF Profiler / OBI）を配置しました。LinuxカーネルのソケットバッファとSSL/TLSアップローブを監視することで、アプリケーション側にライブラリを入れなくても、HTTP/HTTPSリクエストの所要時間、ステータスコード、サービス間依存関係グラフが自動生成されます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "kb5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks5",
+                  "text": "外周ゲートウェイ（retis / foramen）のHTTPSトレース対応"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks6",
+                  "text": "外周リバースプロキシ環境（Docker Compose）においても、共有PID名前空間とCAP_SYS_ADMIN権限を付与したトレーサーコンテナを起動し、ホストネットワーク上の暗号化通信を透過的にトレース。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "kb7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ks7",
+                  "text": "Grafanaダッシュボード上では、Lokiのログ画面からワンクリックで該当リクエストのTempoトレース画面へジャンプできるようになり、障害発生時のボトルネック特定が数十秒で完了する環境が実現しました。"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }
