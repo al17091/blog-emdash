@@ -186,3 +186,54 @@ kubectl exec -n blog-stg $PRIMARY -c postgres -- psql -U postgres -d app -c "
 4. When ready, click **Publish** (公開).
    - Once published, EmDash automatically exposes the article on `https://blog-stg.lab.internal/posts/{slug}` and registers it in `https://blog-stg.lab.internal/sitemap-posts.xml`.
 
+---
+
+## 8. Production Promotion & GitHub Workflow
+
+When promoting verified articles or feature updates from staging/develop to production:
+
+### 8.1 Invariants
+- **Host-Signed Commits**: Always execute `git commit -S` and `git tag -s` on the host machine.
+- **CI Gate**: Strictly wait for `CI (Test & Scan)` to complete successfully before merging.
+- **PR Audit History**: Always merge via GitHub PR using a **merge commit** (`--merge`). Never squash or rebase when promoting to `main`.
+- **Anonymization Invariant**: Verify all internal domains and AWS resource IDs are sanitized before publishing.
+
+### 8.2 GitHub Release Runbook via `gh` CLI:
+```bash
+# 1. Commit and push changes on develop
+git add seed/seed.json src/
+git commit -S -m "chore(content): publish verified articles"
+git push origin develop
+
+# 2. Create Pull Request using gh CLI
+docker exec lab-infra-workspace-1 gh pr create \
+  --repo al17091/blog-emdash \
+  --base main \
+  --head develop \
+  --title "release: <brief title>" \
+  --body "## Summary\n\n<details>"
+
+# 3. Wait for CI to pass
+docker exec lab-infra-workspace-1 gh run list --repo al17091/blog-emdash --limit 3
+docker exec lab-infra-workspace-1 gh run watch <RUN_ID> --repo al17091/blog-emdash --exit-status
+docker exec lab-infra-workspace-1 gh pr checks <PR_NUM> --repo al17091/blog-emdash
+
+# 4. Merge via merge commit (preserving PR audit trail)
+docker exec lab-infra-workspace-1 gh pr merge <PR_NUM> --merge --repo al17091/blog-emdash
+
+# 5. Tag release for CD build & push
+git checkout main
+git pull origin main
+git tag -s vX.Y.Z -m "Release vX.Y.Z"
+git push origin vX.Y.Z
+
+# 6. Apply seed update to production database
+POD=$(kubectl get pod -n blog -l app=blog-emdash -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n blog $POD -- node scripts/emdash-seed.mjs --on-conflict update
+
+# 7. Reconcile develop branch
+git checkout develop
+git pull origin develop
+```
+
+
