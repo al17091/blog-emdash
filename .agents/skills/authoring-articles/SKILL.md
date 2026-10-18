@@ -12,9 +12,11 @@ This skill defines the end-to-end standard operating procedure (SOP) for draftin
 ## 1. Editorial Principles & Language Policy
 
 - **Tech Articles (English)**:
+  - **Title Length**: Strictly **50 characters or less** (2-3 lines max, punchy & direct).
   - **Audience**: Global engineering community, SREs, security architects.
   - **Depth**: A4 report class / engineering whitepaper. Must include incident timelines, kernel/network root causes, ASCII flow diagrams, concrete YAML/CLI configurations, and benchmark metrics.
 - **Travel & Hiking Articles (Japanese)**:
+  - **Title Length**: Strictly **50 characters or less** (e.g. 25-35 chars).
   - **Audience**: Domestic hikers, outdoor enthusiasts, hot-spring seekers.
   - **Depth**: Comprehensive trail guides. Must include course statistics (CT, distance, elevation), transit logistics, stage-by-stage trail conditions, photo placeholders (`[📷 写真: ...]`), post-hike onsen/gourmet details, and seasonal gear advice.
 - **Status Policy**:
@@ -160,3 +162,4 @@ kubectl exec -n blog-stg $PRIMARY -c postgres -- psql -U postgres -d app -c "
    - Verify the right-hand **SEO** panel contains the Title, Meta Description, and Canonical URL.
 4. When ready, click **Publish** (公開).
    - Once published, EmDash automatically exposes the article on `https://blog-stg.lab.internal/posts/{slug}` and registers it in `https://blog-stg.lab.internal/sitemap-posts.xml`.
+
