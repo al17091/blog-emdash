@@ -189,6 +189,10 @@
         {
           "slug": "security",
           "label": "Security"
+        },
+        {
+          "slug": "ai",
+          "label": "AI & LLM"
         }
       ]
     },
@@ -4486,6 +4490,318 @@
                   "_type": "span",
                   "_key": "ks7",
                   "text": "Grafanaダッシュボード上では、Lokiのログ画面からワンクリックで該当リクエストのTempoトレース画面へジャンプできるようになり、障害発生時のボトルネック特定が数十秒で完了する環境が実現しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:k3s-cpu-slm-deepseek-vs-qwen25-gemini-flash-lite-cost-balance",
+        "slug": "k3s-cpu-slm-deepseek-vs-qwen25-gemini-flash-lite-cost-balance",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "ai",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "GPUなし k3s（CPU環境）で挑む自前 SLM 運用：DeepSeek 比較から Qwen2.5 選定、Gemini Flash-Lite とのコスト・レイテンシ最適解",
+          "excerpt": "GPUのないk3s環境（CPUオンリー）で軽量SLMを自前ホストし、前処理やJSON抽出をオフロード。DeepSeekの思考トークンの課題からQwen2.5（3B-Instruct）を選定するまでの検証プロセスと、Gemini Flash-Liteとのハイブリッドなコスト最適化の全貌。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s0",
+                  "text": "大規模言語モデル（LLM）を活用したログ分析や自動化パイプラインを運用する際、常に直面するのが「商用APIの継続コスト」です。すべてのリクエストを高機能な商用モデル（GPT-4oやClaude 3.5 Sonnetなど）に投げていると、API費用が膨大になります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s1",
+                  "text": "そこで当ラボでは、GPUのないk3sクラスタ（CPUオンリー環境）上で超軽量なSLM（Small Language Model）を自前ホストし、前処理・JSON抽出・ルーティング・分類といった小型タスクを肩代わりさせるアーキテクチャを検証・構築しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s2",
+                  "text": "本稿では、話題のDeepSeek系モデルとの比較検証を経て「Qwen2.5」を選定した理由、および超低価格な商用モデル（Gemini 1.5/2.5 Flash-Liteなど）とどうコスト・レイテンシのバランスを取るべきかの設計論を共有します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "qwen_b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s3",
+                  "text": "1. 推論環境とCPU運用の厳しい制約"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s4",
+                  "text": "GPUを持たない一般的なx86_64 CPUサーバー環境でローカルモデルを動かす場合、最大のボトルネックは「メモリ帯域幅」と「計算速度」です。このため、以下の前提条件を定めました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s5",
+                  "text": "・推論エンジン: Kubernetes内で軽量にOpenAI互換APIエンドポイントを提供できる「Ollama」を採用（リソース最小化の選択肢としてllama.cpp serverも検証）。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s6",
+                  "text": "・パラメータサイズ: CPU推論で実用速度（20 token/sec以上）を出すため、モデルサイズは1B〜4B程度に厳格に制限。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s7",
+                  "text": "・量子化とコンテキスト長: 4-bit量子化（Q4_K_M）を前提とし、コンテキスト長は小型タスクに絞って1k〜2kトークン程度に制限することで、メモリ消費を2GB〜3GB前後に抑え、クラスタ内の他Podを圧迫しない設計としました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "qwen_b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s8",
+                  "text": "2. DeepSeek採用の検討と見送りの理由"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s9",
+                  "text": "当初、推論能力の高さで世界的な注目を集めたDeepSeekモデルの採用を検討しましたが、CPU環境の小型タスク運用においては明確な不都合が生じました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s10",
+                  "text": "【本家DeepSeek（671B）の壁】: 起動に350GB以上のRAMが必要であり、たとえメモリを積んだとしてもCPU推論では1 token/sec未満の激遅となり、リアルタイム処理では完全に非現実的でした。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s11",
+                  "text": "【蒸留モデル（DeepSeek-R1-Distill系 1.5B〜7B）の罠】: 蒸留モデルはCPUでも動作自体は可能です。しかし、推論時に思考プロセス（<think>タグ）を出力する仕様により、わずか数十文字の出力を得るために数百〜千トークン余計に思考し続けてしまいます。CPU環境ではこの追加トークン生成が致命的な高レイテンシ（数秒〜十数秒の待ち時間）を引き起こしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s12",
+                  "text": "さらに、思考テキストが先行して出力されることで、後続のプログラム（パーサー）が要求する厳密なJSON構造化出力が崩れやすく、パイプライン自動化の安定性を著しく損なうことが判明しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "qwen_b13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s13",
+                  "text": "3. 結論：なぜ「Qwen2.5（3B-Instruct）」が最適解だったのか"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b14",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s14",
+                  "text": "比較検証の末、当ラボでは「Qwen2.5-3B-Instruct」（および1.5B）の採用を決定しました。理由は以下の3点です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b15",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s15",
+                  "text": "1. CPUでの圧倒的な高速即答性: 余計な思考トークンを出力せず、プロンプトに対して即座に回答を開始するため、CPU環境でも20〜30+ token/sの実用的な速度を安定して叩き出します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b16",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s16",
+                  "text": "2. 抜群のフォーマット従順性: Qwen2.5は小型モデルでありながら、JSONスキーマ指定やMarkdown出力のフォーマット遵守力が極めて高く、ログ解析やアラート抽出でJSONパースエラーがほぼ発生しません。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b17",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s17",
+                  "text": "3. 極小のフットプリント: メモリ消費量は約2GB程度に収まり、k3sノードの限られたRAM環境でも余裕を持って同居稼働が可能です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "qwen_b18",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s18",
+                  "text": "4. クラウドLLM（Gemini Flash-Lite）とのコストバランスとハイブリッド設計"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b19",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s19",
+                  "text": "「自前SLMを構築したら、すべてを自前でまかなうべきか？」というと、答えはNOです。クラウドAPI（特にGoogle Gemini 1.5/2.5 Flash や Flash-Lite）の劇的な低価格化を踏まえた、適材適所のハイブリッド運用が最もコスト効率に優れます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b20",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s20",
+                  "text": "【自前ホスト Qwen2.5 の担当領域】: 毎日数千〜数万件発生する定型的なログ前処理、機密情報を含むテキストのマスキング、特定カテゴリへの分類、ヘルスチェック監視。ローカルネットワーク内で完結するため通信レイテンシが極小で、トークン従量課金は完全ゼロ。機密情報の外部送信も防げます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b21",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s21",
+                  "text": "【クラウド Gemini Flash / Flash-Lite の担当領域】: 複雑なコンテキストの長文要約、非構造化脅威インテリジェンスの高度な分析、外部公開用レポートの生成。100万トークンあたり数十円レベルの極めて安価なモデルを必要な時だけピンポイントで叩くことで、モデル運用の運用保守コストを最小化しつつ最高品質を担保できます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "qwen_b22",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s22",
+                  "text": "まとめ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "qwen_b23",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "qwen_s23",
+                  "text": "LiteLLMプロキシを中間に配置し、リクエストの特性に応じて「ローカルQwen2.5」と「商用Gemini Flash-Lite」を動的にルーティングするアーキテクチャによって、月額のAPIコストをほぼゼロに抑えながら、高スループットかつ高品質なAIインフラ基盤を実現できました。"
                 }
               ]
             }
