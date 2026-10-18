@@ -14,14 +14,14 @@ ingress:
   className: traefik
   annotations: {}
   hosts:
-    - host: engineerlab.jp
+    - host: example.com
       paths:
         - path: /
           pathType: Prefix
   tls: []
-  # - secretName: engineerlab-tls
+  # - secretName: example-tls
   #   hosts:
-  #     - engineerlab.jp
+  #     - example.com
 
 resources: {}
 

@@ -81,7 +81,8 @@ const currentYear = new Date().getFullYear();
 
 // Detect if accessed via public host vs internal host for hiding the visual editor
 const forwardedHost = Astro.request.headers.get("x-forwarded-host") || Astro.url.hostname;
-const showEditButton = forwardedHost.includes("lab.internal") || forwardedHost === "localhost" || forwardedHost === "127.0.0.1";
+const adminHostPattern = import.meta.env.ADMIN_HOST_PATTERN || "internal|local|localhost|127.0.0.1";
+const showEditButton = new RegExp(adminHostPattern).test(forwardedHost);
 const isPublicHost = !showEditButton;
 ---
 
@@ -226,7 +227,7 @@ const isPublicHost = !showEditButton;
           </div>
         </div>
         <div class="footer-bottom">
-          <p class="footer-copyright">© {currentYear} dapt (engineerlab.jp)</p>
+          <p class="footer-copyright">© {currentYear} {siteTitle || "dapt"}</p>
           <div class="theme-switcher">
             <button
               type="button"
