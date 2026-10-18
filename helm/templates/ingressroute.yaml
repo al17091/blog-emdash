@@ -9,7 +9,7 @@ spec:
     - web
   routes:
     # External Route
-    - match: Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`)
+    - match: {{ if .Values.ingress.matchRule }}{{ .Values.ingress.matchRule }}{{ else }}Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`){{ end }}
       kind: Rule
       middlewares:
         - name: force-https-header
@@ -41,7 +41,7 @@ spec:
     - websecure
   routes:
     # Internal Route HTTPS
-    - match: Host(`{{ .Values.ingress.internalHost }}`)
+    - match: {{ if .Values.ingress.secureMatchRule }}{{ .Values.ingress.secureMatchRule }}{{ else }}Host(`{{ .Values.ingress.internalHost }}`){{ end }}
       kind: Rule
       middlewares:
         - name: force-https-header
