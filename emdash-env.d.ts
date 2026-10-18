@@ -24,7 +24,7 @@ export interface Post {
   status: string;
   title: string;
   featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
-  content?: PortableTextBlock[];
+  content?: string | PortableTextBlock[];
   excerpt?: string;
   createdAt: Date;
   updatedAt: Date;

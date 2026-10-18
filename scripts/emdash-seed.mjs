@@ -120,6 +120,23 @@ async function main() {
 			console.log("Database up to date");
 		}
 
+		// Ensure posts.content field is migrated from legacy portableText (JSON) to text (TEXT) if table already exists
+		try {
+			await sql`
+				UPDATE _emdash_fields
+				SET type = 'text', column_type = 'TEXT', label = 'Content (Markdown)', options = '{"rows":25}'
+				WHERE slug = 'content'
+				AND collection_id IN (SELECT id FROM _emdash_collections WHERE slug = 'posts');
+			`.execute(db);
+			if (dbEngine === "postgres" || dbEngine === "pg") {
+				await sql`
+					ALTER TABLE ec_posts ALTER COLUMN content TYPE TEXT USING content::text;
+				`.execute(db);
+			}
+		} catch {
+			// Ignore if _emdash_fields or ec_posts does not exist yet (initial bootstrap)
+		}
+
 		console.log("Applying seed...");
 		const result = await applySeed(db, seed, {
 			includeContent: args.includeContent,
@@ -138,6 +155,20 @@ async function main() {
 		console.log(
 			`Content: ${result.content.created} created, ${result.content.skipped} skipped, ${result.content.updated} updated`,
 		);
+
+		// Clear stale draft_revision_id / live_revision_id on draft posts when updating from seed
+		// so the Admin UI and publish action read the freshly seeded Markdown column directly.
+		if (onConflict === "update") {
+			try {
+				await sql`
+					UPDATE ec_posts
+					SET draft_revision_id = NULL, live_revision_id = NULL
+					WHERE status = 'draft';
+				`.execute(db);
+			} catch (e) {
+				console.warn("Draft revision cleanup skipped:", e?.message);
+			}
+		}
 
 		// Synchronize _emdash_seo table with post titles and excerpts for the Admin UI SEO panel
 		try {

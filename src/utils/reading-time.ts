@@ -29,12 +29,21 @@ function countCjkCharacters(text: string): number {
 }
 
 /**
- * Extract plain text from Portable Text blocks
+ * Extract plain text from raw Markdown string or Portable Text blocks
  */
-export function extractText(blocks: PortableTextBlock[] | undefined): string {
-	if (!blocks || !Array.isArray(blocks)) return "";
+export function extractText(content: string | PortableTextBlock[] | undefined): string {
+	if (!content) return "";
+	if (typeof content === "string") {
+		return content
+			.replace(/```[\s\S]*?```/g, " ")
+			.replace(/`[^`]*`/g, " ")
+			.replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+			.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+			.replace(/[#>*_~|-]/g, " ");
+	}
+	if (!Array.isArray(content)) return "";
 
-	return blocks
+	return content
 		.filter(isTextBlock)
 		.map((block) =>
 			block.children
@@ -46,9 +55,9 @@ export function extractText(blocks: PortableTextBlock[] | undefined): string {
 }
 
 /**
- * Calculate reading time in minutes from Portable Text content
+ * Calculate reading time in minutes from raw Markdown or Portable Text content
  */
-export function getReadingTime(content: PortableTextBlock[] | undefined): number {
+export function getReadingTime(content: string | PortableTextBlock[] | undefined): number {
 	const text = extractText(content);
 	const cjkCharacterCount = countCjkCharacters(text);
 	const wordCount = countWords(text.replace(CJK_CHARACTER_REGEX, " "));

@@ -16,6 +16,7 @@ import {
 } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import PostCard from "../../components/PostCard.astro";
+import { renderMarkdown } from "../../utils/markdown";
 import { getReadingTime } from "../../utils/reading-time";
 import { resolveBlogSiteIdentity } from "../../utils/site-identity";
 
@@ -68,8 +69,12 @@ const seo = getSeoMeta(post, {
 // Bylines are already hydrated by getEmDashEntry
 const bylines = post.data.bylines ?? [];
 
-// Get reading time
+// Get reading time and rendered Markdown HTML
 const readingTime = getReadingTime(post.data.content);
+const renderedMarkdownHtml =
+	typeof post.data.content === "string"
+		? await renderMarkdown(post.data.content)
+		: null;
 
 // Fetch this post's taxonomies (tags, themes, categories)
 const [tags, themes, categories] = await Promise.all([
@@ -345,7 +350,13 @@ const publishDate =
 				</header>
 
 				<div class="article-content">
-					<PortableText value={post.data.content} />
+					{
+						renderedMarkdownHtml !== null ? (
+							<Fragment set:html={renderedMarkdownHtml} />
+						) : Array.isArray(post.data.content) ? (
+							<PortableText value={post.data.content} />
+						) : null
+					}
 				</div>
 
 				<div class="article-comments">
@@ -789,6 +800,37 @@ const publishDate =
 
 	.article-content :global(a:hover) {
 		text-decoration-thickness: 2px;
+	}
+
+	.article-content :global(table) {
+		width: 100%;
+		margin: 2em 0;
+		border-collapse: collapse;
+		font-size: var(--font-size-sm);
+		line-height: 1.5;
+		display: block;
+		overflow-x: auto;
+	}
+
+	.article-content :global(th),
+	.article-content :global(td) {
+		border: 1px solid var(--color-border);
+		padding: 0.75rem 1rem;
+		text-align: left;
+	}
+
+	.article-content :global(th) {
+		background: var(--color-surface);
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	.article-content :global(tbody tr:nth-child(even)) {
+		background: var(--color-bg-subtle);
+	}
+
+	.article-content :global(tbody tr:hover) {
+		background: var(--color-surface);
 	}
 
 	/* Right column: TOC + Sidebar */
