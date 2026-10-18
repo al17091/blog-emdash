@@ -24,6 +24,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set("X-Frame-Options", "SAMEORIGIN");
   }
 
+  // Content Security Policy for public pages (exempting /_emdash admin and API)
+  if (!url.pathname.startsWith("/_emdash")) {
+    if (!response.headers.has("Content-Security-Policy")) {
+      response.headers.set(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
+      );
+    }
+  }
+
   // For admin and API routes, prevent CDN and browser caching
   if (
     url.pathname.startsWith("/_emdash/admin") ||
