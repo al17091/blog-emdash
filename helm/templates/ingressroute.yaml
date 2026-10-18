@@ -11,6 +11,7 @@ spec:
     # External Route
     - match: {{ if .Values.ingress.matchRule }}{{ .Values.ingress.matchRule }}{{ else }}Host(`{{ .Values.ingress.host }}`) && !PathPrefix(`/_emdash/admin`){{ end }}
       kind: Rule
+      priority: {{ .Values.ingress.priority | default 20 }}
       middlewares:
         - name: force-https-header
       services:
@@ -21,6 +22,7 @@ spec:
     # Internal Route
     - match: Host(`{{ .Values.ingress.internalHost }}`)
       kind: Rule
+      priority: {{ .Values.ingress.priority | default 20 }}
       middlewares:
         - name: force-https-header
       services:
@@ -43,6 +45,7 @@ spec:
     # Internal Route HTTPS
     - match: {{ if .Values.ingress.secureMatchRule }}{{ .Values.ingress.secureMatchRule }}{{ else }}Host(`{{ .Values.ingress.internalHost }}`){{ end }}
       kind: Rule
+      priority: {{ .Values.ingress.priority | default 20 }}
       middlewares:
         - name: force-https-header
       services:
