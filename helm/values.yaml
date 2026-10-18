@@ -3,8 +3,8 @@ image:
   tag: latest
 
 ingress:
-  host: blog.lab.internal
-  internalHost: "blog-stg.lab.internal"
+  host: blog.example.local
+  internalHost: "blog.example.local"
 
 securityContext:
   fsGroup: 1000

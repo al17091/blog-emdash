@@ -90,7 +90,7 @@ The Admin UI's right-hand SEO sidebar reads directly from the `_emdash_seo` tabl
 When applying seeds, always ensure `scripts/emdash-seed.mjs` runs its post-seed SQL sync to populate:
 - `seo_title` = `title`
 - `seo_description` = `excerpt`
-- `seo_canonical` = `https://blog-stg.lab.internal/posts/{slug}`
+- `seo_canonical` = `/posts/{slug}` (or `https://<site-domain>/posts/{slug}`)
 
 ---
 
@@ -177,14 +177,14 @@ kubectl exec -n blog-stg $PRIMARY -c postgres -- psql -U postgres -d app -c "
 
 ## 7. Review & Publishing Checklist
 
-1. Navigate to the Admin UI: `https://blog-stg.lab.internal/_emdash/admin`.
+1. Navigate to the Admin UI: `https://<staging-domain>/_emdash/admin`.
 2. Open **Posts** ➔ **Drafts**.
 3. Review the article:
    - Check layout and markdown formatting.
    - For travel posts, upload and drag photos into `[📷 写真: ...]` placeholders.
    - Verify the right-hand **SEO** panel contains the Title, Meta Description, and Canonical URL.
 4. When ready, click **Publish** (公開).
-   - Once published, EmDash automatically exposes the article on `https://blog-stg.lab.internal/posts/{slug}` and registers it in `https://blog-stg.lab.internal/sitemap-posts.xml`.
+   - Once published, EmDash automatically exposes the article on `https://<staging-domain>/posts/{slug}` and registers it in `https://<staging-domain>/sitemap-posts.xml`.
 
 ---
 

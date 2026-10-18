@@ -141,10 +141,11 @@ async function main() {
 
 		// Synchronize _emdash_seo table with post titles and excerpts for the Admin UI SEO panel
 		try {
+			const canonicalPrefix = process.env.EMDASH_SITE_URL ? `${process.env.EMDASH_SITE_URL}/posts/` : '/posts/';
 			if (dbEngine === "postgres" || dbEngine === "pg") {
 				await sql`
 					INSERT INTO _emdash_seo (collection, content_id, seo_title, seo_description, seo_canonical, seo_no_index, created_at, updated_at)
-					SELECT 'posts', id, title, excerpt, 'https://blog-stg.lab.internal/posts/' || slug, 0,
+					SELECT 'posts', id, title, excerpt, ${canonicalPrefix} || slug, 0,
 					to_char(NOW(), 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'), to_char(NOW(), 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
 					FROM ec_posts WHERE excerpt IS NOT NULL AND excerpt != ''
 					ON CONFLICT (collection, content_id) DO UPDATE SET
@@ -156,7 +157,7 @@ async function main() {
 			} else {
 				await sql`
 					INSERT INTO _emdash_seo (collection, content_id, seo_title, seo_description, seo_canonical, seo_no_index, created_at, updated_at)
-					SELECT 'posts', id, title, excerpt, '/posts/' || slug, 0,
+					SELECT 'posts', id, title, excerpt, ${canonicalPrefix} || slug, 0,
 					datetime('now'), datetime('now')
 					FROM ec_posts WHERE excerpt IS NOT NULL AND excerpt != ''
 					ON CONFLICT (collection, content_id) DO UPDATE SET

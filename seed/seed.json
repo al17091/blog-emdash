@@ -402,7 +402,7 @@
             },
             {
               "service": "website",
-              "url": "https://engineerlab.jp/"
+              "url": "/"
             }
           ]
         }
