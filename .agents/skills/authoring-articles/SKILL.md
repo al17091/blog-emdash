@@ -19,6 +19,13 @@ This skill defines the end-to-end standard operating procedure (SOP) for draftin
   - **Title Length**: Strictly **50 characters or less** (e.g. 25-35 chars).
   - **Audience**: Domestic hikers, outdoor enthusiasts, hot-spring seekers.
   - **Depth**: Comprehensive trail guides. Must include course statistics (CT, distance, elevation), transit logistics, stage-by-stage trail conditions, photo placeholders (`[📷 写真: ...]`), post-hike onsen/gourmet details, and seasonal gear advice.
+- **Anonymization & Masking Policy (CRITICAL)**:
+  - **Domains**: NEVER use actual production or internal domains in article text, code blocks, or curl commands.
+    - Public domains: `*.engineerlab.jp` ➔ `*.example.com`
+    - Internal domains: `*.lab.internal`, `*.lab.local` ➔ `*.example.internal`, `*.example.local`
+  - **Identities & IDs**: NEVER expose real CloudFront distribution IDs (`EDMTMX...`), AWS account IDs (`195275...`), IAM user/role ARNs, internal secret values, or specific host IP addresses.
+    - CloudFront / AWS IDs ➔ `<DISTRIBUTION_ID>`, `<ACCOUNT_ID>`, `E1234567890ABC`
+    - Example IPs ➔ Use RFC 5737 documentation ranges (`192.0.2.x`, `198.51.100.x`, `203.0.113.x`) or generic private subnets.
 - **Status Policy**:
   - Always draft new content with `status: "draft"` in `seed/seed.json` to allow author review and photo attachment before publishing.
 
@@ -110,13 +117,29 @@ python3 scripts/apply_all_articles.py
 
 ## 5. Local Quality Gates (Pre-Commit Invariants)
 
-Always run both validation checks before committing:
+Always run all validation checks before committing:
 
 ```bash
-# 1. Validate seed JSON schema against EmDash CLI
+# 1. Verify no sensitive production/internal domains or IDs are leaked in seed.json
+python3 -c "
+import json, sys
+d = json.load(open('seed/seed.json'))
+leaks = []
+for post in d['content']['posts']:
+    text = json.dumps(post)
+    for term in ['engineerlab.jp', 'lab.internal', 'EDMTMX', '195275637149']:
+        if term in text:
+            leaks.append((post.get('slug'), term))
+if leaks:
+    print('SECURITY ALERT: Sensitive terms found in posts:', leaks)
+    sys.exit(1)
+print('✔ Anonymization check passed: Zero sensitive domains or IDs detected.')
+"
+
+# 2. Validate seed JSON schema against EmDash CLI
 npx emdash seed seed/seed.json --validate
 
-# 2. Test server build with Astro
+# 3. Test server build with Astro
 pnpm build
 ```
 

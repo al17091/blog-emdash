@@ -39,3 +39,4 @@ Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
 - Always call `Astro.cache.set(cacheHint)` on pages that query content.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
 - Always verify changes locally (e.g., by running `pnpm install`, `pnpm build`, or `docker build` locally) before pushing or assuming they work in CI, to prevent repeated pipeline failures.
+- **Anonymization Invariant**: Never expose actual production domains (`*.engineerlab.jp`), internal hostnames (`*.lab.internal`, `*.lab.local`), or AWS/resource IDs (`EDMTMX...`, `195275...`) in published articles or demo data. Always mask them with RFC equivalents (`example.com`, `example.internal`, `<DISTRIBUTION_ID>`, etc.).

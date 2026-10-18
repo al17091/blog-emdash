@@ -160,19 +160,46 @@ def main():
 
     posts = seed_data["content"]["posts"]
     updated_count = 0
+    created_count = 0
+    existing_slugs = set()
 
     for post in posts:
         slug = post.get("slug")
+        if slug:
+            existing_slugs.add(slug)
         if slug in all_articles:
             art = all_articles[slug]
             post["data"]["title"] = art["title"]
             post["data"]["excerpt"] = art["excerpt"]
             post["data"]["content"] = markdown_to_portable_text(art["markdown"])
+            if "taxonomies" in art:
+                post["taxonomies"] = art["taxonomies"]
             post["status"] = "draft"
             updated_count += 1
             print(f"  [UPDATED] {slug} -> {len(post['data']['content'])} blocks")
 
-    print(f"\nSuccessfully updated {updated_count} / {len(posts)} posts.")
+    for slug, art in all_articles.items():
+        if slug not in existing_slugs:
+            new_post = {
+                "id": f"posts:{slug}",
+                "slug": slug,
+                "status": "draft",
+                "taxonomies": art.get("taxonomies", {
+                    "theme": ["engineering"],
+                    "category": ["infrastructure"],
+                    "tag": ["cdn", "architecture", "devops"]
+                }),
+                "data": {
+                    "title": art["title"],
+                    "excerpt": art["excerpt"],
+                    "content": markdown_to_portable_text(art["markdown"])
+                }
+            }
+            posts.append(new_post)
+            created_count += 1
+            print(f"  [CREATED] {slug} -> {len(new_post['data']['content'])} blocks")
+
+    print(f"\nSuccessfully processed posts: {updated_count} updated, {created_count} created (total {len(posts)}).")
 
     with open(seed_file, "w", encoding="utf-8") as f:
         json.dump(seed_data, f, ensure_ascii=False, indent=2)

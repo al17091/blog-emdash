@@ -176,7 +176,7 @@ In Coraza v0.5.0-beta.1:
 We reproduced the crash instantly using a crafted curl command sending a multipart request with boundary fragmentation:
 
 ```bash
-curl -X POST https://blog-stg.lab.internal/_emdash/api/media \
+curl -X POST https://blog-stg.example.internal/_emdash/api/media \
   -H "Content-Type: multipart/form-data; boundary=---------------------------974767299852498929531610575" \
   --data-binary @corrupted_boundary_payload.bin
 ```
@@ -1105,7 +1105,7 @@ We examined Traefik's access logs:
 ```
 Traefik reported sending 4,096 bytes. However, when we checked the response body received by curl:
 ```bash
-curl -i https://blog-stg.lab.internal/api/posts/summary
+curl -i https://blog-stg.example.internal/api/posts/summary
 # ... {"title": "【奥多摩】御岳山〜日の出山 縦走ハイク", "excerpt": "青梅線・古里駅から静かな大塚山を経て武蔵御嶽神社へ。日の出山か
 # (Connection closed prematurely)
 ```
@@ -1190,7 +1190,7 @@ We added an automated unit test suite asserting response stream completion acros
 ```typescript
 describe("API Streaming & Framing", () => {
   it("preserves complete Japanese multi-byte UTF-8 payloads", async () => {
-    const res = await fetch("https://blog-stg.lab.internal/api/posts/summary");
+    const res = await fetch("https://blog-stg.example.internal/api/posts/summary");
     expect(res.status).toBe(200);
     const body = await res.text();
     // Validate JSON completes without syntax error

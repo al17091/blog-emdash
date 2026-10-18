@@ -72,28 +72,104 @@ const bylines = post.data.bylines ?? [];
 // Get reading time
 const readingTime = getReadingTime(post.data.content);
 
-// Fetch this post's tags and the related-posts list in parallel — they're
-// independent queries, so running them concurrently halves the round-trip
-// cost on remote databases.
-// Note: post.id is the slug, post.data.id is the database ULID.
-const [tags, themes, { entries: recentPosts }] = await Promise.all([
+// Fetch this post's taxonomies (tags, themes, categories)
+const [tags, themes, categories] = await Promise.all([
 	getEntryTerms("posts", post.data.id, "tag"),
 	getEntryTerms("posts", post.data.id, "theme"),
-	// Fetch a few extra in case the current post is among them
-	getEmDashCollection("posts", {
-		orderBy: { published_at: "desc" },
-		limit: 4,
-	}),
+	getEntryTerms("posts", post.data.id, "category"),
 ]);
-const otherPosts = recentPosts.filter((p) => p.id !== post.id).slice(0, 3);
 
-// Single batched query for related-posts tags, rather than one
-// getEntryTerms() call per related post.
-const otherTagsByEntry = await getTermsForEntries(
-	"posts",
-	otherPosts.map((p) => p.data.id),
-	"tag",
-);
+// Determine theme scope for contextual partitioning (Tech vs Travel/Nature)
+const currentThemeSlugs = themes.map((t) => t.slug);
+const isTravelScope =
+	currentThemeSlugs.includes("travel") || currentThemeSlugs.includes("nature");
+const targetThemeSlugs = isTravelScope ? ["travel", "nature"] : ["engineering"];
+
+// Query posts belonging to this theme scope (both published and drafts so preview/admin works seamlessly)
+const [publishedResults, draftResults] = await Promise.all([
+	Promise.all(
+		targetThemeSlugs.map((tSlug) =>
+			getEmDashCollection("posts", {
+				where: { theme: tSlug },
+				status: "published",
+				orderBy: { published_at: "desc" },
+				limit: 50,
+			}),
+		),
+	),
+	Promise.all(
+		targetThemeSlugs.map((tSlug) =>
+			getEmDashCollection("posts", {
+				where: { theme: tSlug },
+				status: "draft",
+				orderBy: { published_at: "desc" },
+				limit: 50,
+			}),
+		),
+	),
+]);
+
+// Deduplicate posts
+const themePostMap = new Map<string, (typeof publishedResults)[0][0]["entries"][0]>();
+for (const resList of [publishedResults, draftResults]) {
+	for (const res of resList) {
+		for (const p of res.entries) {
+			if (!themePostMap.has(p.id)) {
+				themePostMap.set(p.id, p);
+			}
+		}
+	}
+}
+
+// Fallback in case a post has no theme or no matches found
+let allThemePosts = Array.from(themePostMap.values());
+if (allThemePosts.length === 0) {
+	const { entries: fallbackPosts } = await getEmDashCollection("posts", {
+		orderBy: { published_at: "desc" },
+		limit: 6,
+	});
+	allThemePosts = fallbackPosts;
+}
+
+const otherPosts = allThemePosts.filter((p) => p.id !== post.id).slice(0, 3);
+const sidebarRecentPosts = allThemePosts.filter((p) => p.id !== post.id).slice(0, 5);
+
+// Query categories and tags for all posts in this theme scope to build contextual sidebar
+const themeEntryIds = allThemePosts.map((p) => p.data.id);
+const [themeCatsByEntry, themeTagsByEntry, otherTagsByEntry] = await Promise.all([
+	getTermsForEntries("posts", themeEntryIds, "category"),
+	getTermsForEntries("posts", themeEntryIds, "tag"),
+	getTermsForEntries("posts", otherPosts.map((p) => p.data.id), "tag"),
+]);
+
+// Contextual categories with post counts
+const catCountMap = new Map<string, { label: string; slug: string; count: number }>();
+for (const [, catTerms] of themeCatsByEntry) {
+	for (const cat of catTerms) {
+		const existing = catCountMap.get(cat.slug);
+		if (existing) {
+			existing.count++;
+		} else {
+			catCountMap.set(cat.slug, { slug: cat.slug, label: cat.label, count: 1 });
+		}
+	}
+}
+const sidebarCategories = Array.from(catCountMap.values()).sort((a, b) => b.count - a.count);
+
+// Contextual tags with post counts
+const tagCountMap = new Map<string, { label: string; slug: string; count: number }>();
+for (const [, tagTerms] of themeTagsByEntry) {
+	for (const t of tagTerms) {
+		const existing = tagCountMap.get(t.slug);
+		if (existing) {
+			existing.count++;
+		} else {
+			tagCountMap.set(t.slug, { slug: t.slug, label: t.label, count: 1 });
+		}
+	}
+}
+const sidebarTags = Array.from(tagCountMap.values()).sort((a, b) => b.count - a.count);
+
 const otherPostsWithTags = otherPosts.map((p) => ({
 	post: p,
 	tags: otherTagsByEntry.get(p.data.id) ?? [],
@@ -192,6 +268,20 @@ const publishDate =
 						)
 					}
 					{
+						categories.length > 0 && (
+							<div class="meta-block">
+								<span class="meta-label">Category</span>
+								<div class="meta-tags">
+									{categories.map((c) => (
+										<a href={`/category/${c.slug}`} class="meta-tag">
+											{c.label}
+										</a>
+									))}
+								</div>
+							</div>
+						)
+					}
+					{
 						tags.length > 0 && (
 							<div class="meta-block">
 								<span class="meta-label">Tags</span>
@@ -275,7 +365,63 @@ const publishDate =
 						</div>
 					</nav>
 					<div class="sidebar-widgets">
-						<WidgetArea name="sidebar" />
+						<div class="widget-area" data-widget-area="sidebar">
+							{
+								sidebarCategories.length > 0 && (
+									<div class="widget">
+										<h3 class="widget__title">Categories</h3>
+										<div class="widget__content">
+											<ul class="widget-categories">
+												{sidebarCategories.map((cat) => (
+													<li>
+														<a href={`/category/${cat.slug}`} class="widget-categories__link">
+															{cat.label}
+														</a>
+														<span class="widget-categories__count">({cat.count})</span>
+													</li>
+												))}
+											</ul>
+										</div>
+									</div>
+								)
+							}
+							{
+								sidebarTags.length > 0 && (
+									<div class="widget">
+										<h3 class="widget__title">Tags</h3>
+										<div class="widget__content">
+											<div class="widget-tags">
+												<ul class="widget-tags__cloud">
+													{sidebarTags.map((tag) => (
+														<li>
+															<a href={`/tag/${tag.slug}`} class="widget-tags__link">
+																{tag.label}
+															</a>
+														</li>
+													))}
+												</ul>
+											</div>
+										</div>
+									</div>
+								)
+							}
+							{
+								sidebarRecentPosts.length > 0 && (
+									<div class="widget">
+										<h3 class="widget__title">Recent Posts</h3>
+										<div class="widget__content">
+											<ul class="widget-recent-posts">
+												{sidebarRecentPosts.map((p) => (
+													<li>
+														<a href={`/posts/${p.id}`}>{p.data.title}</a>
+													</li>
+												))}
+											</ul>
+										</div>
+									</div>
+								)
+							}
+						</div>
 					</div>
 				</div>
 			</aside>
