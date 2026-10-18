@@ -13,7 +13,6 @@ import {
 	PortableText,
 	Comments,
 	CommentForm,
-	WidgetArea,
 } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import PostCard from "../../components/PostCard.astro";
@@ -110,7 +109,7 @@ const [publishedResults, draftResults] = await Promise.all([
 ]);
 
 // Deduplicate posts
-const themePostMap = new Map<string, (typeof publishedResults)[0][0]["entries"][0]>();
+const themePostMap = new Map<string, (typeof publishedResults)[0]["entries"][0]>();
 for (const resList of [publishedResults, draftResults]) {
 	for (const res of resList) {
 		for (const p of res.entries) {
