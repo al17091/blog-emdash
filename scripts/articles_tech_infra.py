@@ -6,7 +6,7 @@ All articles written in English with A4-report depth.
 
 ARTICLES_TECH_INFRA = {
     "cascading-failure-network-time-etcd-storage": {
-        "title": "Post-Mortem: A 4-Stage Cascading Failure Across Network, Time Drift, Etcd, and Longhorn Storage",
+        "title": "Post-Mortem: A 4-Stage Cascading Cluster Failure",
         "excerpt": "Post-mortem: how an MTU blackhole caused NTP time drift, etcd quorum loss, and Longhorn iSCSI read-only storage failure across Kubernetes worker nodes.",
         "markdown": """## 1. Executive Summary & Incident Timeline
 
@@ -131,7 +131,7 @@ kubectl scale deployment/blog-emdash -n blog-stg --replicas=1
     },
 
     "cilium-tailscale-routing-loop-mtu-investigation": {
-        "title": "Debugging Linux Kernel Routing Loops: Cilium eBPF Host-Routing, Tailscale WireGuard, and 1000ms Latency",
+        "title": "Debugging Cilium eBPF & Tailscale Routing Loops",
         "excerpt": "Debugging Linux kernel routing loops: how Cilium eBPF host-routing bypassed iptables fwmark on Tailscale WireGuard, ballooning latency to 1,000ms.",
         "markdown": """## 1. Problem Statement & Symptoms
 
@@ -236,7 +236,7 @@ Latency dropped by **98.8%** (from 1,040ms down to 12.4ms), and packet loss drop
     },
 
     "traefik-v3-cross-namespace-404-resolution": {
-        "title": "Traefik v3 IngressRoute Cross-Namespace Routing: Resolving 404 Not Found and Provider Configuration Gotchas",
+        "title": "Fixing Cross-Namespace 404s in Traefik v3",
         "excerpt": "Resolving 404 errors with Traefik v3 IngressRoute cross-namespace routing: configuring allowCrossNamespace flags and cluster-scoped RBAC permissions.",
         "markdown": """## 1. Multi-Namespace Topologies in Modern Kubernetes
 
@@ -390,7 +390,7 @@ Notice that both `name` and `namespace` must be explicitly declared, and `allowC
     },
 
     "internal-ca-injection-trust-manager-kyverno-pivot": {
-        "title": "Zero-Trust PKI in Kubernetes: Why We Abandoned Kyverno for Cert-Manager Trust-Manager for Root CA Distribution",
+        "title": "Kubernetes PKI: Moving from Kyverno to Trust-Mgr",
         "excerpt": "Kubernetes PKI: why we replaced Kyverno mutating webhooks with cert-manager trust-manager for zero-trust private Root CA distribution across namespaces.",
         "markdown": """## 1. The Challenge of Enterprise Internal PKI
 
@@ -546,7 +546,7 @@ kubectl exec -it deployment/blog-emdash -n blog-stg -- curl -v https://auth.lab.
     },
 
     "kubevirt-multus-l2-policy-routing": {
-        "title": "KubeVirt Dual-Stack Multus L2 Networking: Linux Policy Routing (ip rule pref 5200) and Bridge CNI Isolation",
+        "title": "KubeVirt Multus L2 & Linux Policy Routing",
         "excerpt": "Solving asymmetric routing in KubeVirt dual-stack VMs: Linux policy routing (ip rule pref 5200) and Bridge CNI for line-rate 10Gbps L2 networking.",
         "markdown": """## 1. The Challenge of Dual-Homed Virtual Machines in Kubernetes
 
@@ -695,7 +695,7 @@ Full 10Gbps line-rate throughput achieved with zero packet loss and zero asymmet
     },
 
     "kubevirt-storage-tuning-block-datavolume-longhorn": {
-        "title": "KubeVirt VM Storage Performance Optimization: Filesystem vs RAW Block DataVolumes on Longhorn Distributed Block Storage",
+        "title": "Tuning KubeVirt Disks with RAW Block on Longhorn",
         "excerpt": "KubeVirt storage optimization: eliminating the double-filesystem penalty with RAW Block DataVolumes on Longhorn to achieve 400% random 4K IOPS gains.",
         "markdown": """## 1. Storage in KubeVirt: The Double-Filesystem Penalty
 
@@ -854,7 +854,7 @@ Running the identical `fio` benchmark profile on the RAW Block DataVolume produc
     },
 
     "traefik-ingressroute-tls-port-80-drop-behavior": {
-        "title": "Traefik v3 HTTP-to-HTTPS Redirection Pitfalls: Understanding Why IngressRoute Drops Port 80 Requests and How to Fix It",
+        "title": "Traefik v3 Port 80 Drop Pitfalls & HTTPS Redirect",
         "excerpt": "Why Traefik v3 IngressRoute drops port 80 traffic with TLS enabled, and how to configure global entryPoint HTTP-to-HTTPS redirects with ACME support.",
         "markdown": """## 1. The Common Misconception
 

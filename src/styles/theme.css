@@ -71,14 +71,13 @@
 	--spacing-24: 6rem;
 	*/
 
-	/* --- Layout ---
-	--content-width: 680px;       article/page body column width
-	--wide-width: 1200px;         max container width (home, archives)
-	--gutter-width: 200px;        right sidebar column (TOC) on article pages
-	--meta-col-width: 180px;      left meta column on article pages
-	--nav-height: 64px;           sticky header height
-	--search-input-width: 180px;  nav search box width
-	*/
+	/* --- Layout --- */
+	--content-width: 760px;       /* article/page body column width (expanded for tech articles) */
+	--wide-width: 1280px;        /* max container width (home, archives) */
+	--gutter-width: 220px;       /* right sidebar column (TOC) on article pages */
+	--meta-col-width: 180px;     /* left meta column on article pages */
+	--nav-height: 64px;          /* sticky header height */
+	--search-input-width: 200px; /* nav search box width */
 
 	/* --- Borders & radius ---
 	--radius: 4px;

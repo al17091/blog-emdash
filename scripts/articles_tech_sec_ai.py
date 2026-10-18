@@ -6,7 +6,7 @@ All articles written in English with A4-report depth.
 
 ARTICLES_TECH_SEC_AI = {
     "defense-in-depth-waf-ips-architecture": {
-        "title": "Multi-Tier Defense in Depth: Coraza WAF, CrowdSec IPS, and Wazuh SIEM Architecture",
+        "title": "Multi-Tier Defense: Coraza WAF, CrowdSec & Wazuh",
         "excerpt": "Multi-tier defense-in-depth on Kubernetes: Coraza WAF (Traefik v3 WASM CRS v4), CrowdSec collaborative IPS, and Wazuh SIEM correlation architecture.",
         "markdown": """## 1. Threat Landscape & Architecture Overview
 
@@ -120,7 +120,7 @@ The multi-tiered defense successfully eliminated 99.8% of automated malicious tr
     },
 
     "traefik-v3-coraza-wasm-segv-troubleshooting": {
-        "title": "Troubleshooting Coraza WAF SEGV in Traefik v3: Debugging Coraza v0.5.0-beta.1 Coredumps & Crash-Loop",
+        "title": "Fixing Coraza WAF SEGV Crash-Loops in Traefik v3",
         "excerpt": "Debugging Coraza WAF SEGV crash-loops in Traefik v3. Core dump analysis of Wazero WASM memory boundary underflow in multipart parsing and the patch.",
         "markdown": """## 1. Incident Background: The Traefik Crash-Loop
 
@@ -224,7 +224,7 @@ Running untrusted or beta WebAssembly plugins inside the primary ingress proxy p
     },
 
     "k8s-audit-wazuh-json-decoder-order-size": {
-        "title": "Kubernetes Dynamic Audit Log Ingestion in Wazuh: Solving JSON Decoder Ordering & 100KB Size Limits",
+        "title": "Ingesting Kubernetes Audit Logs into Wazuh SIEM",
         "excerpt": "Ingesting Kubernetes audit logs into Wazuh SIEM: fixing 64KB event truncation, sibling JSON decoder precedence, and custom privilege escalation alerts.",
         "markdown": """## 1. The Critical Role of Kubernetes Audit Logs
 
@@ -355,7 +355,7 @@ Using the `wazuh-logtest` utility, we tested a real 90KB Kubernetes audit payloa
     },
 
     "multus-cni-cached-delegates-cosmetic-error": {
-        "title": "Decoupling Multus CNI Delegate Caching Errors: Demystifying 'delegates failed' Warnings in Dual-NIC Pods",
+        "title": "Fixing Multus CNI Delegate Caching Errors in K8s",
         "excerpt": "Eliminating 'delegates failed' log storms in Multus CNI: resolving PLEG race conditions, cache directory sync, and startup ordering in dual-NIC pods.",
         "markdown": """## 1. The Mysterious Kubelet Log Storm
 
@@ -463,7 +463,7 @@ The transient errors were completely eradicated, cutting pod startup times by an
     },
 
     "antigravity-notion-mcp-integration-guide": {
-        "title": "Building an Enterprise Knowledge Bridge: Integrating Notion API with Antigravity AI via MCP Server",
+        "title": "Connecting Notion API to Antigravity AI via MCP",
         "excerpt": "Architectural guide to integrating Notion API with Antigravity AI agents via MCP server: lazy tool execution, markdown sync, and rate-limit handling.",
         "markdown": """## 1. The Knowledge Silo Problem in AI Engineering
 
@@ -573,7 +573,7 @@ By bridging Notion and Antigravity:
     },
 
     "cnpg-minio-s3-gdrive-backup-pipeline": {
-        "title": "Automated PostgreSQL Backup Pipeline: CloudNativePG Barman Object Stores, MinIO, and Rclone to Cloud Storage",
+        "title": "Automated PostgreSQL Backups: CloudNativePG & S3",
         "excerpt": "Enterprise PostgreSQL 3-2-1 backup pipeline: CloudNativePG Barman WAL archiving to MinIO S3 and automated AES-256 encrypted sync to Google Drive.",
         "markdown": """## 1. The 3-2-1 Backup Rule for Kubernetes Databases
 
@@ -746,7 +746,7 @@ Result: Within 3 minutes and 20 seconds, the new cluster booted, replayed WAL se
     },
 
     "wazuh-opensearch-attack-reporting-ip-defang": {
-        "title": "Automated Threat Intelligence Reporting: Defanging Attacker IPs with Wazuh SIEM, OpenSearch, and Python",
+        "title": "Automated Threat Reports & IP Defanging in Python",
         "excerpt": "Automating threat intelligence reporting: querying OpenSearch for WAF/IPS blocks, defanging malicious IPs/URLs in Python, and generating reports.",
         "markdown": """## 1. The Challenge of Raw IOC Sharing & Alert Fatigue
 
@@ -888,7 +888,7 @@ Over the past 24 hours, our edge perimeter intercepted and mitigated **14,289 ma
     },
 
     "searxng-tor-socks5-onion-search-integration": {
-        "title": "Privacy-Preserving OSINT Infrastructure: Integrating SearXNG Metasearch with Tor SOCKS5 Onion Routing",
+        "title": "Private OSINT: SearXNG with Tor SOCKS5h Routing",
         "excerpt": "Privacy-preserving OSINT architecture: deploying SearXNG with Tor SOCKS5h remote DNS resolution and Cilium zero-trust egress network policies on k3s.",
         "markdown": """## 1. Motivation: Private Threat Intelligence Gathering
 
@@ -1079,7 +1079,7 @@ Total privacy, zero DNS leaks, and an indispensable intelligence asset for secur
     },
 
     "reverse-proxy-nextjs-stream-truncation-content-length-bug": {
-        "title": "Debugging Premature Stream Termination: Next.js Server Components, UTF-8 Byte Length Mismatches, and Traefik Buffering",
+        "title": "Fixing Truncated Next.js Streams Behind Traefik",
         "excerpt": "Debugging premature stream cuts in Next.js behind Traefik: string.length vs Buffer.byteLength UTF-8 mismatches and reverse proxy framing fixes.",
         "markdown": """## 1. Problem Manifestation: Random JSON Truncation
 
@@ -1204,7 +1204,7 @@ Payload truncation errors dropped to zero across all endpoints.
     },
 
     "grafana-tempo-ebpf-obi-distributed-tracing": {
-        "title": "Zero-Code Distributed Tracing on Kubernetes: Correlating Grafana Tempo Traces with OpenTelemetry eBPF (OBI)",
+        "title": "Zero-Code Tracing: Grafana Tempo & eBPF OBI",
         "excerpt": "Zero-code distributed tracing on Kubernetes: capturing kernel syscalls with OpenTelemetry eBPF (OBI) and correlating Grafana Tempo traces with Loki.",
         "markdown": """## 1. The Dilemma of Microservice Observability
 
