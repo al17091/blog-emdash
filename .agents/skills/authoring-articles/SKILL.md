@@ -1,6 +1,6 @@
 ---
 name: authoring-articles
-description: Standard operating procedure for researching, authoring, converting to Portable Text, optimizing SEO metadata, validating schemas, and synchronizing blog articles to staging on EmDash.
+description: Standard operating procedure for researching, authoring, formatting in raw Markdown, optimizing SEO metadata, validating schemas, and synchronizing blog articles to staging on EmDash.
 ---
 
 # Content Authoring Runbook for EmDash
@@ -33,7 +33,7 @@ This skill defines the end-to-end standard operating procedure (SOP) for draftin
 
 ## 2. EmDash Content Schema & Data Invariants
 
-All articles reside in `seed/seed.json` under `content.posts[]`.
+All articles reside in `seed/seed.json` under `content.posts[]`. The `posts.content` field uses EmDash's `"type": "text"` (stored as a `TEXT` column in PostgreSQL/SQLite) holding **100% raw GitHub Flavored Markdown (GFM)** rendered via Astro's native `@astrojs/markdown-remark` pipeline (`src/utils/markdown.ts`).
 
 ### Post Entry Structure
 ```json
@@ -49,28 +49,14 @@ All articles reside in `seed/seed.json` under `content.posts[]`.
   "data": {
     "title": "Clear, High-Intent Title",
     "excerpt": "SEO-optimized description (140-160 chars EN, 100-120 chars JA)",
-    "content": [
-      {
-        "_type": "block",
-        "style": "normal",
-        "_key": "b_a1b2c3d4",
-        "children": [
-          {
-            "_type": "span",
-            "_key": "s_e5f6g7h8",
-            "text": "Paragraph content or code block string."
-          }
-        ]
-      }
-    ]
+    "content": "## 1. Overview\n\nStandard GitHub Flavored Markdown (`| tables |`, `**bold**`, `` `code` ``, lists, and fenced code blocks)."
   }
 }
 ```
 
 ### Critical Rules:
 1. **Taxonomy Names**: Must match the singular name defined in the seed's `taxonomies[]` exactly (e.g., `"category"` not `"categories"`, `"theme"` not `"themes"`, `"tag"` not `"tags"`).
-2. **Portable Text Blocks**: Every block and span MUST have a unique `_key` string.
-3. **Styles**: Supported styles are `"normal"`, `"h2"`, `"h3"`, and `"blockquote"`.
+2. **Raw Markdown (`type: "text"`)**: Do NOT convert post content to Portable Text JSON blocks. Store raw Markdown strings directly in `data.content`.
 
 ---
 
@@ -100,11 +86,11 @@ To author articles without managing massive single-file JSONs, use the modular g
 
 | File | Purpose |
 | :--- | :--- |
-| `scripts/articles_travel.py` | Python dictionary holding Japanese mountain/hiking articles |
-| `scripts/articles_tech_infra.py` | Python dictionary holding Infrastructure, Storage, & Networking articles |
-| `scripts/articles_tech_sec_ai.py` | Python dictionary holding Security, Telemetry, & AI integration articles |
-| `scripts/apply_all_articles.py` | Master parser converting Markdown to Portable Text blocks and updating `seed/seed.json` |
-| `scripts/emdash-seed.mjs` | Database seed applier with automated `_emdash_seo` synchronization |
+| `scripts/articles_travel.py` | Python dictionary holding Japanese mountain/hiking articles (raw Markdown) |
+| `scripts/articles_tech_infra.py` | Python dictionary holding Infrastructure, Storage, & Networking articles (raw Markdown) |
+| `scripts/articles_tech_sec_ai.py` | Python dictionary holding Security, Telemetry, & AI integration articles (raw Markdown) |
+| `scripts/apply_all_articles.py` | Master script syncing raw Markdown articles into `seed/seed.json` (`type: "text"`) |
+| `scripts/emdash-seed.mjs` | Database seed applier with schema type migration (`TEXT`) and `_emdash_seo` sync |
 
 ### Running the Generator:
 ```bash

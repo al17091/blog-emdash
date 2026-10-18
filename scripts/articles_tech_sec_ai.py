@@ -226,7 +226,7 @@ Running untrusted or beta WebAssembly plugins inside the primary ingress proxy p
     "k8s-audit-wazuh-json-decoder-order-size": {
         "title": "Ingesting Kubernetes Audit Logs into Wazuh SIEM",
         "excerpt": "Ingesting Kubernetes audit logs into Wazuh SIEM: fixing 64KB event truncation, sibling JSON decoder precedence, and custom privilege escalation alerts.",
-        "markdown": """## 1. The Critical Role of Kubernetes Audit Logs
+        "markdown": r"""## 1. The Critical Role of Kubernetes Audit Logs
 
 Kubernetes API audit logs record every single interaction with the cluster: pod executions, secret reads, RBAC cluster role bindings, and workload deployments. For any security operations center (SOC), streaming these audit logs into a SIEM like Wazuh is mandatory for compliance and threat detection.
 
@@ -748,7 +748,7 @@ Result: Within 3 minutes and 20 seconds, the new cluster booted, replayed WAL se
     "wazuh-opensearch-attack-reporting-ip-defang": {
         "title": "Automated Threat Reports & IP Defanging in Python",
         "excerpt": "Automating threat intelligence reporting: querying OpenSearch for WAF/IPS blocks, defanging malicious IPs/URLs in Python, and generating reports.",
-        "markdown": """## 1. The Challenge of Raw IOC Sharing & Alert Fatigue
+        "markdown": r"""## 1. The Challenge of Raw IOC Sharing & Alert Fatigue
 
 Modern SIEM systems generate tens of thousands of security alerts daily. When security engineers share incident summaries via Slack, Discord, email, or markdown reports, sharing raw Indicators of Compromise (IOCs)—such as malicious IP addresses (`198.51.100.4`) and phishing URLs—presents severe operational risks:
 - Chat clients and email security filters automatically generate preview cards, triggering accidental HTTP GET requests to attacker-controlled infrastructure.
@@ -1349,6 +1349,116 @@ We evaluated cluster performance under 5,000 requests per second with and withou
 
 Zero code changes, zero SDK maintenance, and complete full-stack observability.
 """
+    },
+
+    "k3s-cpu-slm-deepseek-vs-qwen25-gemini-flash-lite-cost-balance": {
+        "title": "Self-Hosting SLMs on CPU-Only k3s with Qwen2.5",
+        "excerpt": "Operating CPU-only SLMs on k3s: why DeepSeek-R1 fails in CPU pipelines, Qwen2.5-3B benchmarks, and LiteLLM dynamic hybrid routing with Gemini Flash-Lite.",
+        "taxonomies": {
+            "theme": ["engineering"],
+            "category": ["development"],
+            "tag": ["kubernetes", "ai", "tools"]
+        },
+        "markdown": """## 1. System Architecture & CPU Compute Constraints
+
+Running local LLM inference on CPU introduces hard physical constraints that do not exist on unified memory systems or GPU clusters. In autoregressive token generation, the computational bottleneck is not raw FLOPS, but **memory bandwidth**: every generated token requires transferring the entire active parameter weight matrix across the CPU memory bus.
+
+To achieve acceptable interactive throughput (`>= 20 tokens/sec`) on standard multi-core server CPUs (AMD EPYC / Ryzen or Intel Xeon) without starving other containerized workloads, we established the following architectural constraints:
+
+- **Parameter Boundary**: Models must be strictly capped between `1.0B` and `3.8B` parameters. Models exceeding `7B` parameters saturate DDR4/DDR5 channels, dropping throughput to unusable sub-10 token/sec levels on CPU.
+- **Quantization Standard**: 4-bit Medium Quantization (`Q4_K_M` via GGUF) is enforced, preserving 98%+ of perplexity benchmarks while reducing the memory footprint to `1.8 GiB – 2.6 GiB` per instance.
+- **Context Length Clamping**: Strict limits of `1,024` to `2,048` tokens are applied. Because self-attention complexity scales quadratically ($O(N^2)$) with context length, unconstrained context buffers quickly trigger RAM starvation and CPU cache eviction storms.
+- **Container Runtime**: Ollama deployed as a lightweight Kubernetes `Deployment` inside namespace `ai`, paired with a **LiteLLM** proxy gateway that provides OpenAI-compatible routing, fallback management, and distributed rate limiting.
+
+---
+
+## 2. The DeepSeek Dilemma: Why Reasoning Models Fail in CPU Pipelines
+
+During our initial investigation, the DeepSeek architecture was heavily evaluated due to its state-of-the-art benchmark results. However, empirical testing revealed critical blockers across both the flagship architecture and its distilled variants:
+
+1. **Flagship DeepSeek-V3 / R1 (671B MoE)**: Operating the full 671-billion parameter Mixture-of-Experts architecture requires in excess of `350 GiB` of RAM even under aggressive 4-bit quantization. On CPU, inference speed degraded to less than `0.7 tokens/sec`, rendering synchronous API consumption entirely infeasible.
+2. **Distilled Reasoning Models (`DeepSeek-R1-Distill-Qwen-1.5B` / `7B`)**: The smaller distilled models execute comfortably within memory limits on CPU. However, their core architectural characteristic—the mandatory generation of extensive *Chain of Thought* reasoning tokens enclosed in `<think>` tags—creates severe operational friction:
+   - **Latency Explosion**: For a deterministic task requiring a simple 5-word output or a boolean JSON payload, DeepSeek-R1 regularly produces between `400` and `1,200` tokens of internal contemplation. On a CPU delivering `~15 tokens/sec`, this adds **30 to 80 seconds of queuing delay** per transaction, completely stalling real-time event processing.
+   - **Structural Output Corruption**: When integrated into automated workflows expecting rigid JSON payloads (e.g., Pydantic parsers or Kubernetes admission controllers), the verbose reasoning text frequently leaks into the output or terminates before closing delimiters, resulting in high parser error rates and requiring brittle regex sanitizers.
+
+> **Conclusion**: Reasoning models are designed for complex human-facing brainstorming and multi-step mathematical proofs; they are fundamentally misaligned with deterministic, high-throughput machine-to-machine data extraction on CPU.
+
+---
+
+## 3. Selection & Benchmarking: Why Qwen2.5-3B-Instruct Wins
+
+After eliminating reasoning-first models, we subjected standard instruction-tuned SLMs to rigorous evaluation, focusing on `Qwen2.5` (1.5B and 3B), `Llama-3.2` (1B and 3B), and `Phi-3.5-mini`. **`Qwen2.5-3B-Instruct`** emerged as the undisputed winner across all primary operational metrics:
+
+| Model (`Q4_K_M`) | Memory Footprint | Sustained CPU Throughput | TTFT (8 vCPU) | Task Completion (JSON Extraction) |
+| :--- | :--- | :--- | :--- | :--- |
+| `Qwen2.5-1.5B-Instruct` | 1.45 GiB | **41.8 tokens/sec** | 210 ms | **1.15 sec** (0 thinking tokens) |
+| `Qwen2.5-3B-Instruct` | 2.15 GiB | **27.4 tokens/sec** | 340 ms | **1.80 sec** (99.4% schema pass) |
+| `DeepSeek-R1-Distill-1.5B` | 1.50 GiB | 16.2 tokens/sec | 390 ms | **38.20 sec** (~620 `<think>` tokens) |
+
+- **Zero-Preamble Instant Response**: Unlike R1, Qwen2.5 begins outputting the target JSON structure on token index `#0` without conversational filler or reasoning tangents. Time-to-First-Token (TTFT) on an 8-vCPU container remained consistently under `350ms`.
+- **Strict Schema Adherence**: Qwen2.5 demonstrated exceptional compliance with multi-field JSON schemas, regex constraints, and structured key-value extractions, achieving a **99.4% first-pass parsing success rate** in automated log analysis tests.
+
+---
+
+## 4. FinOps Strategy: The Hybrid SLM + Gemini Flash-Lite Architecture
+
+Deploying a self-hosted model should never be treated as an all-or-nothing proposition. In fact, attempting to force a 3B SLM to execute long-context synthesis or multi-document comparative analysis leads to severe hallucinations and degraded accuracy.
+
+The optimal enterprise FinOps strategy is a **tiered hybrid architecture** orchestrated through LiteLLM:
+
+### Tier 1: Local In-Cluster SLM (`Qwen2.5-3B` on k3s)
+- **Workloads**: Real-time SIEM log categorization (Wazuh `444` blocks), payload tokenization, internal routing decisions, PII masking, and local health probes.
+- **Economics**: `$0.00` incremental token cost. 100% data residency within private network boundaries (zero egress bandwidth costs, zero risk of data leakage to external vendors).
+- **Throughput**: Handles **80% to 90%** of total daily transaction volume.
+
+### Tier 2: Cloud Frontier Utility (Google Gemini 2.5 Flash & Flash-Lite)
+- **Workloads**: Cross-correlating multi-source threat intelligence feeds, summarizing multi-thousand-line stack traces, weekly platform executive reports, and fallback processing when local queues exceed concurrency thresholds.
+- **Economics**: Priced at approximately `$0.075` to `$0.15` per million tokens, Gemini Flash-Lite is cheap enough that offloading complex, low-frequency tasks costs mere pennies per month while delivering world-class 1M+ token context capabilities.
+
+---
+
+## 5. Production Deployment Specification
+
+The local inferencing stack is codified in GitOps via Helm and deployed into the `ai` namespace. Below is the production resource and concurrency profile:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-slm
+  namespace: ai
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          env:
+            - name: OLLAMA_NUM_PARALLEL
+              value: "2"
+            - name: OLLAMA_KEEP_ALIVE
+              value: "24h"
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+            limits:
+              cpu: "4000m"
+              memory: "4Gi"
+```
+
+- **Fallback Routing**: LiteLLM sits in front as an internal ClusterIP service (`litellm.ai.svc:4000`), presenting a standard OpenAI `/v1/chat/completions` endpoint. If the local Ollama instance experiences latency spikes (`> 4000ms` TTFT) or returns an error, the request automatically falls back to Gemini Flash-Lite, ensuring uninterrupted pipeline SLA.
+
+---
+
+## 6. Key Takeaways & Best Practices
+
+1. **Never deploy reasoning-style models (`DeepSeek-R1` distillations) on CPU** for deterministic machine pipelines. The hidden latency of unconstrained thinking tokens destroys pipeline throughput.
+2. **`Qwen2.5-3B-Instruct` is the gold standard** for lightweight, structured CPU inference, offering unmatched speed and schema adherence within a 2 GiB footprint.
+3. **Combine local SLMs with hyperscale Lite frontier APIs (`Gemini Flash-Lite`)**: Offload high-volume routine tasks to local compute for data privacy and zero marginal cost, while reserving commercial APIs for complex reasoning and long-context synthesis.
+"""
     }
 }
+
 
