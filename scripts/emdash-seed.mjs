@@ -1,7 +1,7 @@
 import { readFile, mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 import { runMigrations } from "emdash/db";
 import { createDialect as createPostgresDialect } from "emdash/db/postgres";
@@ -138,6 +138,38 @@ async function main() {
 		console.log(
 			`Content: ${result.content.created} created, ${result.content.skipped} skipped, ${result.content.updated} updated`,
 		);
+
+		// Synchronize _emdash_seo table with post titles and excerpts for the Admin UI SEO panel
+		try {
+			if (dbEngine === "postgres" || dbEngine === "pg") {
+				await sql`
+					INSERT INTO _emdash_seo (collection, content_id, seo_title, seo_description, seo_canonical, seo_no_index, created_at, updated_at)
+					SELECT 'posts', id, title, excerpt, 'https://blog-stg.lab.internal/posts/' || slug, 0,
+					to_char(NOW(), 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'), to_char(NOW(), 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+					FROM ec_posts WHERE excerpt IS NOT NULL AND excerpt != ''
+					ON CONFLICT (collection, content_id) DO UPDATE SET
+					seo_title = EXCLUDED.seo_title,
+					seo_description = EXCLUDED.seo_description,
+					seo_canonical = EXCLUDED.seo_canonical,
+					updated_at = EXCLUDED.updated_at;
+				`.execute(db);
+			} else {
+				await sql`
+					INSERT INTO _emdash_seo (collection, content_id, seo_title, seo_description, seo_canonical, seo_no_index, created_at, updated_at)
+					SELECT 'posts', id, title, excerpt, '/posts/' || slug, 0,
+					datetime('now'), datetime('now')
+					FROM ec_posts WHERE excerpt IS NOT NULL AND excerpt != ''
+					ON CONFLICT (collection, content_id) DO UPDATE SET
+					seo_title = EXCLUDED.seo_title,
+					seo_description = EXCLUDED.seo_description,
+					seo_canonical = EXCLUDED.seo_canonical,
+					updated_at = EXCLUDED.updated_at;
+				`.execute(db);
+			}
+			console.log("SEO metadata synchronized to _emdash_seo table");
+		} catch (e) {
+			console.warn("SEO metadata sync skipped or failed:", e?.message);
+		}
 	} finally {
 		await db.destroy();
 	}
