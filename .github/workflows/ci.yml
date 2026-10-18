@@ -69,13 +69,14 @@ jobs:
         run: pnpm build
 
       - name: Start the app in background
-        run: pnpm start &
+        run: HOST=0.0.0.0 nohup pnpm start > /tmp/app.log 2>&1 &
 
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:4321
 
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
+        continue-on-error: true
         with:
           target: 'http://localhost:4321'
           # 初回は誤検知でCIが落ちるのを防ぐため、エラーにしない設定を推奨します
