@@ -1,8 +1,8 @@
-import { createMarkdownProcessor, type MarkdownProcessor } from "@astrojs/markdown-remark";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 
-let processorPromise: Promise<MarkdownProcessor> | null = null;
+let processorPromise: ReturnType<typeof createMarkdownProcessor> | null = null;
 
-function getProcessor(): Promise<MarkdownProcessor> {
+function getProcessor(): ReturnType<typeof createMarkdownProcessor> {
 	if (!processorPromise) {
 		processorPromise = createMarkdownProcessor({
 			gfm: true,
