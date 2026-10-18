@@ -122,6 +122,18 @@
         {
           "slug": "notes",
           "label": "Notes"
+        },
+        {
+          "slug": "security",
+          "label": "Security"
+        },
+        {
+          "slug": "infrastructure",
+          "label": "Infrastructure"
+        },
+        {
+          "slug": "outdoor",
+          "label": "Outdoor & Trekking"
         }
       ]
     },
@@ -149,6 +161,34 @@
         {
           "slug": "webdev",
           "label": "Web Development"
+        },
+        {
+          "slug": "hiking",
+          "label": "Hiking"
+        },
+        {
+          "slug": "hot-spring",
+          "label": "Hot Spring"
+        },
+        {
+          "slug": "kubernetes",
+          "label": "Kubernetes"
+        },
+        {
+          "slug": "waf",
+          "label": "WAF"
+        },
+        {
+          "slug": "notion",
+          "label": "Notion"
+        },
+        {
+          "slug": "backup",
+          "label": "Backup"
+        },
+        {
+          "slug": "security",
+          "label": "Security"
         }
       ]
     },
@@ -1056,6 +1096,1801 @@
           ],
           "tag": [
             "opinion"
+          ]
+        }
+      },
+      {
+        "id": "posts:mitake-hinode-tsurutsuru-trail",
+        "slug": "mitake-hinode-tsurutsuru-trail",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "travel",
+            "nature"
+          ],
+          "category": [
+            "outdoor"
+          ],
+          "tag": [
+            "hiking",
+            "hot-spring"
+          ]
+        },
+        "data": {
+          "title": "【奥多摩】御岳山〜日の出山 縦走ハイク：古里駅からつるつる温泉へ抜ける定番トレイル",
+          "excerpt": "青梅線・古里駅から静かな大塚山を経て御岳山・武蔵御嶽神社へ。日の出山山頂からのパノラマを楽しみ、下山後は名湯「生涯青春の湯 つるつる温泉」へ抜ける奥多摩の王道温泉トレッキングルート。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "奥多摩エリアで「しっかり歩いて、山頂からの大パノラマを楽しみ、下山後はそのまま良質な天然温泉に浸かりたい」というとき、真っ先におすすめしたいのがこの御岳山〜日の出山縦走ルートです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "ケーブルカーを使って手軽に登ることもできる御岳山ですが、あえてJR青梅線「古里駅」から入山することで、静かな杉木立と自然林が広がる大塚山を経由し、歩きごたえのある本格的な尾根歩きが楽しめます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "ルート概要とタイムスケジュール"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "標準コースタイム：約4時間30分〜5時間 / 距離：約11km / 登り累積標高：約850m"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "【行程】JR青梅線 古里駅 → 大塚山（標高920m） → 御岳山・武蔵御嶽神社（標高929m） → 商店街・長尾平 → 日の出山（標高902m） → つるつる温泉（バスでJR武蔵五日市駅へ）"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "見どころとルートの魅力"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "1. 古里駅から大塚山への静寂トレイル：御岳山のメイン参道のような混雑がなく、落ち着いた雰囲気の中でじっくりと高度を稼ぐことができます。春の新緑や秋の紅葉シーズンは特に足元の落ち葉の感触が心地よい道です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "2. 御岳山と武蔵御嶽神社：山頂一帯には宿坊や売店が立ち並び、山の上に広がる歴史ある集落の風景に出会えます。関東屈指の霊山として知られる武蔵御嶽神社では、愛犬祈願の狛犬（狼）にも注目です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "3. 日の出山からの大パノラマ：日の出山の山頂は東側が大きく開けており、関東平野、筑波山、遠くスカイツリーや都心の高層ビル群まで見渡せる絶景スポット。ベンチや東屋も整備されており、ランチ休憩に最適です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "下山後の至福：生涯青春の湯 つるつる温泉"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "日の出山山頂から日の出町側へと下山すると、登山口近くに佇む「生涯青春の湯 つるつる温泉」に到着します。地下1,500mから湧き出るアルカリ性単純温泉は、その名のとおり肌がつるつるになる美肌の湯。大浴場や露天風呂で登山の疲労をさっぱりと洗い流せます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s11",
+                  "text": "温泉からは、レトロな機関車型トレーラーバス「青春号」に乗ってJR五日市線の武蔵五日市駅まで移動できるのも楽しいポイントです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s12",
+                  "text": "登山時のアドバイスと準備"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s13",
+                  "text": "登山道はよく整備されていますが、古里駅からの登り始めは急登が続くため、しっかりとしたトレッキングシューズと水分補給の準備が必須です。また、下山後の温泉用タオルや着替えを用意しておくと快適な山旅になります。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:kintokiyama-otome-fuji-hike",
+        "slug": "kintokiyama-otome-fuji-hike",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "travel",
+            "nature"
+          ],
+          "category": [
+            "outdoor"
+          ],
+          "tag": [
+            "hiking",
+            "hot-spring"
+          ]
+        },
+        "data": {
+          "title": "【箱根】金時山〜乙女峠 富士山絶景パノラマハイクと富士八景の湯",
+          "excerpt": "公時神社登山口から金時山山頂へ登り、眼前に迫る富士山と芦ノ湖の圧倒的パノラマを満喫。乙女峠を経て下山し、天然温泉「富士八景の湯」で疲れを癒やす箱根の絶景縦走ルート。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "天下の険・箱根外輪山の最高峰であり、金太郎伝説発祥の地として名高い「金時山（標高1,212m）」。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "山頂に立った瞬間、遮るもののない大迫力の富士山が視界いっぱいに広がる絶景ハイクの定番です。今回は公時神社から登り、乙女峠を経て温泉へと下る爽快な日帰り縦走をご紹介します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "ルート概要とタイムスケジュール"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "標準コースタイム：約3時間30分〜4時間 / 距離：約7.5km / 登り累積標高：約550m"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "【行程】公時神社登山口 → 奥の院・手毬石 → 金時山山頂（標高1,212m） → 長尾山 → 乙女峠 → 乙女口 → 天然温泉 富士八景の湯"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "見どころとルートの魅力"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "1. 公時神社の巨岩と伝説：登山口にある公時神社は金太郎（坂田金時）を祀る神社。登山道中には金太郎が山姥と暮らしたとされる「宿石（真っ二つに割れた巨岩）」があり、神秘的な森の雰囲気が漂います。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "2. 金時山山頂の絶景と金時茶屋：山頂からは、裾野まで綺麗に広がる富士山、眼下に広がる仙石原のススキ草原、芦ノ湖や大涌谷の噴煙まで一望できます。「金時茶屋（元祖金時娘）」の名物なめこ汁やうどんで温まりながら眺める景色は格別です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "3. 乙女峠からの展望：山頂から長尾山を経て乙女峠へと続く稜線は、歩きやすいブナ林と富士山の展望ポイントが点在。乙女峠の展望台からも富士山の美しい山容を望むことができます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "下山後の立ち寄り温泉：富士八景の湯"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "乙女口バス停近く、御殿場側へ少し下った場所にある「富士八景の湯」は、富士山を正面に望む露天風呂が自慢の天然温泉。高アルカリ性の優しいお湯が登山の疲れをじっくりと癒やしてくれます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s11",
+                  "text": "ワンポイントアドバイス"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s12",
+                  "text": "金時山の山頂直下はやや傾斜の急な岩場や木の根が張り出した道があるため、スリップに注意して足元を固めましょう。空気が澄んだ午前中ほどくっきりとした富士山が見られる確率が高いため、早朝の入山がおすすめです。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:daibosatsurei-ridge-loop-hike",
+        "slug": "daibosatsurei-ridge-loop-hike",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "travel",
+            "nature"
+          ],
+          "category": [
+            "outdoor"
+          ],
+          "tag": [
+            "hiking"
+          ]
+        },
+        "data": {
+          "title": "【山梨】大菩薩嶺〜大菩薩峠 稜線周回ハイク：標高2,000mの絶景パノラマと介山荘",
+          "excerpt": "上日川峠起点。唐松尾根を登って一気に視界が開ける雷岩へ立ち、富士山と南アルプスを望みながら大菩薩峠・介山荘へ抜ける、初心者から楽しめる標高2,000mの天空稜線周回ハイク。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "山梨県甲州市と丹波山村にまたがる大菩薩嶺（標高2,057m）は、日本百名山の中でも比較的登りやすく、圧倒的な稜線パノラマが楽しめることで絶大な人気を誇る山です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "登山口の上日川峠（標高1,580m）までマイカーや路線バスでアクセスできるため、標高差約500mで標高2,000m超の開放感あふれる稜線歩きが満喫できます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "ルート概要とタイムスケジュール"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "標準コースタイム：約3時間30分 / 距離：約8.0km / 登り累積標高：約500m"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "【行程】上日川峠（ロッヂ長兵衛） → 福ちゃん荘 → 唐松尾根 → 雷岩 → 大菩薩嶺山頂（標高2,057m） → 稜線歩き → 賽の河原 → 大菩薩峠・介山荘（標高1,897m） → 富士見新道・林道 → 上日川峠"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "見どころとルートの魅力"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "1. 唐松尾根から雷岩へのパノラマ展開：樹林帯を抜け唐松尾根の上部に出ると、背後に巨大な富士山と大菩薩湖が姿を現します。雷岩からは南アルプス（白根三山や甲斐駒ヶ岳）まで見渡せる雄大なパノラマが広がります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "2. 天空の稜線散歩：雷岩から大菩薩峠までの稜線は、笹原が広がる開放感抜群のビクトリーロード。吹き抜ける風を感じながら、右手に富士山を眺めつつ歩く時間は登山の醍醐味そのものです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "3. 歴史ある大菩薩峠と介山荘：中里介山の小説『大菩薩峠』で名高い峠には、山小屋「介山荘」が佇んでいます。名物のほうとうや温かい甘酒、オリジナル手ぬぐいや登山バッジなどのお土産選びも楽しめます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "季節の魅力と登山計画のポイント"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "春から初夏の新緑、初夏のお花畑、秋のダケカンバやカラマツの黄金色の紅葉と、四季を通じて表情が変わります。稜線上は風を遮る樹木がないため、気温が高くても風が強い日は急激に体感温度が下がります。ウィンドブレーカーやレインウェアを必ず携行しましょう。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:tanzawa-tonodake-oyama-ridge",
+        "slug": "tanzawa-tonodake-oyama-ridge",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "travel",
+            "nature"
+          ],
+          "category": [
+            "outdoor"
+          ],
+          "tag": [
+            "hiking"
+          ]
+        },
+        "data": {
+          "title": "【丹沢】塔ノ岳・丹沢山・大山：都心から日帰りで挑む本格稜線トレーニング",
+          "excerpt": "標高差1,200m超の大倉尾根（バカ尾根）ピストン、ヤビツ峠〜表尾根縦走、大山アプローチまで。都心からのアクセスの良さと本格的な登りごたえを兼ね備えた丹沢主脈の魅力と歩き方。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "小田急線で新宿から約1時間強という抜群のアクセスの良さを誇りながら、アルプス山行のトレーニング場としても全国の登山者に愛される丹沢山塊。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "急峻な登りと広大な稜線、そして眼下に広がる相模湾や都心の夜景まで、何度通っても飽きない丹沢の主要クラシックルートをご紹介します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "代表的なコースバリエーション"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "1. 塔ノ岳・大倉尾根ピストン（通称：バカ尾根）：標高差約1,200mを一気に登り詰める、体力測定の定番ルート。整備された木段が延々と続きますが、見晴茶屋、駒止茶屋、堀山の家、花立山荘と休憩スポットが絶妙な間隔で現れます。花立山荘を過ぎたあたりから視界が開け、江の島や相模湾を一望できます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "2. ヤビツ峠〜表尾根〜塔ノ岳縦走：ヤビツ峠から二ノ塔、三ノ塔、烏尾山、行者岳、政次郎ノ頭を経て塔ノ岳へ至る人気ルート。鎖場やスリリングなヤセ尾根、アップダウンが連続し、アスレチック感覚で本格的な縦走を楽しめます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "3. 大山（雨降山）：伊勢原駅からバスで向かう大山は、ケーブルカーを利用して大山阿夫利神社下社まで上がれる初心者にも優しい山。山頂からは関東平野の雄大な眺望が広がり、秋の紅葉ライトアップや名物の大山豆腐も魅力です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "塔ノ岳山頂（尊仏山荘）と丹沢山への縦走"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "塔ノ岳山頂（標高1,491m）には名物山小屋「尊仏山荘」があり、名物のコーヒーや手ぬぐいを楽しめます。体力と時間に余裕があれば、笹原が美しい主脈尾根をさらに北上して日本百名山の「丹沢山（みやま山荘）」まで足を伸ばすのもおすすめです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "山行の注意点と安全対策"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "大倉尾根の下山は膝への負担が大きいため、トレッキングポールの活用が効果的です。また、春から秋（特に雨上がりや湿度の高い時期）はヤマビルが発生しやすいため、ヒル除けスプレーや塩、長めの靴下など防除対策を忘れないようにしましょう。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:defense-in-depth-waf-ips-architecture",
+        "slug": "defense-in-depth-waf-ips-architecture",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "security"
+          ],
+          "tag": [
+            "waf",
+            "kubernetes",
+            "security"
+          ]
+        },
+        "data": {
+          "title": "多層防御 WAF/IPS 構築実践：ModSecurity CRS LTS + Traefik CrowdSec AppSec + Wazuh SIEM",
+          "excerpt": "外部からの悪意あるスキャンや脆弱性探索に対抗するため、外周境界(ModSecurity CRS)＋Ingress(Traefik Bouncer)＋内部AppSec(CrowdSec)の3層防御基盤を構築。Fail-Open設計とDetectionOnlyによる無停止シミュレーション運用の全貌。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "インターネットに公開されたWebサービスやホームラボインフラは、公開直後からボットや脆弱性スキャナによる絶え間ない攻撃に晒されます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "本稿では、外部攻撃に対する堅牢な保護と正規トラフィックの無停止運用を両立するために構築した、3層防御（Defense-in-Depth）WAF/IPS基盤の設計・構築仕様および運用ナレッジを解説します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "3層防御アーキテクチャの全体設計"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "インターネットからのトラフィックは、以下の多層構造を経て各マイクロサービスへ到達します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "【Layer 1: 外周境界ゲートウェイ】インターネット境界に配置されたリバースプロキシ（retis / foramen）上で、owasp/modsecurity-crs:4.25.2-nginx-lts を稼働。ModSecurity v3 と OWASP Core Rule Set (CRS) v4 により、HTTPプロトコル違反や一般的な攻撃パターンを最前線で監視。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "【Layer 2: Ingressコントローラ】Kubernetesクラスタ内のTraefik v3に、Go言語ネイティブの crowdsec-bouncer-traefik-plugin を組み込み、SSL終端と協調型IPS連携を実施。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "【Layer 3: 協調型IPS & AppSec WAF】CrowdSec LAPIおよびAppSec Engine（196以上のインバンドルール）を稼働。コミュニティ脅威インテリジェンスと連携しつつ、アプリケーション層の攻撃を精査。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "【統合監視 & SIEM層】全レイヤーの監査ログをWazuh SIEM Agent/Managerへストリーミングし、OpenSearchでの可視化と定期レポート生成を自動化。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "無停止運用を支えるコア設計思想"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "1. 完全シミュレーション / 観測運用（DetectionOnly）: 本番初期運用における最優先課題は「正規トラフィックの誤検知遮断（False Positive）」を防ぐことです。ModSecurityでは SecRuleEngine DetectionOnly を設定し、CrowdSec側でも global simulation: enabled を適用。攻撃シグネチャに合致しても遮断せず、詳細ログのみを確実に記録します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "2. Fail-Open設計: Traefik Bouncerにおいて crowdsecAppsecFailureBlock: false を設定。万一内部のAppSecデーモンが一時的に高負荷や再起動状態になっても、一般のWebトラフィックを巻き添えで遮断しない堅牢性を確保しています。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s11",
+                  "text": "3. 非特権コンテナと秘密鍵パーミッション: ゲートウェイコンテナは公式推奨の非特権ユーザー nginx (UID 101) で稼働。Certbot自動更新フックで証明書秘密鍵のパーミッションを0600かつ所有者を101:101に自動同期することで、特権分離と起動安定性を両立しています。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s12",
+                  "text": "運用監視と今後の展望"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s13",
+                  "text": "現在はフェーズ1として全レイヤーをシミュレーション観測で稼働させており、収集された監査ログを分析してCRSホワイトリストルールをチューニング中です。今後、明らかな悪意あるIPや高スコア攻撃から順次アクティブ遮断へ移行していく予定です。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:traefik-v3-coraza-wasm-segv-troubleshooting",
+        "slug": "traefik-v3-coraza-wasm-segv-troubleshooting",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "waf",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "Traefik v3 と Coraza WASM の SEGV パニック調査とマイクロサービス分離へのピボット",
+          "excerpt": "Traefik v3 (Go 1.25) 環境下で Coraza HTTP WASM プラグインが起動直後に SEGV パニックを起こした原因分析と、Ingress 内 WASM 実行から独立した AppSec HTTP 転送アーキテクチャへのピボットの記録。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "KubernetesクラスタのIngressコントローラとしてTraefik v3を採用し、WAF機能としてCoraza HTTP WASMプラグインを導入しようとした際、プロセスが即死クラッシュする深刻な事象に直面しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "本稿では、スタックトレースの調査から判明したWASMランタイムとGoランタイムの競合原因、そしてアーキテクチャを根本から見直してクラッシュフリーなマイクロサービス分離構成へとピボットした技術的知見を共有します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "発生した事象：起動直後のSIGSEGVクラッシュ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "Traefik v3（v3.6.15、Go 1.25ビルド）に coraza-http-wasm-traefik プラグインを組み込んで起動したところ、以下のパニックログを出力してTraefikプロセスが異常終了を繰り返しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "runtime: unexpected return pc for runtime.memmove called from 0x... / fatal error: unknown caller pc / [signal SIGSEGV: segmentation violation code=0x1 addr=0x0]"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "原因分析：Go 1.25 と wazero JIT コンパイラの競合"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "調査の結果、Traefik内部に組み込まれているWASMランタイム（wazeroのJITエンジン）が、Go 1.25で導入されたスタック巻き戻しおよびメモリ移動最適化（runtime.memmove）と競合していることが判明しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "大規模なOWASP Core Rule Set（CRS）ルールセットをJITコンパイルしてメモリ上に展開する際、メモリ保護領域の境界チェックに失敗し、セグメンテーション違反を引き起こしていたのです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "アーキテクチャのピボット：WASM内包からHTTP分離へ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "Ingressプロセス内部で重厚なWASMを実行するアプローチは、WAFのクラッシュがクラスタ全体のIngressダウンに直結する単一障害点（SPOF）となります。そこで設計を大幅にピボットしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "1. Ingress側は軽量なネイティブGoプラグイン（crowdsec-bouncer-traefik-plugin）のみを採用。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s11",
+                  "text": "2. WAFのルール評価とシグネチャ照合は、Kubernetes内部の独立したマイクロサービス（crowdsec-appsec-service）へHTTP経由で非同期/同期フォワード。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s12",
+                  "text": "ピボットによる成果"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s13",
+                  "text": "この分離構成により、Traefikプロセスの安定性が完全に保たれると同時に、WAFエンジン側のCPU・メモリリソース割り当てや水平スケーリング（HPA）をKubernetesネイティブに制御できるようになりました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:kk8s-audit-wazuh-json-decoder-order-size",
+        "slug": "k8s-audit-wazuh-json-decoder-order-size",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "security",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "Kubernetes 監査ログ収集と Wazuh Manager `Too many fields for JSON decoder` のチューニング",
+          "excerpt": "Kubernetes API サーバー監査ログの収集において、巨大な CRD や ClusterRole 定義により Wazuh Manager の JSON デコーダ上限（256）を超過したトラブル。`decoder_order_size=1024` 拡張と Ansible による恒久化手順。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "Kubernetesクラスタのセキュリティ監査において、APIサーバーのAudit LogをSIEM（Wazuh）へ集約して不審なアクセスや権限変更を監視することは極めて重要です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "しかし運用中、Wazuh Managerのログに「Too many fields for JSON decoder」というエラーが頻発し、一部の重要ログが解析されずに破棄される事象が発生しました。その原因と恒久対策をまとめました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "エラーの事象とログの状況"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "Wazuh Managerのログファイル（ossec.log）に、短時間で数百件の以下のエラーが出力されていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "wazuh-analysisd: ERROR: Too many fields for JSON decoder."
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "原因分析：Kubernetes APIリソースのフィールド数超過"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "Wazuhの内部解析デーモン（analysisd）は、受信したJSONログを展開してデコードする際、安全のために1つのJSONオブジェクトに含まれるフィールド数に上限を設けています（デフォルト値：256）。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "しかし、近年のKubernetes環境では、CiliumやKubeVirt、Cert-Managerなどの複雑なCRD（Custom Resource Definition）や、巨大なAggregationRuleを持つClusterRoleの監査ログにおいて、フィールド数が容易に256個を超過します。その結果、デコーダの上限に達して解析がスキップされていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "解決策：decoder_order_size の拡張とAnsible自動化"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "Wazuh Managerの内部オプション設定ファイル `/var/ossec/etc/local_internal_options.conf` に以下のパラメータを追加し、デコーダの上限値を最大の1024まで引き上げました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "analysisd.decoder_order_size=1024"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b11",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s11",
+                  "text": "コンテナ環境下でPodが再起動しても設定が失われないよう、Ansibleのデプロイメントテンプレート（04_manager_deployment.yaml.j2）の起動スクリプトConfigMapへ本設定の注入コマンドを組み込み、インフラコードとして恒久化しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b12",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s12",
+                  "text": "結果と効果"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b13",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s13",
+                  "text": "Wazuh Managerの再起動後、当該エラーの発生頻度は完全にゼロとなり、複雑なKubernetesリソースに対するAPIリクエストも漏れなくSIEMにインデックスされるようになりました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:multus-cni-cached-delegates-cosmetic-error",
+        "slug": "multus-cni-cached-delegates-cosmetic-error",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "kubernetes",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "Multus CNI の Pod 削除時エラー `failed to get the cached delegates file` の原因と運用判断",
+          "excerpt": "Multus CNI 環境で短命 Pod や単一 NIC Pod の削除時に記録される `failed to get the cached delegates file` エラーのソースコード解析と、ログをドロップせず LogQL で除外する標準維持の運用設計。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "KubeVirt仮想マシンやマルチインターフェースPodを稼働させるため、KubernetesクラスタにMultus CNIを導入している環境において、DaemonSetログに頻繁に記録される `[error]` ログの調査と運用方針についての記録です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "観測されたエラーログ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "kube-multus-ds のログに、Podの終了・削除時（CNI DELリクエスト）に以下のログが継続的に出力されていました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "[error] Multus: failed to get the cached delegates file: open /var/lib/cni/multus/<container-id>: no such file or directory, cannot properly delete ... Path:\"\", result: \"\", err: <nil>"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "ソースコード解析と根本原因"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "Multus CNIのリポジトリコードを確認したところ、Pod削除時にMultusはセカンダリインターフェースのデリゲート情報をキャッシュファイルから読み込もうとします。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "しかし、CronJobなどの短命なPodや、デフォルトの単一NIC（flannel/cilium）のみを使用する通常のPodでは、最初からMultusのセカンダリキャッシュファイルが作成されません。そのためファイル不在によるエラーログが出力されますが、直後のログが示すとおり `result: \"\", err: <nil>` であり、CNI削除処理自体は正常に完了しています。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "つまり、システムの動作には何の影響も与えない「見た目上のエラー（Cosmetic Error）」であることが判明しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "運用方針の選定：ログドロップか、クエリ除外か"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "対応方針として「Promtail/ログコレクタ側でログを破棄（drop）する」案と、「Grafana LogQL側でクエリ除外する」案を比較検討しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b10",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s10",
+                  "text": "最終的に、インフラ層に独自パッチや特殊なドロップルールを増やすことは将来のトラブル切り分けを複雑にするリスクがあると判断し、標準構成を維持したまま可視化側（Grafanaダッシュボード）で `!= \"failed to get the cached delegates file\"` として除外する運用を採用しました。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:antigravity-notion-mcp-integration-guide",
+        "slug": "antigravity-notion-mcp-integration-guide",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "development"
+          ],
+          "tag": [
+            "notion",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "Antigravity × Notion MCP 連携仕様：OAuth 2.0 PKCE と内部インテグレーション API Key の権限モデル比較",
+          "excerpt": "Google Antigravity 環境から Notion MCP Server を利用する際の認証仕様、agy CLI（OAuth PKCE）と VS Code 拡張機能（内部インテグレーション Key）の権限スコープの違い、および最小権限の原則に基づくセキュア運用設計。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "AIコーディングアシスタント「Google Antigravity」から、外部ナレッジベースであるNotionをModel Context Protocol（MCP）経由で操作する環境を構築しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "Antigravity環境（agy CLIおよびVS Code拡張機能）において、Notion MCPの接続方式には2つの異なる認証モデルが存在します。本稿ではそれぞれの権限スコープとセキュアな運用設計について解説します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "2つの接続方式と権限スコープの違い"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "1. agy CLI 経由（OAuth 2.0 PKCE）：公式のNotion Remote MCPエンドポイント（https://mcp.notion.com/mcp）を利用し、ブラウザ上でワークスペース承認を行います。認証ユーザー本人の権限をそのまま継承するため、自分がアクセス可能な全ページを横断的に探索・編集できる利便性があります。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "2. VS Code 拡張機能 経由（API Key / 内部インテグレーション）：Notion Developersで内部インテグレーションを作成し、発行されたシークレットキーを登録します。「コネクト」として明示的に招待したページとその子ページのみがAPIから可視化され、非公開ページは完全に隔離（404扱い）されます。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "最小権限の原則に基づく使い分け"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "個人の日常的な作業やワークスペース全体の探索にはOAuth方式が適していますが、CI/CDパイプラインやラボインフラの自動更新、特定の台帳のみをAIに扱わせる運用では、API Key方式によるページ隔離が極めて有効です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "誤ったプロンプト指示やエージェントの自律動作によって意図しないページが書き換えられるリスクを、インテグレーション共有の境界によって確実に防ぐことができます。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:cnpg-minio-s3-gdrive-backup-pipeline",
+        "slug": "cnpg-minio-s3-gdrive-backup-pipeline",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "infrastructure"
+          ],
+          "tag": [
+            "kubernetes",
+            "backup",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "CloudNativePG と MinIO S3 による 2階層バックアップ＆Google Drive 二次退避パイプライン",
+          "excerpt": "クラスタ内 CloudNativePG データベースの WAL アーカイブと S3 フルバックアップ、MinIO から Google Drive への二次退避、および ScheduledBackup の連続実行防止オーケストレータ設計。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "Kubernetes上で稼働するステートフルなアプリケーションにおいて、データベースのバックアップと災害対策（DR）は最重要インフラ課題の1つです。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "本稿では、CloudNativePGオペレータとクラスタ内MinIO S3ストレージ、そしてrcloneを用いたGoogle Driveへの二次同期を組み合わせた、堅牢な2階層バックアップパイプラインの構築事例を紹介します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "バックアップパイプラインの全体構造"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "【第1階層: リアルタイムWALアーカイブ & S3フルバックアップ】CloudNativePGのBarman Cloud連携により、PostgreSQLのWALログをクラスタ内MinIO S3バケットへ継続転送。日次でScheduledBackupを実行し、任意の時点へのリカバリ（PITR）を可能にしています。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "【第2階層: クラウドストレージへの二次退避】万一のクラスタ全体や物理ノードの全損に備え、rcloneを用いた同期CronJobがMinIOバケットの内容を暗号化してGoogle Driveへ二次退避。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "運用の落とし穴とオーケストレータの導入"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "運用初期、複数のCNPGクラスタ（Wazuh、Threat Harvester、Nextcloud等）のScheduledBackupが同一時間帯に一斉発火し、ストレージI/Oスパイクとバックアップ競合が発生しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "これに対処するため、順次バックアップを実行・監視するオーケストレーションスクリプトを導入し、前のバックアップ完了を確認してから次のクラスタを実行するシーケンシャル制御へと改善しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "また、Google Drive側のストレージ使用量メトリクスをPromtail経由でLokiに集約し、Grafanaダッシュボードで容量逼迫を事前検知できるモニタリング環境を整備しています。"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "posts:wazuh-opensearch-attack-reporting-ip-defang",
+        "slug": "wazuh-opensearch-attack-reporting-ip-defang",
+        "status": "draft",
+        "taxonomies": {
+          "theme": [
+            "engineering"
+          ],
+          "category": [
+            "security"
+          ],
+          "tag": [
+            "security",
+            "tools"
+          ]
+        },
+        "data": {
+          "title": "Wazuh SIEM と OpenSearch を連携させた Web 攻撃リアルタイム可視化と IP Defang レポーティング",
+          "excerpt": "Nginx での HTTP 444 スキャナ遮断ログを Wazuh SIEM に取り込み、OpenSearch で集約・可視化。外部通知時に攻撃元 IP を `192[.]0[.]2[.]1` 形式に無害化（defang）してレポート出力する自動化フロー。",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b0",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "公開サーバーのNginxにおいて、不審なホスト名指定や無差別スキャナからのリクエストを `return 444;`（接続即時切断）で防御することはノイズ低減に効果的です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b1",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "しかし、遮断した事実を単にアクセスログに埋もれさせるのではなく、SIEMでリアルタイムにインデックス化し、脅威分析に活用できるパイプラインを構築しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b2",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "Nginx 444 ログから Wazuh SIEM へのインデックス化"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b3",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "通常、HTTP 4xxエラーログは情報レベルが低く扱われがちですが、意図的なIP直接アクセスや脆弱性スキャンパスへのアクセスは明確な攻撃兆候です。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b4",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "Wazuhのカスタムルール（ルールID 100100）を作成し、HTTP 444ステータスを重要度レベル5（SIEMインデックス対象）として定義。これにより、OpenSearchダッシュボード上にリアルタイムでスキャナの試行頻度やトップ攻撃元IPが可視化されるようになりました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b5",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s5",
+                  "text": "安全な脅威共有のための IP Defang 処理"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b6",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6",
+                  "text": "日次・週次で攻撃レポートをNotionやDiscord、チャットツールへ自動投稿する際、悪意あるIPアドレスをそのまま平文で記載すると、誤クリックによるセキュリティリスクや通知クライアントによる過剰なリンク化・セキュリティブロックが発生します。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b7",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s7",
+                  "text": "そこで、レポート生成スクリプト（scripts/report_blocked_attacks.py）にIP Defang処理を組み込み、`192.0.2.1` を `192[.]0[.]2[.]1` へ自動置換して安全に出力する仕組みを実装しました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "h2",
+              "_key": "b8",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s8",
+                  "text": "まとめ"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "_key": "b9",
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s9",
+                  "text": "エッジでの即時遮断と、SIEMでの集約・無害化レポーティングを組み合わせることで、ノイズに煩わされることなく、真に対処すべき脅威動向を日常的に把握できる基盤が整いました。"
+                }
+              ]
+            }
           ]
         }
       }
