@@ -1,0 +1,13 @@
+diff --git a/src/components/EmDashMedia.astro b/src/components/EmDashMedia.astro
+index 5df7cbd9adedc01e6b979534646f2d19c16092df..0e49cbad7ac7dbc3ea27dea15255dd77a1f68021 100644
+--- a/src/components/EmDashMedia.astro
++++ b/src/components/EmDashMedia.astro
+@@ -159,8 +159,6 @@ const finalAlt = alt ?? (embed?.type === "image" ? embed.alt : undefined) ?? med
+ )}
+ 
+ {embed?.type === "component" && (
+-	<!-- Custom component embeds (Mux player, etc.) require dynamic import -->
+-	<!-- For now, show a placeholder - full implementation TBD -->
+ 	<div class="emdash-media-component" data-package={embed.package} data-export={embed.export}>
+ 		<p>Custom media component: {embed.package}</p>
+ 	</div>
