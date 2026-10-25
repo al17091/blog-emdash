@@ -140,4 +140,27 @@ git checkout develop
 git pull origin develop
 ```
 
+---
 
+## 4. Semantic Versioning & Environment Lifecycle Policy
+
+### 4.1 Release Lifecycle & Stability Hierarchy
+SemVer (Semantic Versioning) に準拠したリリースの進行と安定度の階層：
+`安定度: 低 ──＞ alpha ──＞ beta ──＞ rc (preview / Release Candidate) ──＞ 正式版 (安定版)`
+
+### 4.2 Environment Mapping Policy
+| バージョン形式 | 安定度 | 対象環境 | 作成元ブランチ | 役割・説明 |
+| :--- | :--- | :--- | :--- | :--- |
+| `vX.Y.Z-rc.1` (`-preview`) | 検証済 (RC) | **STG (Staging)** | `develop` | STG での動作確認・結合検証・コスト試算用。PRODには載せない。 |
+| `vX.Y.Z` (正式版) | 安定 (GA) | **PROD (Production)** | `main` | 全検証が完了し、`main` にマージされた後に打つ本番用安定版。 |
+
+### 4.3 Tagging Rules & Invariants
+> [!CRITICAL]
+> **1. 正式版タグ（`vX.Y.Z`）の保護ルール**:
+> - `vX.Y.Z` のような正式版タグは **絶対に `develop` ブランチ上で直接打たない**。
+> - STG の先行検証・動作テスト段階では、必ず `develop` 上で **`vX.Y.Z-rc.1`**（または `vX.Y.Z-preview`）のプレリリースタグを切る。
+>
+> **2. PROD 昇格フロー**:
+> - STG での検証（メトリクス、コスト、動作）が完了した段階で、`develop` から `main` への PR を作成。
+> - CI チェック通過後、マージコミット（`--merge`）で `main` に取り込む。
+> - **正式版タグ `vX.Y.Z` は、`main` ブランチ上でのみ作成・Push する。**
