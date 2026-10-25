@@ -144,23 +144,29 @@ git pull origin develop
 
 ## 4. Semantic Versioning & Environment Lifecycle Policy
 
-### 4.1 Release Lifecycle & Stability Hierarchy
-SemVer (Semantic Versioning) に準拠したリリースの進行と安定度の階層：
-`安定度: 低 ──＞ alpha ──＞ beta ──＞ rc (preview / Release Candidate) ──＞ 正式版 (安定版)`
+### 4.1 SemVer Specifications & Git Tag Distinction
+- **Semantic Versioning (SemVer 2.0.0 Specification)**:  
+  A Semantic Version MUST NOT contain a leading `v` prefix. Valid SemVer identifiers follow `MAJOR.MINOR.PATCH` with optional pre-release identifiers (e.g., `1.2.0`, `0.1.2-rc.1`, `0.1.2-preview`).
+- **Git Release Tags**:  
+  Git release tags prefix the SemVer string with `v` (e.g., `v1.2.0`, `v0.1.2-rc.1`) to establish standard release references in Git and GitHub Releases. CI/CD pipelines strip the leading `v` to resolve the underlying SemVer value (e.g., `v1.2.0` -> `1.2.0`).
 
-### 4.2 Environment Mapping Policy
-| バージョン形式 | 安定度 | 対象環境 | 作成元ブランチ | 役割・説明 |
-| :--- | :--- | :--- | :--- | :--- |
-| `vX.Y.Z-rc.1` (`-preview`) | 検証済 (RC) | **STG (Staging)** | `develop` | STG での動作確認・結合検証・コスト試算用。PRODには載せない。 |
-| `vX.Y.Z` (正式版) | 安定 (GA) | **PROD (Production)** | `main` | 全検証が完了し、`main` にマージされた後に打つ本番用安定版。 |
+### 4.2 Stability Hierarchy & Release Progression
+Release progression strictly follows the standard stability hierarchy:
+`Stability: Low ──> alpha ──> beta ──> rc (Release Candidate / preview) ──> Stable (GA)`
 
-### 4.3 Tagging Rules & Invariants
+### 4.3 Environment Mapping Policy
+| Git Tag Format | SemVer Form | Stability Stage | Target Environment | Target Branch | Role & Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `vX.Y.Z-rc.1` (`-preview`) | `X.Y.Z-rc.1` | Release Candidate | **STG (Staging)** | `develop` | Staging verification, integration validation, and cost/load profiling. NEVER deployed to PROD. |
+| `vX.Y.Z` | `X.Y.Z` | Stable (GA) | **PROD (Production)** | `main` | Production deployment. Tagged ONLY after full verification and `--merge` into `main`. |
+
+### 4.4 Tagging Rules & Invariants
 > [!CRITICAL]
-> **1. 正式版タグ（`vX.Y.Z`）の保護ルール**:
-> - `vX.Y.Z` のような正式版タグは **絶対に `develop` ブランチ上で直接打たない**。
-> - STG の先行検証・動作テスト段階では、必ず `develop` 上で **`vX.Y.Z-rc.1`**（または `vX.Y.Z-preview`）のプレリリースタグを切る。
+> **1. Strict Protection of Stable Release Tags (`vX.Y.Z`)**:  
+> - NEVER tag a stable release (`vX.Y.Z` / SemVer `X.Y.Z`) directly on the `develop` branch.
+> - Staging verification and preliminary testing on `develop` MUST strictly use pre-release tags (e.g., `vX.Y.Z-rc.1` or `vX.Y.Z-preview`).
 >
-> **2. PROD 昇格フロー**:
-> - STG での検証（メトリクス、コスト、動作）が完了した段階で、`develop` から `main` への PR を作成。
-> - CI チェック通過後、マージコミット（`--merge`）で `main` に取り込む。
-> - **正式版タグ `vX.Y.Z` は、`main` ブランチ上でのみ作成・Push する。**
+> **2. Production Promotion Flow**:  
+> - Only after staging validation (metrics, resource costs, operational behavior) is fully verified may a PR be opened from `develop` to `main`.
+> - Once the PR is merged with a merge commit (`--merge`), the stable release tag `vX.Y.Z` MUST be created and pushed **exclusively on the `main` branch**.
+
